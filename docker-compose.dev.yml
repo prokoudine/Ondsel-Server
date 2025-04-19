@@ -55,15 +55,34 @@ services:
     depends_on:
       - backend
 
-  fc-worker:
+  fc-worker-redis:
+    image: redis:alpine
+
+  fc-worker-api:
     build:
       context: ./FC-Worker
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.api
     environment:
+      - REDIS_HOST=fc-worker-redis
+      - REDIS_PORT=6379
+      - LOG_LEVEL=debug
+    network_mode: "service:backend"
+    depends_on:
+      - backend
+      - fc-worker-redis
+
+  fc-worker-celery:
+    build:
+      context: ./FC-Worker
+      dockerfile: Dockerfile.celery
+    environment:
+      - REDIS_HOST=fc-worker-redis
+      - REDIS_PORT=6379
       - BACKEND_URL=${BACKEND_URL:-http://localhost:3030}
     network_mode: "service:backend"
     depends_on:
       - backend
+      - fc-worker-redis
 
   matomo-db:
     profiles:

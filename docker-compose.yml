@@ -18,7 +18,7 @@ services:
       - PORT=${PORT:-3030}
       - DB_URL=mongodb://mongodb:27017/backend-db
       - FRONTEND_URL=${FRONTEND_URL:-http://localhost:3000}
-      - FC_WORKER_URL=http://localhost:8080/2015-03-31/functions/function/invocations
+      - FC_WORKER_URL=http://0.0.0.0:8080/2015-03-31/functions/function/invocations
       - SMTP_HOST
       - SMTP_PORT=${SMTP_PORT:-465}
       - SMTP_USER
@@ -50,15 +50,34 @@ services:
     depends_on:
       - backend
 
-  fc-worker:
+  fc-worker-redis:
+    image: redis:alpine
+
+  fc-worker-api:
     build:
       context: ./FC-Worker
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.api
     environment:
+      - REDIS_HOST=fc-worker-redis
+      - REDIS_PORT=6379
+      - LOG_LEVEL=debug
+    network_mode: "service:backend"
+    depends_on:
+      - backend
+      - fc-worker-redis
+
+  fc-worker-celery:
+    build:
+      context: ./FC-Worker
+      dockerfile: Dockerfile.celery
+    environment:
+      - REDIS_HOST=fc-worker-redis
+      - REDIS_PORT=6379
       - BACKEND_URL=${BACKEND_URL:-http://localhost:3030}
     network_mode: "service:backend"
     depends_on:
       - backend
+      - fc-worker-redis
 
   matomo-db:
     profiles:
