@@ -54,19 +54,20 @@ services:
     image: redis:alpine
 
   fc-worker-api:
+    image: ondsel-server-fc-worker-api
     build:
       context: ./FC-Worker
       dockerfile: Dockerfile.api
     environment:
       - REDIS_HOST=fc-worker-redis
       - REDIS_PORT=6379
-      - LOG_LEVEL=debug
     network_mode: "service:backend"
     depends_on:
       - backend
       - fc-worker-redis
 
   fc-worker-celery:
+    image: ondsel-server-fc-worker-celery
     build:
       context: ./FC-Worker
       dockerfile: Dockerfile.celery
