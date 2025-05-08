@@ -125,6 +125,11 @@ function handleLocalFileDownload(app) {
     async (req, res, next) => {
       try {
         const { fileName } = req.params;
+
+        if (!fileName.startsWith('public/') && !app.service('upload').verifyLocalSignedUrl(fileName, req)) {
+          return res.status(403).json({ error: 'URL is invalid or expired!' });
+        }
+
         if (fs.existsSync(path.join('uploads', fileName))) {
           // Set appropriate headers for file download
           res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);

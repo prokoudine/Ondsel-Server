@@ -12,6 +12,7 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { GetObjectCommand, S3Client, HeadObjectCommand, CopyObjectCommand } from '@aws-sdk/client-s3'
 import { BadRequest } from '@feathersjs/errors'
 import dauria from 'dauria'
+import crypto from 'crypto'
 
 const customerFileNameRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\.([0-9a-z]+)$/i;
 const generatedObjRegex = /^[0-9a-fA-F]{24}_generated\.(:?OBJ|BREP|FCSTD)$/;
@@ -32,6 +33,7 @@ class UploadService {
     this.s3Client = s3Client;
     this.useS3 = options.app.get('useS3'); // Flag to toggle S3 usage
     this.appUrl = `http://${options.app.get('host')}:${options.app.get('port')}`
+    this.localSignedUrlSecret = options.app.get('localSignedUrlSecret') || crypto.randomBytes(32).toString('hex');
   }
 
   getLocalFilePath(fileName) {
@@ -46,9 +48,38 @@ class UploadService {
     return `${this.appUrl}/upload/download/${encodeURIComponent(fileName)}`;
   }
 
+  generateLocalSignedUrl(fileName, expiresIn) {
+    const expires = Math.floor(Date.now() / 1000) + expiresIn;
+    const signature = crypto
+      .createHmac('sha512', this.localSignedUrlSecret)
+      .update(`${fileName}:${expires}`)
+      .digest('hex');
+
+    return `${this.appUrl}/upload/download/${encodeURIComponent(fileName)}?expires=${expires}&signature=${signature}`;
+  }
+
+  verifyLocalSignedUrl(fileName, req) {
+    const { signature, expires } = req.query;
+    if (!signature || !expires) {
+      return false;
+    }
+
+    const now = Math.floor(Date.now() / 1000);
+    if (now > expires) {
+      return false;
+    }
+
+    const expectedSignature = crypto
+      .createHmac('sha512', this.localSignedUrlSecret)
+      .update(`${fileName}:${expires}`)
+      .digest('hex');
+
+    return signature === expectedSignature;
+  }
+
   async getSignedFileUrl(fileName, bucket, expiresIn) {
     if (!this.useS3) {
-      return `${this.appUrl}/upload/download/${fileName}`;
+      return this.generateLocalSignedUrl(fileName, expiresIn);
     }
 
     const command = new GetObjectCommand({
