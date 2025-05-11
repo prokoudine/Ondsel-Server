@@ -32,6 +32,7 @@ services:
       - DEFAULT_ADMIN_USERNAME
       - DEFAULT_ADMIN_PASSWORD
       - DEFAULT_ADMIN_NAME
+      - LOCAL_SIGNED_URL_SECRET
     volumes:
       - ./backend:/app
       - /app/node_modules

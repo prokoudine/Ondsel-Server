@@ -21,5 +21,6 @@
   "smtpUser": "SMTP_USER",
   "smtpPass": "SMTP_PASS",
   "frontendUrl": "FRONTEND_URL",
-  "slackWebhookUrl": "SLACK_WEBHOOK_URL"
+  "slackWebhookUrl": "SLACK_WEBHOOK_URL",
+  "localSignedUrlSecret": "LOCAL_SIGNED_URL_SECRET"
 }
