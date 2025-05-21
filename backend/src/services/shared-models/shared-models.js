@@ -481,7 +481,7 @@ const createUserInstance = async (context) => {
     }
 
   } else if (!result.data[0].objUrl && !result.data[0].error) {
-    // Incase if mesh was not generated earlier
+    // In case mesh was not generated earlier
     await modelService.patch(result.data[0]._id, { shouldStartObjGeneration: true }, context.params)
   }
 

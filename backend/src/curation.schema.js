@@ -161,7 +161,7 @@ export const curationSchema = Type.Object(
     tags: Type.Array(Type.String()), // list of zero or more lower-case strings
     representativeFile: Type.Optional(Type.Union([Type.Null(), fileSummary])), // if applicable
     promoted: Type.Optional(Type.Array(Type.Any())), // an array of promotionSchema
-    keywordRefs: Type.Optional(Type.Array(Type.String())), // used for pre-emptive "cleanup" prior to recalculating keywords
+    keywordRefs: Type.Optional(Type.Array(Type.String())), // used for preemptive "cleanup" prior to recalculating keywords
   }
 )
 

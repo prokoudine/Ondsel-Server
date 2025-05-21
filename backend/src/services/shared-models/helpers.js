@@ -85,7 +85,7 @@ export const handleDirectSharedToUsers = async context => {
 }
 
 export async function buildFakeModelAndFileForActiveVersion(message, context) {
-  // this function pulls from the DB to generate a psuedo Model and subtending File
+  // this function pulls from the DB to generate a pseudo Model and subtending File
   let finalModel = null;
   let {refFile, refModel} = await getReferenceFileAndModel(message, context);
 
