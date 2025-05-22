@@ -120,7 +120,7 @@ $ npm run dev
 
 #### Running FC-Worker
 
-- Clone [FC-Woker](https://github.com/FreeCAD/FC-Worker) repository.
+- Clone [FC-Worker](https://github.com/FreeCAD/FC-Worker) repository.
 - Build docker image (`docker build -t fc-worker .`)
 - Run docker image (`docker run -p 9000:8080 --name fc_worker fc-worker:latest`)
 
