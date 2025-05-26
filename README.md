@@ -36,6 +36,8 @@ This is the easiest way to run the entire application stack.
 #### Create environment file:
 ```bash
 cp env.example .env
+# or for using AWS S3 for storage:
+cp env.with-aws.example .env
 ```
 
 #### Start the server:
@@ -106,13 +108,13 @@ sudo docker run --env-file .env -p 80:80 --rm --name frontend frontend:latest
 #### Running backend
 
 - Go to the `backend` directory
-- Rename `env.example` to `.env` (Or export variables)
+- Rename `env.example` or `env.with-aws.example` (for using AWS S3 for storage) to `.env` (Or export variables)
 - Install frontend dependencies `npm ci`
 - Finally, run server `npm run dev`
 
 ```bash
 $ cd backend
-$ mv env.example .env
+$ mv env.example .env # or `mv env.with-aws.example .env` for using AWS S3 for storage
 $ set -a; . ./.env; set +a
 $ npm ci
 $ npm run dev
