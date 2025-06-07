@@ -10,6 +10,7 @@
       "audience": "CLIENT_URL"
     }
   },
+  "useS3": "USE_S3",
   "awsAccessKeyId": "AWS_ACCESS_KEY_ID",
   "awsSecretAccessKey": "AWS_SECRET_ACCESS_KEY",
   "awsClientModelBucket": "AWS_CLIENT_MODELS_BUCKET",
