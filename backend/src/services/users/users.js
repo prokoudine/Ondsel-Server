@@ -222,7 +222,7 @@ export const user = (app) => {
 
 const createSampleModels = async (context) => {
   const sampleModelFileName = 'ondsel.FCStd';
-  const sampleModelObj = 'ondsel_generated.BREP';
+  const sampleModelObj = 'ondsel_generated.FCSTD';
   const sampleModelThumbnail = 'public/ondsel_thumbnail.PNG';
   const attributes = {
     "Fillet1": {
