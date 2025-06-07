@@ -75,13 +75,13 @@ export default {
           parser.parseString(text, (err, parsed) => {
             this.loading = false;
             if (err) {
-              this.error = `Error occured while parsing RSS Feed ${err.toString()}`;
+              this.error = `Error occurred while parsing RSS Feed ${err.toString()}`;
             } else {
               this.feed = parsed;
             }
           });
         } else {
-          this.error = "Error occured while fetching the feed";
+          this.error = "Error occurred while fetching the feed";
           this.loading = false;
         }
       } catch (e) {

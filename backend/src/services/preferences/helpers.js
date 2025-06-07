@@ -23,7 +23,7 @@ export const validateFileVersionPayload = context => {
   }
   for (let fileVersion of context.data.version.files) {
     if (!fileVersion.fileName || !fileVersion.uniqueFileName) {
-      throw new BadRequest('fileName or uniqueFileName cant be empty');
+      throw new BadRequest('fileName or uniqueFileName cannot be empty');
     }
   }
 };

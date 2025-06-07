@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-// A "curation" file is for visibly decorating an object and handling pre-emptive keyword indexing (for later searches.)
+// A "curation" file is for visibly decorating an object and handling preemptive keyword indexing (for later searches.)
 //
 
 import {generateAndApplyKeywords, navTargetMap} from "../../curation.schema.js";
