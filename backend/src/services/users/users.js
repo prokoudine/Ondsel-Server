@@ -222,7 +222,7 @@ export const user = (app) => {
 
 const createSampleModels = async (context) => {
   const sampleModelFileName = 'ondsel.FCStd';
-  const sampleModelObj = 'ondsel_generated.BREP';
+  const sampleModelObj = 'ondsel_generated.FCSTD';
   const sampleModelThumbnail = 'public/ondsel_thumbnail.PNG';
   const attributes = {
     "Fillet1": {
@@ -280,6 +280,11 @@ const createSampleModels = async (context) => {
 
     await uploadService.copy(sampleModelThumbnail, sampleModelThumbnail.replace('ondsel', model._id.toString()));
     await uploadService.copy(sampleModelObj, sampleModelObj.replace('ondsel', model._id.toString()));
+
+    // Patch to update the model thumbnail url, because the thumbnail file didn't exist when the model was created
+    await modelService.patch(model._id, {
+      isThumbnailGenerated: true,
+    })
   } catch (e) {
     console.error(e);
   }
