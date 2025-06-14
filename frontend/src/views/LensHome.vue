@@ -39,14 +39,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <promoted-users-table :promoted-users="promotedUsers"></promoted-users-table>
           </v-card>
         </v-sheet>
-
-        <v-sheet
-          name="right_side"
-          width="24em"
-          border
-        >
-          <vue-rss-feed feed-url="https://ondsel.com/blog/rss" name="Latest Ondsel Blog" limit="7"></vue-rss-feed>
-        </v-sheet>
       </v-sheet>
     </template>
   </Main>
@@ -59,7 +51,6 @@ import {marked} from "marked";
 import PromotionsViewer from "@/components/PromotionsViewer.vue";
 import MarkdownViewer from "@/components/MarkdownViewer.vue";
 import PromotedUsersTable from "@/components/PromotedUsersTable.vue";
-import VueRssFeed from "@/components/VueRssFeed.vue";
 import Main from '@/layouts/default/Main.vue';
 
 const { Organization } = models.api;
@@ -67,7 +58,7 @@ const { Organization } = models.api;
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'LensHome',
-  components: {PromotedUsersTable, MarkdownViewer, PromotionsViewer, VueRssFeed, Main},
+  components: {PromotedUsersTable, MarkdownViewer, PromotionsViewer, Main},
   data: () => ({
     lensSiteCuration: null,
     markdownHtml: 'missing data',
