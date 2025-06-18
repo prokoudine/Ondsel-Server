@@ -53,6 +53,9 @@ docker-compose build --no-cache frontend
 
 # For development:
 docker-compose -f docker-compose.dev.yml --profile matomo-enabled up --build -d
+
+# To use prebuild docker images
+docker-compose -f docker-compose.prebuilds.yml --profile matomo-enabled up --build -d
 ```
 
 That's it! The application should now be running at http://localhost:3000
