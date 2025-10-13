@@ -48,6 +48,11 @@ services:
         - VITE_MATOMO_URL=${VITE_MATOMO_URL:-http://localhost:7000}
         - VITE_MATOMO_SITE=${VITE_MATOMO_SITE:-1}
         - VITE_STRIPE_PURCHASE_PEER_URL
+    environment:
+      - VITE_APP_API_URL
+      - VITE_MATOMO_URL
+      - VITE_MATOMO_SITE
+      - VITE_STRIPE_PURCHASE_PEER_URL
     ports:
       - "3000:80"
     depends_on:
