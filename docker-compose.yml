@@ -12,7 +12,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     ports:
-      - "3030:3030"
+      - "${PORT:-3030}:${PORT:-3030}"
     environment:
       - HOSTNAME=${HOSTNAME:-localhost}
       - PORT=${PORT:-3030}

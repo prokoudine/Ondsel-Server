@@ -9,7 +9,7 @@ services:
   backend:
     image: amrit3701/lens:backend-latest
     ports:
-      - "3030:3030"
+      - "${PORT:-3030}:${PORT:-3030}"
     environment:
       - HOSTNAME=${HOSTNAME:-localhost}
       - PORT=${PORT:-3030}
@@ -39,6 +39,11 @@ services:
     image: amrit3701/lens:frontend-latest
     ports:
       - "3000:80"
+    environment:
+      - VITE_APP_API_URL
+      - VITE_MATOMO_URL
+      - VITE_MATOMO_SITE
+      - VITE_STRIPE_PURCHASE_PEER_URL
     depends_on:
       - backend
 
