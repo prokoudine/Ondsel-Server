@@ -21,6 +21,7 @@
   "smtpPort": "SMTP_PORT",
   "smtpUser": "SMTP_USER",
   "smtpPass": "SMTP_PASS",
+  "smtpFrom": "SMTP_FROM",
   "frontendUrl": "FRONTEND_URL",
   "slackWebhookUrl": "SLACK_WEBHOOK_URL",
   "localSignedUrlSecret": "LOCAL_SIGNED_URL_SECRET"

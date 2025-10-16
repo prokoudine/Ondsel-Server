@@ -38,7 +38,7 @@ export const notifier = (app) => {
     switch (type) {
       case authManagementActionTypeMap.resendVerifySignup:
         return sendEmail({
-          from: 'contact@ondsel.com',
+          from: app.get('smtpFrom'),
           to: user.email,
           subject: `Let's confirm your Ondsel account`,
           text: `To verify your newly registered account with Ondsel, please click here: `
@@ -49,7 +49,7 @@ export const notifier = (app) => {
       case authManagementActionTypeMap.verifySignupLong:
       case verifySignupGENERIC:
         return sendEmail({
-          from: 'contact@ondsel.com',
+          from: app.get('smtpFrom'),
           to: user.email,
           subject: `Welcome to Ondsel Lens!`,
           text: `Verification of ${user.email} is complete. Welcome to Ondsel Lens!\n\n`
@@ -62,7 +62,7 @@ export const notifier = (app) => {
         });
       case authManagementActionTypeMap.sendResetPwd:
         return sendEmail({
-          from: 'contact@ondsel.com',
+          from: app.get('smtpFrom'),
           to: user.email,
           subject: `[Ondsel] Reset password for your Ondsel account.`,
           text: `To reset your ${user.username} password, please click here: `
@@ -73,7 +73,7 @@ export const notifier = (app) => {
       case authManagementActionTypeMap.resetPwdLong:
       case resetPwdGENERIC:
         return sendEmail({
-          from: 'contact@ondsel.com',
+          from: app.get('smtpFrom'),
           to: user.email,
           subject: `Your Ondsel password has been changed`,
           text: `Your password for ${user.username} at Ondsel has been successfully changed.\n\n`
@@ -82,7 +82,7 @@ export const notifier = (app) => {
         });
       case orgInviteStateTypeMap.sendOrgInviteEmail:
         return sendEmail({
-          from: 'contact@ondsel.com',
+          from: app.get('smtpFrom'),
           to: invite.email,
           subject: `You have been invited to "${invite.organization.name}"`,
           text: `You have been invited to join an organization titled "${invite.organization.name}".\n`
@@ -93,7 +93,7 @@ export const notifier = (app) => {
         });
       case orgInviteStateTypeMap.verifyOrgInviteEmail:
         return sendEmail({
-          from: 'contact@ondsel.com',
+          from: app.get('smtpFrom'),
           to: invite.email, // NOTE: this email is the User's email; NOT the invite's original email (if different)
           subject: `You have been accepted to "${invite.organization.name}"`,
           text: `You are now a member of the "${invite.organization.name}" organization.\n\n`
@@ -106,7 +106,7 @@ export const notifier = (app) => {
         //   "email": "johnd+111@ondsel.com"
         // },
         return sendEmail({
-          from: 'contact@ondsel.com',
+          from: app.get('smtpFrom'),
           to: user.verifyChanges.email,
           subject: `Please confirm your email change`,
           text: `To verify your newly registered email address with Ondsel, please click here: `
