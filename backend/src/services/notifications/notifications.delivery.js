@@ -90,7 +90,7 @@ async function deliverViaMailchimpSMTP(user, ntf, context) {
     body += `\nVisit: ${ntf.parameters.link}\n`;
   }
   let msgDetail = {
-    from: 'contact@ondsel.com',
+    from: context.app.get('smtpFrom'),
     to: user.email,
     subject: `[Ondsel] notification`,
     text: body,
