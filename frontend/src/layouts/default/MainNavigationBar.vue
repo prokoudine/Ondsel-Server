@@ -306,7 +306,7 @@ export default {
         },
         {
           icon: 'mdi-inbox',
-          title: 'Shared With Me',
+          title: 'Shared with Me',
           condition: this.user,
           route: {name: 'SharedWithMe'}
         },
@@ -315,12 +315,6 @@ export default {
           title: 'Bookmarks',
           condition: this.user,
           route: {name: 'Bookmarks'}
-        },
-        {
-          icon: 'mdi-download-outline',
-          title: 'Download Ondsel ES',
-          condition: true,
-          route: {name: 'DownloadAndExplore'}
         },
       ].filter(item => item.condition);
     },
