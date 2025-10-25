@@ -80,13 +80,18 @@ These credentials can be customized using environment variables in the `.env` fi
 
 ### Manual Installation
 
+#### Running MongoDB
+
+- Install MongoDB
+- Start the MongoDB service: `systemctl start mongodb`
+- If necessary, remove an old database: `od-backend-db`, for example using MongoDB Compass
+
 #### Running frontend
 
 - Go to the `frontend` directory
 - Rename `env.example` to `.env` (Or export variables)
 - Install frontend dependencies `npm ci`
 - Finally, run server `npm run dev`
-
 
 ```bash
 $ cd frontend
@@ -108,11 +113,26 @@ and run (or re-run) with:
 sudo docker run --env-file .env -p 80:80 --rm --name frontend frontend:latest
 ```
 
+If it is required to make the server accessible on the local network, change
+the environment variable below in `.env` and use the hostname or IP address
+where the backend is available.
+
+```bash
+VITE_APP_API_URL=http://<host-or-ip-of-backend>:3030/
+```
+
+Then run the frontend with:
+
+```bash
+npm run dev -- --host 0.0.0.0
+```
+
 #### Running backend
 
 - Go to the `backend` directory
 - Rename `env.example` or `env.with-aws.example` (for using AWS S3 for storage) to `.env` (Or export variables)
 - Install frontend dependencies `npm ci`
+- Optionally, initialize the MongoDB database `npm run migration addDefaultAdminUser`
 - Finally, run server `npm run dev`
 
 ```bash
@@ -120,20 +140,33 @@ $ cd backend
 $ mv env.example .env # or `mv env.with-aws.example .env` for using AWS S3 for storage
 $ set -a; . ./.env; set +a
 $ npm ci
-$ npm run dev
+$ npm run migration addDefaultAdminUser
+```
+
+Then:
+
+```bash
+npm run dev
 ```
 
 #### Running FC-Worker
 
-- Clone [FC-Worker](https://github.com/FreeCAD/FC-Worker) repository.
-- Build docker image (`docker build -t fc-worker .`)
-- Run docker image (`docker run -p 9000:8080 --name fc_worker fc-worker:latest`)
+The FC-Worker is a submodule and has its own [repository](https://github.com/FreeCAD/FC-Worker).
+
+- Go to the `FC-Worker` directory
+- Build the docker image (`docker-compose build`)
+- Run the docker image (`docker-compose up -d`)
 
 ```bash
-$ git clone git@github.com:FreeCAD/FC-Worker.git
 $ cd FC-Worker
-$ docker build -t fc-worker .
-$ docker run -p 9000:8080 --name fc_worker fc-worker:latest
+$ docker-compose build
+$ docker-compose up -d`
+```
+
+Check if it works:
+
+```bash
+curl -v http://127.0.0.1:9000/2015-03-31/functions/function/invocations -X POST -H "Content-Type: application/json" -d '{"command":"<your-health-check-string>"}'
 ```
 
 <!-- ## Important Links -->
