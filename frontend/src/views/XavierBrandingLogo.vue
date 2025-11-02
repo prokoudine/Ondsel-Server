@@ -1,0 +1,304 @@
+<!--
+SPDX-FileCopyrightText: 2024 Ondsel <development@ondsel.com>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+-->
+
+<template>
+  <v-card class="ma-4">
+    <v-card-title>Branding Logo Configuration</v-card-title>
+    <v-card-subtitle>
+      <v-btn density="default" icon="mdi-home" color="success"
+        @click="$router.push({ name: 'XavierBrandingHub', params: {} })"></v-btn> <b><i>Professor Xavier's School For
+          The Hidden</i></b>
+    </v-card-subtitle>
+    <v-card-text>
+      <v-form ref="form" v-model="valid">
+        <!-- Logo file input -->
+        <v-file-input v-model="selectedLogoFile" accept="image/*,.svg" label="Select Logo File" prepend-icon="mdi-camera"
+          show-size :rules="fileRules" :disabled="isSaving" class="mb-4"></v-file-input>
+
+        <!-- Favicon file input -->
+        <v-file-input v-model="selectedFaviconFile" accept="image/*,.svg,.ico" label="Select Favicon File"
+          prepend-icon="mdi-camera" show-size :rules="fileRules" :disabled="isSaving"
+          class="mb-4"></v-file-input>
+
+        <!-- Upload Progress -->
+        <div v-if="isSaving" class="mb-4">
+          <v-progress-linear indeterminate color="primary" class="mb-2"></v-progress-linear>
+          <p class="text-primary">{{ progressMessage }}</p>
+        </div>
+
+        <!-- Side-by-side logo preview section -->
+        <div class="mt-4">
+          <h4>Logo Preview</h4>
+          <v-row class="mt-2">
+            <!-- Current Logo -->
+            <v-col cols="12" md="6">
+              <div class="text-center">
+                <h5 class="text-grey-darken-1 mb-2">Current Logo</h5>
+                <div v-if="siteConfig?.logoUrl">
+                  <v-img :src="siteConfig.logoUrl" max-width="150" max-height="150" class="mx-auto" contain></v-img>
+                </div>
+                <div v-else class="pa-4">
+                  <v-icon size="48" color="grey">mdi-image-off</v-icon>
+                  <p class="text-grey mt-2">No logo uploaded</p>
+                </div>
+              </div>
+            </v-col>
+
+            <!-- New Logo Preview -->
+            <v-col cols="12" md="6">
+              <div class="text-center">
+                <h5 class="text-primary mb-2">New Logo Preview</h5>
+                <div v-if="previewUrl">
+                  <v-img :src="previewUrl" max-width="150" max-height="150" class="mx-auto" contain></v-img>
+                  <p class="text-caption text-primary mt-2">
+                    This will replace the current logo
+                  </p>
+                </div>
+                <div v-else class="pa-4">
+                  <v-icon size="48" color="grey-lighten-1">mdi-camera-plus</v-icon>
+                  <p class="text-grey-lighten-1 mt-2">Select a file to preview</p>
+                </div>
+              </div>
+            </v-col>
+          </v-row>
+        </div>
+
+        <!-- Side-by-side favicon preview section -->
+        <div class="mt-4">
+          <h4>Favicon Preview</h4>
+          <v-row class="mt-2">
+            <!-- Current Favicon -->
+            <v-col cols="12" md="6">
+              <div class="text-center">
+                <h5 class="text-grey-darken-1 mb-2">Current Favicon</h5>
+                <div v-if="siteConfig?.faviconUrl">
+                  <v-img :src="siteConfig.faviconUrl" max-width="32" max-height="32" class="mx-auto" contain></v-img>
+                </div>
+                <div v-else class="pa-4">
+                  <v-icon size="48" color="grey">mdi-image-off</v-icon>
+                  <p class="text-grey mt-2">No favicon uploaded</p>
+                </div>
+              </div>
+            </v-col>
+
+            <!-- New Favicon Preview -->
+            <v-col cols="12" md="6">
+              <div class="text-center">
+                <h5 class="text-primary mb-2">New Favicon Preview</h5>
+                <div v-if="previewFaviconUrl">
+                  <v-img :src="previewFaviconUrl" max-width="32" max-height="32" class="mx-auto" contain></v-img>
+                  <p class="text-caption text-primary mt-2">
+                    This will replace the current favicon
+                  </p>
+                </div>
+                <div v-else class="pa-4">
+                  <v-icon size="48" color="grey-lighten-1">mdi-camera-plus</v-icon>
+                  <p class="text-grey-lighten-1 mt-2">Select a file to preview</p>
+                </div>
+              </div>
+            </v-col>
+          </v-row>
+        </div>
+      </v-form>
+    </v-card-text>
+
+    <v-card-actions>
+      <v-spacer></v-spacer>
+      <v-btn color="success" variant="elevated" :disabled="!valid || isSaving" :loading="isSaving" @click="save">
+        Save
+      </v-btn>
+    </v-card-actions>
+
+    <v-snackbar v-model="showSnackbar" :timeout="3000" :color="snackbarColor">
+      {{ snackbarMessage }}
+    </v-snackbar>
+  </v-card>
+</template>
+
+<script>
+import { mapGetters, mapState } from "vuex";
+import { SITE_CONFIG_ID } from '@/store/services/site-config';
+
+export default {
+  name: 'XavierBrandingLogo',
+  data() {
+    return {
+      valid: false,
+      isSaving: false,
+      selectedLogoFile: null,
+      selectedFaviconFile: null,
+      previewUrl: null,
+      previewFaviconUrl: null,
+      showSnackbar: false,
+      snackbarMessage: '',
+      snackbarColor: 'success',
+      progressMessage: '',
+      fileRules: [
+        v => {
+          if (!v) return true;
+
+          const file = Array.isArray(v) ? v[0] : v;
+          if (!file) return true;
+
+          if (!(file instanceof File)) {
+            return 'Please select a valid file';
+          }
+
+          if (file.size >= 10000000) {
+            return 'File size should be less than 10 MB';
+          }
+
+          if (!/^image\//.test(file.type) && file.type !== 'image/svg+xml') {
+            return 'File must be an image (PNG, JPG, SVG)';
+          }
+
+          return true;
+        }
+      ],
+    }
+  },
+  async created() {
+    // Check if user is admin
+    if (!this.user || !this.user.isTripe) {
+      console.log("alert-33236-bl");
+      this.$router.push({name: 'LensHome', params: {}});
+    }
+  },
+  computed: {
+    ...mapState('auth', ['accessToken', 'user']),
+    ...mapGetters('app', ['siteConfig']),
+  },
+  watch: {
+    selectedLogoFile(newFile) {
+      this.handleFileChange(newFile);
+    },
+    selectedFaviconFile(newFile) {
+      this.handleFaviconFileChange(newFile);
+    }
+  },
+  methods: {
+    handleFileChange(file) {
+      // Clean up previous preview URL
+      if (this.previewUrl) {
+        URL.revokeObjectURL(this.previewUrl);
+        this.previewUrl = null;
+      }
+
+      // Handle both single file and array of files
+      const fileObj = Array.isArray(file) ? file[0] : file;
+
+      if (fileObj && fileObj instanceof File) {
+        // Create preview URL
+        try {
+          this.previewUrl = URL.createObjectURL(fileObj);
+        } catch (error) {
+          console.error('Error creating object URL:', error);
+          this.previewUrl = null;
+        }
+
+        // Trigger form validation
+        this.$nextTick(() => {
+          if (this.$refs.form) {
+            this.$refs.form.validate();
+          }
+        });
+      }
+    },
+    handleFaviconFileChange(file) {
+      // Clean up previous preview URL
+      if (this.previewFaviconUrl) {
+        URL.revokeObjectURL(this.previewFaviconUrl);
+        this.previewFaviconUrl = null;
+      }
+
+      // Handle both single file and array of files
+      const fileObj = Array.isArray(file) ? file[0] : file;
+
+      if (fileObj && fileObj instanceof File) {
+        // Create preview URL
+        try {
+          this.previewFaviconUrl = URL.createObjectURL(fileObj);
+        } catch (error) {
+          console.error('Error creating object URL:', error);
+          this.previewFaviconUrl = null;
+        }
+
+        // Trigger form validation
+        this.$nextTick(() => {
+          if (this.$refs.form) {
+            this.$refs.form.validate();
+          }
+        });
+      }
+    },
+    async save() {
+      if (!this.valid) return;
+
+      this.isSaving = true;
+      this.progressMessage = 'Saving branding configuration...';
+
+      try {
+        const formData = new FormData();
+        if (this.selectedLogoFile) {
+          formData.append('logoFile', this.selectedLogoFile);
+        }
+        if (this.selectedFaviconFile) {
+          formData.append('faviconFile', this.selectedFaviconFile);
+        }
+
+        const response = await fetch(`${import.meta.env.VITE_APP_API_URL}site-config/${SITE_CONFIG_ID}`, {
+          method: 'PATCH',
+          headers: {
+            Authorization: this.accessToken,
+          },
+          body: formData
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || `Upload failed: ${response.status}`);
+        }
+
+        this.showMessage('Branding configuration saved successfully', 'success');
+
+        // Clear selected files and previews after successful save
+        this.selectedLogoFile = null;
+        if (this.previewUrl) {
+          URL.revokeObjectURL(this.previewUrl);
+          this.previewUrl = null;
+        }
+        this.selectedFaviconFile = null;
+        if (this.previewFaviconUrl) {
+          URL.revokeObjectURL(this.previewFaviconUrl);
+          this.previewFaviconUrl = null;
+        }
+      } catch (error) {
+        console.error('Failed to save:', error);
+        this.showMessage(error.message || 'Failed to save branding configuration', 'error');
+      } finally {
+        this.isSaving = false;
+        this.progressMessage = '';
+      }
+    },
+    showMessage(message, color) {
+      this.snackbarMessage = message;
+      this.snackbarColor = color;
+      this.showSnackbar = true;
+    }
+  },
+  beforeUnmount() {
+    if (this.previewUrl) {
+      URL.revokeObjectURL(this.previewUrl);
+    }
+    if (this.previewFaviconUrl) {
+      URL.revokeObjectURL(this.previewFaviconUrl);
+    }
+  }
+}
+</script>
+
+<style scoped>
+</style>

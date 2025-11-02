@@ -48,6 +48,8 @@ import { download } from './download/download.js'
 
 import { publisher } from './publisher/publisher.js'
 
+import { siteConfig } from './site-config/site-config.js'
+
 export const services = (app) => {
   app.configure(orgSecondaryReferences)
 
@@ -94,6 +96,8 @@ export const services = (app) => {
   app.configure(download)
 
   app.configure(publisher)
+
+  app.configure(siteConfig)
 
   // All services will be registered here
 }

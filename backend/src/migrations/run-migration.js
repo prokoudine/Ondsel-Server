@@ -48,6 +48,7 @@ import {updateDirectoriesWithTitleCommand} from "./update-directories-with-title
 import {handleStepFileAsModelCommand} from "./handle-step-file-as-model.js";
 import {fixedSharedWithMeSchemasCommand} from "./fixed-shared-with-me-schemas.command.js";
 import {addDefaultAdminUserCommand} from "./create-default-admin-user.command.js";
+import {createDefaultSiteConfigCommand} from "./create-default-site-config.command.js";
 
 
 async function runMigration() {
@@ -185,6 +186,9 @@ async function runMigration() {
       break;
     case 'addDefaultAdminUser':
       await addDefaultAdminUserCommand(app);
+      break;
+    case 'createDefaultSiteConfig':
+      await createDefaultSiteConfigCommand(app);
       break;
     default:
       console.error('Please specify the migration command.')

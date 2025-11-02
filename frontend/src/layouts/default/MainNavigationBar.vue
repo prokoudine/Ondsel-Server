@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     >
       <template v-slot:prepend>
         <v-img
-          src="https://ondsel.com/img/Icon_Orange.svg"
+          :src="siteConfig?.logoUrl"
           width="24"
           height="24"
           class="mr-8"
@@ -246,7 +246,7 @@ export default {
   computed: {
     ...mapState('auth', { loggedInUser: 'payload' }),
     ...mapState('auth', ['user']),
-    ...mapGetters('app', { userCurrentOrganization: 'currentOrganization' }),
+    ...mapGetters('app', { userCurrentOrganization: 'currentOrganization', siteConfig: 'siteConfig' }),
     currentRouteName: (vm) => vm.$route.name,
     currentOrganization: (vm) => vm.userCurrentOrganization,
     railIcon () {

@@ -17,12 +17,49 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 <script>
 import MainNavigationBar from '@/layouts/default/MainNavigationBar.vue';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
   name: 'App',
   components: { MainNavigationBar },
+  computed: {
+    ...mapGetters('app', ['siteConfig']),
+  },
   data: () => ({
   }),
+  async created() {
+    await this.loadSiteConfig();
+  },
+  watch: {
+    'siteConfig': {
+      handler(newVal) {
+        if (newVal && newVal.faviconUrl) {
+          this.updateFavicon(newVal.faviconUrl);
+        }
+      },
+      immediate: true
+    }
+  },
+  methods: {
+    ...mapActions('app', ['loadSiteConfig']),
+    updateFavicon(faviconUrl) {
+      if (!faviconUrl) return;
+      
+      // Remove all existing favicon links
+      document.querySelectorAll('link[rel*="icon"]').forEach(link => link.remove());
+
+      // Determine type based on URL extension
+      const urlLower = faviconUrl.toLowerCase();
+      const isSVG = urlLower.includes('.svg');
+      const type = isSVG ? 'image/svg+xml' : 'image/x-icon';
+
+      const link = document.createElement('link');
+      link.rel = 'icon';
+      link.type = type;
+      link.href = faviconUrl;
+      document.head.appendChild(link);
+    }
+  }
 }
 
 </script>

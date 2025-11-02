@@ -17,8 +17,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           <v-container>
             <h2>
               <v-img
-                src="https://ondsel.com/img/logo.png"
-                width="10em"
+                :src="siteConfig?.logoUrl"
+                width="2em"
+                height="2em"
+                class="d-inline-block mr-2"
+                style="vertical-align: middle;"
               ></v-img>
               LENS
             </h2>
@@ -52,6 +55,7 @@ import PromotionsViewer from "@/components/PromotionsViewer.vue";
 import MarkdownViewer from "@/components/MarkdownViewer.vue";
 import PromotedUsersTable from "@/components/PromotedUsersTable.vue";
 import Main from '@/layouts/default/Main.vue';
+import { mapGetters } from "vuex";
 
 const { Organization } = models.api;
 
@@ -78,6 +82,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters('app', ['siteConfig']),
     promoted: vm => vm.lensSiteCuration && vm.lensSiteCuration.promoted || [],
     promotedFiltered: vm => vm.lensSiteCuration && vm.lensSiteCuration.promoted.filter(p => p.curation.collection !== 'users') || [],
     promotedUsers: vm => vm.lensSiteCuration && vm.lensSiteCuration.promoted.filter(p => p.curation.collection === 'users'),

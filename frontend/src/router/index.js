@@ -48,6 +48,8 @@ import MyNotifications from "@/views/MyNotifications.vue";
 import WorkspaceFile from "@/views/WorkspaceFile.vue";
 import WorkerErrorCodes from "@/views/WorkerErrorCodes.vue";
 import XavierUpdateSoftwareReleases from "@/views/XavierUpdateSoftwareReleases.vue";
+import XavierBrandingHub from "@/views/XavierBrandingHub.vue";
+import XavierBrandingLogo from "@/views/XavierBrandingLogo.vue";
 
 
 const isWindowLoadedInIframe = () => {
@@ -225,6 +227,18 @@ const routes = [
     path: '/xavier-68373833',
     component: XavierMenu,
     name: 'XavierMenu',
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/xavier-branding-12345678',
+    component: XavierBrandingHub,
+    name: 'XavierBrandingHub',
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/xavier-branding-logo-87654321',
+    component: XavierBrandingLogo,
+    name: 'XavierBrandingLogo',
     meta: { requiresAuth: true },
   },
   {

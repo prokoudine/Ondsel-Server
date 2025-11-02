@@ -22,6 +22,7 @@ import keywords from "@/store/services/keywords";
 import orgSecondaryReference from '@/store/services/orgSecondaryReferences';
 import notifications from "@/store/services/notifications";
 import publisher from "@/store/services/publisher";
+import siteConfig from "@/store/services/site-config";
 
 const store =  new Vuex.Store({
   state: {},
@@ -49,6 +50,7 @@ const store =  new Vuex.Store({
     orgSecondaryReference,
     notifications,
     publisher,
+    siteConfig,
   ]
 })
 

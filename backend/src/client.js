@@ -51,6 +51,8 @@ import { downloadClient } from './services/download/download.shared.js'
 
 import { publisherClient } from './services/publisher/publisher.shared.js'
 
+import { siteConfigClient } from './services/site-config/site-config.shared.js'
+
 /**
  * Returns a  client for the backend app.
  *
@@ -111,6 +113,8 @@ export const createClient = (connection, authenticationOptions = {}) => {
   client.configure(downloadClient)
 
   client.configure(publisherClient)
+
+  client.configure(siteConfigClient)
 
   return client
 }
