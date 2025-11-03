@@ -71,7 +71,7 @@
     "feathers-mailer": "^4.1.1",
     "feathers-swagger": "^3.0.0",
     "lodash": "^4.17.21",
-    "mongodb": "^5.1.0",
+    "mongodb": "^6.19.0",
     "multer": "^1.4.5-lts.1",
     "node-rake-v2": "^0.0.3",
     "nodemailer": "^6.9.5",
