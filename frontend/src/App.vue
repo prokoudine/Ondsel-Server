@@ -33,6 +33,9 @@ export default {
   watch: {
     'siteConfig': {
       handler(newVal) {
+        if (newVal && newVal.siteTitle) {
+          this.updateTitle(newVal.siteTitle);
+        }
         if (newVal && newVal.faviconUrl) {
           this.updateFavicon(newVal.faviconUrl);
         }
@@ -42,6 +45,11 @@ export default {
   },
   methods: {
     ...mapActions('app', ['loadSiteConfig']),
+    updateTitle(title) {
+      if (title) {
+        document.title = title;
+      }
+    },
     updateFavicon(faviconUrl) {
       if (!faviconUrl) return;
       

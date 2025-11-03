@@ -18,9 +18,11 @@ export const siteConfigSchema = Type.Object(
     _id: ObjectIdSchema(),
     logoUrl: Type.String(),
     faviconUrl: Type.String(),
+    siteTitle: Type.String(),
     customized: Type.Object({
       logoUrl: Type.Boolean(),
       faviconUrl: Type.Boolean(),
+      siteTitle: Type.Boolean(),
     }),
     updatedAt: Type.Number(),
     updatedBy: Type.Optional(userSummarySchema)

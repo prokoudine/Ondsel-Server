@@ -23,9 +23,11 @@ export async function createDefaultSiteConfigCommand(app) {
     _id: new ObjectId(siteConfigId),
     logoUrl: '/ondsel_logo.svg',
     faviconUrl: '/favicon.ico',
+    siteTitle: 'Lens',
     customized: {
       logoUrl: false,
       faviconUrl: false,
+      siteTitle: false,
     }
   };
 
@@ -34,4 +36,3 @@ export async function createDefaultSiteConfigCommand(app) {
 
   console.log(">>> site config created");
 }
-

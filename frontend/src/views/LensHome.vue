@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 <template>
   <Main>
     <template #title>
-      LENS Home Page
+      {{ siteConfig?.siteTitle }} Home Page
     </template>
     <template #content>
       <v-sheet class="d-flex flex-wrap flex-row">
@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                 class="d-inline-block mr-2"
                 style="vertical-align: middle;"
               ></v-img>
-              LENS
+              {{ siteConfig?.siteTitle }}
             </h2>
           </v-container>
           <v-card class="ma-4">

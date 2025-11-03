@@ -21,9 +21,11 @@ class SiteConfig extends BaseModel {
     return {
       logoUrl: '/ondsel_logo.svg',
       faviconUrl: '/favicon.ico',
+      siteTitle: 'Lens',
       customized: {
         logoUrl: false,
         faviconUrl: false,
+        siteTitle: false,
       }
     }
   }

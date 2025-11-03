@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <div class="d-flex align-center mb-4">
               <v-icon color="success" class="mr-3">mdi-school</v-icon>
               <div>
-                <h3 class="text-h6 mb-1">Professor Xavier's School For The Hidden</h3>
+                <h3 class="text-h6 mb-1">{{ siteConfig?.siteTitle }}</h3>
                 <p class="text-body-2 text-grey-darken-1 mb-0">Configure your platform's visual identity</p>
               </div>
             </div>
@@ -35,7 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
         <!-- Configuration Cards -->
         <v-row>
-          <!-- Logo Card -->
+          <!-- Logo & Title Card -->
           <v-col cols="12" md="6" lg="4">
             <v-card
               variant="elevated"
@@ -45,11 +45,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             >
               <v-card-title class="d-flex align-center">
                 <v-icon color="primary" class="mr-3">mdi-image</v-icon>
-                <span class="text-h6">Logo</span>
+                <span class="text-h6">Logo & Site Title</span>
               </v-card-title>
               <v-card-text>
                 <p class="text-body-2 text-grey-darken-1 mb-4">
-                  Configure the site logo and favicon.
+                  Configure the site logo, favicon, and site title.
                 </p>
                 <v-chip
                   v-if="isConfigured('logo')"
@@ -114,7 +114,7 @@ export default {
       
       switch (section) {
         case 'logo':
-          return this.siteConfig.customized.logoUrl || this.siteConfig.customized.faviconUrl;
+          return this.siteConfig.customized.siteTitle || this.siteConfig.customized.logoUrl || this.siteConfig.customized.faviconUrl;
         default:
           return false;
       }

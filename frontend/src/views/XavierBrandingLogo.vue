@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 <template>
   <v-card class="ma-4">
-    <v-card-title>Branding Logo Configuration</v-card-title>
+    <v-card-title>Branding Configuration</v-card-title>
     <v-card-subtitle>
       <v-btn density="default" icon="mdi-home" color="success"
         @click="$router.push({ name: 'XavierBrandingHub', params: {} })"></v-btn> <b><i>Professor Xavier's School For
@@ -14,6 +14,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     </v-card-subtitle>
     <v-card-text>
       <v-form ref="form" v-model="valid">
+        <!-- Site Title -->
+        <v-text-field v-model="siteTitle" label="Site Title" :rules="titleRules" counter="50"
+          maxlength="50"></v-text-field>
+
         <!-- Logo file input -->
         <v-file-input v-model="selectedLogoFile" accept="image/*,.svg" label="Select Logo File" prepend-icon="mdi-camera"
           show-size :rules="fileRules" :disabled="isSaving" class="mb-4"></v-file-input>
@@ -22,12 +26,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         <v-file-input v-model="selectedFaviconFile" accept="image/*,.svg,.ico" label="Select Favicon File"
           prepend-icon="mdi-camera" show-size :rules="fileRules" :disabled="isSaving"
           class="mb-4"></v-file-input>
-
-        <!-- Upload Progress -->
-        <div v-if="isSaving" class="mb-4">
-          <v-progress-linear indeterminate color="primary" class="mb-2"></v-progress-linear>
-          <p class="text-primary">{{ progressMessage }}</p>
-        </div>
 
         <!-- Side-by-side logo preview section -->
         <div class="mt-4">
@@ -132,10 +130,14 @@ export default {
       selectedFaviconFile: null,
       previewUrl: null,
       previewFaviconUrl: null,
+      siteTitle: '',
       showSnackbar: false,
       snackbarMessage: '',
       snackbarColor: 'success',
-      progressMessage: '',
+      titleRules: [
+        v => !!v || 'Title is required',
+        v => (v && v.length <= 50) || 'Title must be less than 50 characters',
+      ],
       fileRules: [
         v => {
           if (!v) return true;
@@ -172,6 +174,16 @@ export default {
     ...mapGetters('app', ['siteConfig']),
   },
   watch: {
+    'siteConfig': {
+      handler(newVal) {
+        if (newVal) {
+          if (newVal.siteTitle && !this.siteTitle) {
+            this.siteTitle = newVal.siteTitle;
+          }
+        }
+      },
+      immediate: true
+    },
     selectedLogoFile(newFile) {
       this.handleFileChange(newFile);
     },
@@ -238,10 +250,10 @@ export default {
       if (!this.valid) return;
 
       this.isSaving = true;
-      this.progressMessage = 'Saving branding configuration...';
 
       try {
         const formData = new FormData();
+        formData.append('siteTitle', this.siteTitle);
         if (this.selectedLogoFile) {
           formData.append('logoFile', this.selectedLogoFile);
         }
@@ -280,7 +292,6 @@ export default {
         this.showMessage(error.message || 'Failed to save branding configuration', 'error');
       } finally {
         this.isSaving = false;
-        this.progressMessage = '';
       }
     },
     showMessage(message, color) {

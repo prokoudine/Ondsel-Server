@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     permanent
   >
     <v-list-item
-      title = "Ondsel Lens"
+      :title="siteConfig?.siteTitle"
       :to="{name: 'LensHome'}"
     >
       <template v-slot:prepend>
