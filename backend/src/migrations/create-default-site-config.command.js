@@ -24,10 +24,12 @@ export async function createDefaultSiteConfigCommand(app) {
     logoUrl: '/ondsel_logo.svg',
     faviconUrl: '/favicon.ico',
     siteTitle: 'Lens',
+    copyrightText: '2025 Ondsel Inc.',
     customized: {
       logoUrl: false,
       faviconUrl: false,
       siteTitle: false,
+      copyrightText: false,
     }
   };
 

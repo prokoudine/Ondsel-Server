@@ -19,10 +19,12 @@ export const siteConfigSchema = Type.Object(
     logoUrl: Type.String(),
     faviconUrl: Type.String(),
     siteTitle: Type.String(),
+    copyrightText: Type.String({ minLength: 5, maxLength: 80 }),
     customized: Type.Object({
       logoUrl: Type.Boolean(),
       faviconUrl: Type.Boolean(),
       siteTitle: Type.Boolean(),
+      copyrightText: Type.Boolean(),
     }),
     updatedAt: Type.Number(),
     updatedBy: Type.Optional(userSummarySchema)

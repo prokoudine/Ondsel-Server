@@ -100,6 +100,39 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             </v-col>
           </v-row>
         </div>
+
+        <!-- Copyright Text Section -->
+        <v-divider class="my-6"></v-divider>
+
+        <v-row>
+          <v-col cols="12">
+            <v-card class="ma-2" elevation="1">
+              <v-card-title>Copyright Text</v-card-title>
+              <v-card-text>
+                <v-text-field v-model="copyrightText" label="Copyright Text" :rules="copyrightRules" counter="80"
+                  maxlength="80" hint="This text appears in the sidebar. Keep it short to fit the limited space."
+                  persistent-hint></v-text-field>
+              </v-card-text>
+            </v-card>
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col cols="12">
+            <v-card class="ma-2" elevation="1">
+              <v-card-title>Copyright Preview</v-card-title>
+              <v-card-text>
+                <p class="text-caption text-grey-darken-1 mb-2">Preview of how this appears in the sidebar:</p>
+                <v-card border="primary md" class="pa-3">
+                  <div class="d-flex align-center text-body-2">
+                    <v-icon size="16" class="mr-1">mdi-copyright</v-icon>
+                    <span>{{ copyrightText }}</span>
+                  </div>
+                </v-card>
+              </v-card-text>
+            </v-card>
+          </v-col>
+        </v-row>
       </v-form>
     </v-card-text>
 
@@ -131,6 +164,7 @@ export default {
       previewUrl: null,
       previewFaviconUrl: null,
       siteTitle: '',
+      copyrightText: '',
       showSnackbar: false,
       snackbarMessage: '',
       snackbarColor: 'success',
@@ -160,6 +194,11 @@ export default {
           return true;
         }
       ],
+      copyrightRules: [
+        v => !!v || 'Copyright text is required',
+        v => (v && v.length >= 5) || 'Copyright text must be at least 5 characters',
+        v => (v && v.length <= 80) || 'Copyright text must be at most 80 characters for the sidebar'
+      ],
     }
   },
   async created() {
@@ -179,6 +218,9 @@ export default {
         if (newVal) {
           if (newVal.siteTitle && !this.siteTitle) {
             this.siteTitle = newVal.siteTitle;
+          }
+          if (newVal.copyrightText && !this.copyrightText) {
+            this.copyrightText = newVal.copyrightText;
           }
         }
       },
@@ -260,7 +302,7 @@ export default {
         if (this.selectedFaviconFile) {
           formData.append('faviconFile', this.selectedFaviconFile);
         }
-
+        formData.append('copyrightText', this.copyrightText);
         const response = await fetch(`${import.meta.env.VITE_APP_API_URL}site-config/${SITE_CONFIG_ID}`, {
           method: 'PATCH',
           headers: {

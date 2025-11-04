@@ -22,10 +22,12 @@ class SiteConfig extends BaseModel {
       logoUrl: '/ondsel_logo.svg',
       faviconUrl: '/favicon.ico',
       siteTitle: 'Lens',
+      copyrightText: '2025 Ondsel Inc.',
       customized: {
         logoUrl: false,
         faviconUrl: false,
         siteTitle: false,
+        copyrightText: false
       }
     }
   }

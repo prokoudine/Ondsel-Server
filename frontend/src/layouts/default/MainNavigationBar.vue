@@ -88,7 +88,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       <v-divider></v-divider>
       <v-list-item
         prepend-icon="mdi-copyright"
-        title="2024 Ondsel Inc."
+        :title="siteConfig?.copyrightText"
       ></v-list-item>
       <v-divider></v-divider>
       <v-list-item
