@@ -10,9 +10,17 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       {{ siteConfig?.siteTitle }} Home Page
     </template>
     <template #content>
-      <v-sheet class="d-flex flex-wrap flex-row">
+      <v-card color="indigo-darken-3">
+        <v-card-title>Shutdown Notice</v-card-title>
+        <v-card-text>
+          <h1>Service is Shutting Down as of November 22nd, 2024</h1>
+          <h2>Please download any of your files that you want to keep!</h2>
+        </v-card-text>
+      </v-card>
+      <v-sheet class="d-flex flex-column flex-md-row w-100 mt-4">
         <v-sheet
           name="left_side"
+          class="flex-grow-1"
         >
           <v-container>
             <h2>
@@ -27,12 +35,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             </h2>
           </v-container>
           <v-card class="ma-4">
-            <v-card-title>{{ title }}</v-card-title>
+            <v-card-title>{{ siteConfig?.homepageContent?.title }}</v-card-title>
             <v-card-text>
-              <markdown-viewer :markdown-html="markdownHtml"></markdown-viewer>
+              <markdown-viewer :markdown-html="homepageMarkdownHtml"></markdown-viewer>
             </v-card-text>
           </v-card>
-          <v-card class="ma-4">
+          <v-card class="ma-4" v-if="promotedFiltered && promotedFiltered.length">
             <v-card-text>
               <promotions-viewer :promoted="promotedFiltered"></promotions-viewer>
             </v-card-text>
@@ -41,6 +49,15 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <v-card-title>Users to Watch</v-card-title>
             <promoted-users-table :promoted-users="promotedUsers"></promoted-users-table>
           </v-card>
+        </v-sheet>
+
+        <v-sheet
+          name="right_side"
+          border
+          class="flex-shrink-0 w-100 w-md-auto ml-md-4"
+          style="max-width: 24em;"
+        >
+          <vue-rss-feed :feed-url="siteConfig?.homepageContent?.rssFeedUrl" :name="siteConfig?.homepageContent?.rssFeedName" limit="7"></vue-rss-feed>
         </v-sheet>
       </v-sheet>
     </template>
@@ -65,8 +82,6 @@ export default {
   components: {PromotedUsersTable, MarkdownViewer, PromotionsViewer, Main},
   data: () => ({
     lensSiteCuration: null,
-    markdownHtml: 'missing data',
-    title: 'missing title',
   }),
   async created() {
     const response = await Organization.find({
@@ -77,12 +92,13 @@ export default {
     });
     if (response.data.length > 0) {
       this.lensSiteCuration = response.data[0].curation;
-      this.markdownHtml =  marked.parse(this.lensSiteCuration.longDescriptionMd || 'no markdown');
-      this.title = this.lensSiteCuration.description || 'no title';
     }
   },
   computed: {
     ...mapGetters('app', ['siteConfig']),
+    homepageMarkdownHtml() {
+      return marked.parse(this.siteConfig?.homepageContent?.markdownContent || '');
+    },
     promoted: vm => vm.lensSiteCuration && vm.lensSiteCuration.promoted || [],
     promotedFiltered: vm => vm.lensSiteCuration && vm.lensSiteCuration.promoted.filter(p => p.curation.collection !== 'users') || [],
     promotedUsers: vm => vm.lensSiteCuration && vm.lensSiteCuration.promoted.filter(p => p.curation.collection === 'users'),

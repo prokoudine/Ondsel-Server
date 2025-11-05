@@ -12,6 +12,14 @@ import { userSummarySchema } from '../users/users.subdocs.schema.js';
 // Fixed ID for the single site config document
 export const siteConfigId = '000000000000000000000000';
 
+// Homepage content sub-schema
+const homepageContentSchema = Type.Object({
+  title: Type.String(),
+  markdownContent: Type.String(),
+  rssFeedUrl: Type.String(),
+  rssFeedName: Type.String(),
+})
+
 // Main data model schema
 export const siteConfigSchema = Type.Object(
   {
@@ -20,11 +28,13 @@ export const siteConfigSchema = Type.Object(
     faviconUrl: Type.String(),
     siteTitle: Type.String(),
     copyrightText: Type.String({ minLength: 5, maxLength: 80 }),
+    homepageContent: homepageContentSchema,
     customized: Type.Object({
       logoUrl: Type.Boolean(),
       faviconUrl: Type.Boolean(),
       siteTitle: Type.Boolean(),
       copyrightText: Type.Boolean(),
+      homepageContent: Type.Boolean(),
     }),
     updatedAt: Type.Number(),
     updatedBy: Type.Optional(userSummarySchema)

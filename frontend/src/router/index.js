@@ -50,6 +50,7 @@ import WorkerErrorCodes from "@/views/WorkerErrorCodes.vue";
 import XavierUpdateSoftwareReleases from "@/views/XavierUpdateSoftwareReleases.vue";
 import XavierBrandingHub from "@/views/XavierBrandingHub.vue";
 import XavierBrandingLogo from "@/views/XavierBrandingLogo.vue";
+import XavierBrandingHomepage from "@/views/XavierBrandingHomepage.vue";
 
 
 const isWindowLoadedInIframe = () => {
@@ -239,6 +240,12 @@ const routes = [
     path: '/xavier-branding-logo-87654321',
     component: XavierBrandingLogo,
     name: 'XavierBrandingLogo',
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/xavier-branding-homepage-11223344',
+    component: XavierBrandingHomepage,
+    name: 'XavierBrandingHomepage',
     meta: { requiresAuth: true },
   },
   {
