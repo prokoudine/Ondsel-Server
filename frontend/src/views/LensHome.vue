@@ -10,11 +10,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       {{ siteConfig?.siteTitle }} Home Page
     </template>
     <template #content>
-      <v-card color="indigo-darken-3">
-        <v-card-title>Shutdown Notice</v-card-title>
+      <v-card
+        v-if="siteConfig?.homepageContent?.banner?.enabled"
+        :style="{ backgroundColor: siteConfig.homepageContent.banner.color, color: getTextColorForBackground(siteConfig.homepageContent.banner.color) }"
+        class="compact-banner"
+      >
+        <v-card-title>{{ siteConfig.homepageContent.banner.title }}</v-card-title>
         <v-card-text>
-          <h1>Service is Shutting Down as of November 22nd, 2024</h1>
-          <h2>Please download any of your files that you want to keep!</h2>
+          <markdown-viewer :markdown-html="bannerMarkdownHtml"></markdown-viewer>
         </v-card-text>
       </v-card>
       <v-sheet class="d-flex flex-column flex-md-row w-100 mt-4">
@@ -73,6 +76,7 @@ import MarkdownViewer from "@/components/MarkdownViewer.vue";
 import PromotedUsersTable from "@/components/PromotedUsersTable.vue";
 import Main from '@/layouts/default/Main.vue';
 import { mapGetters } from "vuex";
+import { getTextColorForBackground } from '@/genericHelpers';
 
 const { Organization } = models.api;
 
@@ -102,13 +106,21 @@ export default {
     promoted: vm => vm.lensSiteCuration && vm.lensSiteCuration.promoted || [],
     promotedFiltered: vm => vm.lensSiteCuration && vm.lensSiteCuration.promoted.filter(p => p.curation.collection !== 'users') || [],
     promotedUsers: vm => vm.lensSiteCuration && vm.lensSiteCuration.promoted.filter(p => p.curation.collection === 'users'),
+    bannerMarkdownHtml() {
+      return marked.parse(this.siteConfig?.homepageContent?.banner?.content || '');
+    },
   },
   methods: {
+    getTextColorForBackground,
   }
 }
 </script>
 <style scoped>
 ::v-deep(.v-skeleton-loader__image) {
   height: 190px;
+}
+::v-deep(.compact-banner .markdown h1),
+::v-deep(.compact-banner .markdown h2) {
+  margin: 0.25em 0;
 }
 </style>

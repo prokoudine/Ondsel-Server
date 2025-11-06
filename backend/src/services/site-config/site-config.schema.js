@@ -18,6 +18,12 @@ const homepageContentSchema = Type.Object({
   markdownContent: Type.String(),
   rssFeedUrl: Type.String(),
   rssFeedName: Type.String(),
+  banner: Type.Object({
+    enabled: Type.Boolean(),
+    title: Type.String(),
+    content: Type.String(),
+    color: Type.String()
+  })
 })
 
 // Main data model schema
