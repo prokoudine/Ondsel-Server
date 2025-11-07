@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
               <v-icon color="success" class="mr-3">mdi-school</v-icon>
               <div>
                 <h3 class="text-h6 mb-1">{{ siteConfig?.siteTitle }}</h3>
-                <p class="text-body-2 text-grey-darken-1 mb-0">Configure your platform's visual identity</p>
+                <p class="text-body-2 text-grey-darken-1 mb-0">Configure your platform's visual identity and content</p>
               </div>
             </div>
             <v-btn
@@ -137,6 +137,53 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             </v-card>
           </v-col>
 
+          <!-- Legal Documents Card -->
+          <v-col cols="12" md="12" lg="12">
+            <v-card
+              variant="elevated"
+              :border="true"
+              class="h-100"
+              hover
+            >
+              <v-card-title class="d-flex align-center">
+                <v-icon color="primary" class="mr-3">mdi-file-document-multiple</v-icon>
+                <span class="text-h6">Legal Documents</span>
+              </v-card-title>
+              <v-card-text>
+                <p class="text-body-2 text-grey-darken-1 mb-4">
+                  Manage Terms of Service, Privacy Policy, and other legal documents.
+                </p>
+              </v-card-text>
+              <v-card-actions class="pa-4">
+                <v-btn
+                  color="primary"
+                  variant="elevated"
+                  prepend-icon="mdi-shield-account"
+                  @click="$router.push({ name: 'XavierUpdateKeyDocuments', params: {name: 'privacy-policy'} })"
+                  class="mr-2"
+                >
+                  Privacy Policy
+                </v-btn>
+                <v-btn
+                  color="primary"
+                  variant="elevated"
+                  prepend-icon="mdi-file-document"
+                  @click="$router.push({ name: 'XavierUpdateKeyDocuments', params: {name: 'terms-of-service'} })"
+                  class="mr-2"
+                >
+                  Terms of Service
+                </v-btn>
+                <v-btn
+                  color="primary"
+                  variant="elevated"
+                  prepend-icon="mdi-clipboard-text"
+                  @click="$router.push({ name: 'XavierUpdateKeyDocuments', params: {name: 'signup-survey-prompt'} })"
+                >
+                  Survey Prompt
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-col>
         </v-row>
       </v-container>
     </template>
