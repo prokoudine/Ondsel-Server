@@ -20,6 +20,7 @@ import { siteConfigId } from './site-config.schema.js'
 import { verifyOndselAdministrativePower } from '../hooks/administration.js'
 import { setCustomizedFlags } from './set-customized-flags.hook.js'
 import { uploadBrandingLogo } from './upload-branding.hook.js'
+import { uploadDefaultModel, uploadDefaultModelThumbnail } from './upload-default-model.hook.js'
 import multer from 'multer'
 
 export * from './site-config.class.js'
@@ -27,10 +28,12 @@ export * from './site-config.schema.js'
 
 // A configure function that registers the service and its hooks via `app.configure`
 export const siteConfig = (app) => {
-  // Register our service on the Feathers application with multipart support for branding logos
+  // Register our service on the Feathers application with multipart support for branding logos and default model
   const fieldsMulter = multer({ storage: multer.memoryStorage() }).fields([
     { name: 'logoFile', maxCount: 1 },
     { name: 'faviconFile', maxCount: 1 },
+    { name: 'defaultModelFile', maxCount: 1 },
+    { name: 'defaultModelThumbnailFile', maxCount: 1 },
   ])
 
   app.use(siteConfigPath,
@@ -61,6 +64,25 @@ export const siteConfig = (app) => {
             return next(new Error('Only PNG, JPG, SVG, and ICO files are allowed for favicon'))
           }
           req.feathers.faviconFile = faviconFile
+        }
+
+        // Validate default model file if present
+        if (files.defaultModelFile && files.defaultModelFile[0]) {
+          const defaultModelFile = files.defaultModelFile[0]
+          const extension = defaultModelFile.originalname.split('.').pop().toLowerCase()
+          if (extension !== 'fcstd') {
+            return next(new Error('Only .FCStd files are allowed for default model'))
+          }
+          req.feathers.defaultModelFile = defaultModelFile
+        }
+
+        // Validate default model thumbnail file if present
+        if (files.defaultModelThumbnailFile && files.defaultModelThumbnailFile[0]) {
+          const defaultModelThumbnailFile = files.defaultModelThumbnailFile[0]
+          if (defaultModelThumbnailFile.mimetype !== 'image/png') {
+            return next(new Error('Only PNG files are allowed for default model thumbnail'))
+          }
+          req.feathers.defaultModelThumbnailFile = defaultModelThumbnailFile
         }
 
         next()
@@ -117,6 +139,8 @@ export const siteConfig = (app) => {
         authenticate('jwt'),
         verifyOndselAdministrativePower,
         uploadBrandingLogo,
+        uploadDefaultModel,
+        uploadDefaultModelThumbnail,
         setCustomizedFlags,
         schemaHooks.validateData(siteConfigPatchValidator),
         schemaHooks.resolveData(siteConfigPatchResolver)

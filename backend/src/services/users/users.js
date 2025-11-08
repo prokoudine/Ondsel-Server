@@ -23,6 +23,7 @@ import {
 } from './users.schema.js'
 import { UserService, getOptions } from './users.class.js'
 import { userPath, userMethods } from './users.shared.js'
+import { siteConfigId } from '../site-config/site-config.schema.js'
 import {addVerification, removeVerification} from "feathers-authentication-management";
 import {notifier} from "../auth-management/notifier.js";
 import {isAdminUser, isEndUser} from "../../hooks/is-user.js";
@@ -221,50 +222,22 @@ export const user = (app) => {
 
 
 const createSampleModels = async (context) => {
-  const sampleModelFileName = 'ondsel.FCStd';
-  const sampleModelObj = 'ondsel_generated.FCSTD';
-  const sampleModelThumbnail = 'public/ondsel_thumbnail.PNG';
-  const attributes = {
-    "Fillet1": {
-      "type": "length",
-      "value": 20,
-      "unit": "mm"
-    },
-    "Fillet2": {
-      "type": "length",
-      "value": 5,
-      "unit": "mm"
-    },
-    "NumberOfCircles": {
-      "type": "number",
-      "value": 2,
-      "unit": ""
-    },
-    "RadialDistance": {
-      "type": "length",
-      "value": 1000,
-      "unit": "mm"
-    },
-    "TangentialDistance": {
-      "type": "length",
-      "value": 1000,
-      "unit": "mm"
-    },
-    "Thickness": {
-      "type": "length",
-      "value": 80,
-      "unit": "mm"
-    }
-  }
-
   const { app } = context;
   const modelService = app.service('models');
   const fileService = app.service('file');
   const uploadService = app.service('upload');
+  const siteConfigService = app.service('site-config');
 
   try {
+    let siteConfig = await siteConfigService.get(siteConfigId);
+
+    const sampleModelFileName = siteConfig.defaultModel.fileName;
+    const sampleModelObj = siteConfig.defaultModel.objPath;
+    const sampleModelThumbnail = siteConfig.defaultModel.thumbnailPath;
+    const attributes = siteConfig.defaultModel.attributes
+
     const file = await fileService.create({
-      custFileName: 'Ondsel.FCStd',
+      custFileName: sampleModelFileName,
       shouldCommitNewVersion: true,
       version: {
         uniqueFileName: sampleModelFileName,
@@ -278,12 +251,15 @@ const createSampleModels = async (context) => {
       isThumbnailGenerated: true,
     }, { user: { _id: context.result._id }, skipSystemGeneratedSharedModel: true })
 
-    await uploadService.copy(sampleModelThumbnail, sampleModelThumbnail.replace('ondsel', model._id.toString()));
-    await uploadService.copy(sampleModelObj, sampleModelObj.replace('ondsel', model._id.toString()));
+    if (sampleModelThumbnail) {
+      const thumbnailFilename = sampleModelThumbnail.split('/').pop();
+      await uploadService.copy(sampleModelThumbnail, sampleModelThumbnail.replace(thumbnailFilename, `${model._id.toString()}_thumbnail.PNG`));
+    }
+    await uploadService.copy(sampleModelObj, `${model._id.toString()}_generated.FCSTD`);
 
     // Patch to update the model thumbnail url, because the thumbnail file didn't exist when the model was created
     await modelService.patch(model._id, {
-      isThumbnailGenerated: true,
+      isThumbnailGenerated: !!sampleModelThumbnail,
     })
   } catch (e) {
     console.error(e);

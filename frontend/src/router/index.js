@@ -51,6 +51,7 @@ import XavierUpdateSoftwareReleases from "@/views/XavierUpdateSoftwareReleases.v
 import XavierBrandingHub from "@/views/XavierBrandingHub.vue";
 import XavierBrandingLogo from "@/views/XavierBrandingLogo.vue";
 import XavierBrandingHomepage from "@/views/XavierBrandingHomepage.vue";
+import XavierBrandingDefaultModel from "@/views/XavierBrandingDefaultModel.vue";
 
 
 const isWindowLoadedInIframe = () => {
@@ -246,6 +247,12 @@ const routes = [
     path: '/xavier-branding-homepage-11223344',
     component: XavierBrandingHomepage,
     name: 'XavierBrandingHomepage',
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/xavier-branding-default-model-55667788',
+    component: XavierBrandingDefaultModel,
+    name: 'XavierBrandingDefaultModel',
     meta: { requiresAuth: true },
   },
   {

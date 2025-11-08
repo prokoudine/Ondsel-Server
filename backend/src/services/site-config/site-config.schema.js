@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 // For more information about this file see https://dove.feathersjs.com/guides/cli/service.schemas.html
-import { resolve } from '@feathersjs/schema'
+import { resolve, virtual } from '@feathersjs/schema'
 import { Type, getValidator, querySyntax } from '@feathersjs/typebox'
 import { ObjectIdSchema } from '@feathersjs/typebox'
 import { dataValidator, queryValidator } from '../../validators.js'
@@ -26,6 +26,14 @@ const homepageContentSchema = Type.Object({
   })
 })
 
+// Default model sub-schema
+const defaultModelSchema = Type.Object({
+  filePath: Type.String(),
+  objPath: Type.String(),
+  thumbnailPath: Type.String({ default: null }),
+  attributes: Type.Object({})
+})
+
 // Main data model schema
 export const siteConfigSchema = Type.Object(
   {
@@ -35,12 +43,14 @@ export const siteConfigSchema = Type.Object(
     siteTitle: Type.String(),
     copyrightText: Type.String({ minLength: 5, maxLength: 80 }),
     homepageContent: homepageContentSchema,
+    defaultModel: defaultModelSchema,
     customized: Type.Object({
       logoUrl: Type.Boolean(),
       faviconUrl: Type.Boolean(),
       siteTitle: Type.Boolean(),
       copyrightText: Type.Boolean(),
       homepageContent: Type.Boolean(),
+      defaultModel: Type.Boolean(),
     }),
     updatedAt: Type.Number(),
     updatedBy: Type.Optional(userSummarySchema)
@@ -48,7 +58,18 @@ export const siteConfigSchema = Type.Object(
   { $id: 'SiteConfig', additionalProperties: false }
 )
 export const siteConfigValidator = getValidator(siteConfigSchema, dataValidator)
-export const siteConfigResolver = resolve({})
+export const siteConfigResolver = resolve({
+  defaultModelObjUrl: virtual(async(message, context) => {
+    if (message.defaultModel.objPath) {
+      let r = await context.app.service('upload').get(message.defaultModel.objPath);
+      if (r.url.includes('?')) {
+        return r.url + '&updatedAt=' + message.updatedAt
+      }
+      return r.url + '?updatedAt=' + message.updatedAt
+    }
+    return '';
+  }),
+})
 
 export const siteConfigExternalResolver = resolve({})
 

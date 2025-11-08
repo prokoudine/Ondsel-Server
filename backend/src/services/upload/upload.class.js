@@ -21,15 +21,16 @@ const generatedThumbnailRegex = /^[0-9a-fA-F]{24}_thumbnail\.PNG$/;
 const copiedVersionThumbnailRegex = /^[0-9a-fA-F]{24}_[0-9a-fA-F]{24}_versionthumbnail\.PNG$/;
 const exportedFileRegex = /^[0-9a-fA-F]{24}_export\.(?:fcstd|obj|step|stl)$/i;
 const brandingLogoRegex = /^public\/branding\/(?:logo|favicon)\.([0-9a-z]+)$/i;
+const defaultModelThumbnailRegex = /^public\/default-model_thumbnail\.PNG$/;
 
 const isValidFileName = (fileName, isAdmin = false) => {
   const regexes = [
     customerFileNameRegex, generatedObjRegex, generatedThumbnailRegex, copiedVersionThumbnailRegex, exportedFileRegex
   ];
 
-  // Only allow branding logo regex for admin users
+  // Allow branding logo and default model thumbnail regex for admin users only
   if (isAdmin) {
-    regexes.push(brandingLogoRegex);
+    regexes.push(brandingLogoRegex, defaultModelThumbnailRegex);
   }
 
   return regexes.some(regex => regex.test(fileName))

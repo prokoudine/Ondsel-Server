@@ -137,6 +137,57 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             </v-card>
           </v-col>
 
+          <!-- Default Model Card -->
+          <v-col cols="12" md="6" lg="4">
+            <v-card
+              variant="elevated"
+              :border="true"
+              class="h-100"
+              hover
+            >
+              <v-card-title class="d-flex align-center">
+                <v-icon color="primary" class="mr-3">mdi-cube-outline</v-icon>
+                <span class="text-h6">Default Model</span>
+              </v-card-title>
+              <v-card-text>
+                <p class="text-body-2 text-grey-darken-1 mb-4">
+                  Configure the default model for new user registrations.
+                </p>
+                <v-chip
+                  v-if="isConfigured('defaultModel')"
+                  color="success"
+                  variant="tonal"
+                  size="small"
+                  prepend-icon="mdi-check"
+                  class="mb-2"
+                >
+                  Configured
+                </v-chip>
+                <v-chip
+                  v-else
+                  color="warning"
+                  variant="tonal"
+                  size="small"
+                  prepend-icon="mdi-alert"
+                  class="mb-2"
+                >
+                  Not configured
+                </v-chip>
+              </v-card-text>
+              <v-card-actions class="pa-4">
+                <v-btn
+                  color="primary"
+                  variant="elevated"
+                  block
+                  prepend-icon="mdi-cog"
+                  @click="$router.push({ name: 'XavierBrandingDefaultModel', params: {} })"
+                >
+                  Configure
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-col>
+
           <!-- Legal Documents Card -->
           <v-col cols="12" md="12" lg="12">
             <v-card
@@ -216,6 +267,8 @@ export default {
           return this.siteConfig.customized.siteTitle || this.siteConfig.customized.logoUrl || this.siteConfig.customized.faviconUrl || this.siteConfig.customized.copyrightText;
         case 'homepage':
           return this.siteConfig.customized.homepageContent;
+        case 'defaultModel':
+          return this.siteConfig.customized.defaultModel;
         default:
           return false;
       }

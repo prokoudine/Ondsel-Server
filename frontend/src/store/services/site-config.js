@@ -35,12 +35,50 @@ class SiteConfig extends BaseModel {
           color: '#283593'
         },
       },
+      defaultModel: {
+        filePath: 'ondsel.FCStd',
+        objPath: 'ondsel_generated.FCSTD',
+        thumbnailPath: 'public/ondsel_thumbnail.PNG',
+        attributes: {
+          "Fillet1": {
+            "type": "length",
+            "value": 20,
+            "unit": "mm"
+          },
+          "Fillet2": {
+            "type": "length",
+            "value": 5,
+            "unit": "mm"
+          },
+          "NumberOfCircles": {
+            "type": "number",
+            "value": 2,
+            "unit": ""
+          },
+          "RadialDistance": {
+            "type": "length",
+            "value": 1000,
+            "unit": "mm"
+          },
+          "TangentialDistance": {
+            "type": "length",
+            "value": 1000,
+            "unit": "mm"
+          },
+          "Thickness": {
+            "type": "length",
+            "value": 80,
+            "unit": "mm"
+          }
+        }
+      },
       customized: {
         logoUrl: false,
         faviconUrl: false,
         siteTitle: false,
         copyrightText: false,
         homepageContent: false,
+        defaultModel: false
       }
     }
   }
