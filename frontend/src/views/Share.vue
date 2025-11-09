@@ -208,7 +208,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   <a :href="$route.path" v-if="isWindowLoadedInIframe" target="_blank">
     <v-sheet class="bottom-left-button d-flex flex-wrap" :height="50" :width="160" border>
       <div class="text-h6 font-weight-bold pa-2 text-white">Explore on</div>
-      <v-img src="/ondsel_logo.svg" max-width="40" max-height="40" class="mt-1"></v-img>
+      <v-img :src="siteConfig?.logoUrl" max-width="40" max-height="40" class="mt-1"></v-img>
     </v-sheet>
   </a>
   <ShareLinkDialog
@@ -307,7 +307,7 @@ export default {
   computed: {
     ...mapState('auth', ['accessToken', 'user']),
     ...mapGetters('auth', ['isAuthenticated']),
-    ...mapGetters('app', ['selfPronoun', 'selfName', 'currentOrganization']),
+    ...mapGetters('app', ['siteConfig', 'selfPronoun', 'selfName', 'currentOrganization']),
     isWindowLoadedInIframe: (vm) => vm.$route.meta.isWindowLoadedInIframe,
     hasBasicRights: (vm) => vm.isAuthenticated && vm.user?.tier !== undefined && vm.user?.tier !== 'Unverified',
     title: (vm) => `${vm.sharedModel?.title || ''} - Ondsel`,
