@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           </v-card-text>
         </v-card>
         <p></p>
-        <v-card title="Login to Ondsel" width="26em" class="pa-2 mt-16">
+        <v-card :title="`Login to ${siteConfig?.siteTitle}`" width="26em" class="pa-2 mt-16">
           <v-card-text>
             <template v-slot:loader="{ isActive }">
               <v-progress-linear

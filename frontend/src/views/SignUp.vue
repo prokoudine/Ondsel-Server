@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 <template>
   <v-container fluid>
     <signup-progress-bar step="0" msg="start with the form"></signup-progress-bar>
-    <v-card title="Sign Up to Ondsel" class="mx-auto mt-8" width="22em" flat>
+    <v-card :title="`Sign Up to ${siteConfig?.siteTitle}`" class="mx-auto mt-8" width="22em" flat>
       <template v-slot:loader="{  }">
         <v-progress-linear
           :active="isCreatePending"
@@ -49,7 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
         <v-select
           v-model="user.usageType"
-          label="How do you plan to use Ondsel?"
+          :label="`How do you plan to use ${siteConfig?.siteTitle}?`"
           :items="usageTypes"
           :rules="[rules.isRequired]"
           :disabled="isCreatePending"
@@ -176,7 +176,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 </template>
 
 <script>
-import {mapActions, mapState} from 'vuex';
+import {mapActions, mapGetters, mapState} from 'vuex';
 import { models } from '@feathersjs/vuex';
 import {marked} from "marked";
 import {conformRefName} from "@/refNameFunctions";
@@ -221,12 +221,15 @@ export default {
   },
   computed: {
     User: () => models.api.User,
+    ...mapGetters('app', ['siteConfig']),
     ...mapState('users', ['isCreatePending']),
-    usageTypes: () => [
-      { value: 'work', title: 'I want to use Ondsel for work' },
-      { value: 'personal', title: 'I want to use Ondsel for personal projects' },
-      { value: 'both', title: 'I want to use Ondsel for both work and personal projects' }
-    ]
+    usageTypes() {
+      return [
+        { value: 'work', title: `I want to use ${this.siteConfig?.siteTitle} for work` },
+        { value: 'personal', title: `I want to use ${this.siteConfig?.siteTitle} for personal projects` },
+        { value: 'both', title: `I want to use ${this.siteConfig?.siteTitle} for both work and personal projects` }
+      ];
+    }
   },
   methods: {
     ...mapActions('auth', ['authenticate']),
