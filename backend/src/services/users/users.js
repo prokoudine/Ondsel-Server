@@ -240,7 +240,7 @@ const createSampleModels = async (context) => {
       custFileName: sampleModelFileName,
       shouldCommitNewVersion: true,
       version: {
-        uniqueFileName: sampleModelFileName,
+        uniqueFileName: sampleModelObj,
       }
     }, { user: context.result, $triggerLambda: false })
 
