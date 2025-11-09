@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     </template>
     <template #content>
       <v-sheet
-        class="d-flex flex-row flex-wrap justify-center align-center"
+        class="d-flex flex-row flex-md-column flex-wrap justify-center align-center"
       >
         <v-card
           v-if="siteConfig?.homepageContent?.banner?.enabled"
