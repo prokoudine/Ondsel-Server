@@ -29,7 +29,7 @@ class SiteConfig extends BaseModel {
         rssFeedUrl: 'https://ondsel.com/blog/rss',
         rssFeedName: 'Latest Ondsel Blog',
         banner: {
-          enabled: true,
+          enabled: false,
           title: 'Shutdown Notice',
           content: '# Service is Shutting Down as of November 22nd, 2024\n## Please download any of your files that you want to keep!',
           color: '#283593'
