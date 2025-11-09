@@ -29,7 +29,7 @@ const errorMsgType = Type.Object({
 export const modelSchema = Type.Object(
   {
     _id: ObjectIdSchema(),
-    userId: Type.String({ objectid: true }),
+    userId: ObjectIdSchema(),
     user: Type.Ref(userSchema),
     uniqueFileName: Type.Optional(Type.String()),  // deprecated because we are using file object
     fileId: ObjectIdSchema(),
@@ -52,7 +52,7 @@ export const modelSchema = Type.Object(
     isExportSTLGenerated: Type.Optional(Type.Boolean({default: false})),
     isExportOBJGenerated: Type.Optional(Type.Boolean({default: false})),
 
-    sharedModelId: Type.Optional(Type.String({ objectid: true })),
+    sharedModelId: Type.Optional(ObjectIdSchema()),
     isSharedModelAnonymousType: Type.Optional(Type.Boolean({default: false})),
     // Soft delete
     deleted: Type.Optional(Type.Boolean()),
