@@ -23,12 +23,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         <v-list-item>
           <v-list-item-title>Text Body (markdown)</v-list-item-title>
           <v-list-item-media class="flex d-flex flex-wrap">
-            <v-card border="primary md" max-width="40em" class="ma-2">
+            <v-card border="primary md" class="ma-2" style="flex: 1 1 25em; min-width: 15em;">
               <v-card-text>
                 <markdown-viewer :markdown-html="markdownHtml"></markdown-viewer>
               </v-card-text>
             </v-card>
-            <v-card max-width="60em" class="ma-2">
+            <v-card class="ma-2" style="flex: 1 1 35em; min-width: 15em;">
               <v-card-text border="primary md">
                 <pre style="overflow-x: auto;">{{markdownContent}}</pre>
               </v-card-text>
