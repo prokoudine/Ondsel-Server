@@ -74,6 +74,7 @@ import {marked} from "marked";
 import PromotionsViewer from "@/components/PromotionsViewer.vue";
 import MarkdownViewer from "@/components/MarkdownViewer.vue";
 import PromotedUsersTable from "@/components/PromotedUsersTable.vue";
+import VueRssFeed from "@/components/VueRssFeed.vue";
 import Main from '@/layouts/default/Main.vue';
 import { mapGetters } from "vuex";
 import { getTextColorForBackground } from '@/genericHelpers';
@@ -83,7 +84,7 @@ const { Organization } = models.api;
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'LensHome',
-  components: {PromotedUsersTable, MarkdownViewer, PromotionsViewer, Main},
+  components: {PromotedUsersTable, MarkdownViewer, PromotionsViewer, VueRssFeed, Main},
   data: () => ({
     lensSiteCuration: null,
   }),
