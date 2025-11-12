@@ -6,7 +6,7 @@ import mongodb from 'mongodb';
 import _ from 'lodash';
 import { OrganizationTypeMap } from '../services/organizations/organizations.subdocs.schema.js';
 
-const userEmail = 'amritpal@ondsel.com';
+const userEmail = 'admin@local.test';
 const userCfg = 'fecd69a2-f30f-44f1-8c23-863998b3f9ac.cfg';
 const systemCfg = '35518e54-4743-46bd-a147-a92ea4ecfe76.cfg';
 const otherOrgAdmins = [
