@@ -38,6 +38,7 @@
   "scripts": {
     "start": "node src",
     "dev": "nodemon src/",
+    "debug": "nodemon --exec \"node --inspect=9229\" src/",
     "prettier": "npx prettier \"**/*.js\" --write",
     "mocha": "cross-env NODE_ENV=test mocha test/ --recursive --exit",
     "test": "npm run mocha",
