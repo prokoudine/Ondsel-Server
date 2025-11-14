@@ -142,7 +142,13 @@ async function runMigration() {
       await fixSharedModelCurationsAndKeywordsCommand(app);
       break;
     case 'upgradeUnverifiedUserToVerifiedAndMigrateToSoloTier':
-      await upgradeUnverifiedUserToVerifiedAndMigrateToSoloTier(app);
+      if (process.argv.length == 4) {
+        await upgradeUnverifiedUserToVerifiedAndMigrateToSoloTier(app, process.argv[3]);
+      }
+      else{
+        console.error('Please provide the email or "--all" as argument.');
+	process.exit(1);
+      }
       break;
     case 'addInitialLensSiteCuration':
       await addInitialLensSiteCurationCommand(app);

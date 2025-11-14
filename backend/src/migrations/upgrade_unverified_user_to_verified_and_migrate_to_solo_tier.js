@@ -7,42 +7,45 @@
 import { SubscriptionTypeMap, SubscriptionTermTypeMap } from '../services/users/users.subdocs.schema.js';
 import { AccountEventTypeMap } from '../services/account-event/account-event.schema.js';
 
-export async function upgradeUnverifiedUserToVerifiedAndMigrateToSoloTier(app) {
+export async function upgradeUnverifiedUserToVerifiedAndMigrateToSoloTier(app, arg) {
   const userService = app.service('users');
   const authService = app.service('auth-management');
   const accountEventService = app.service('account-event');
-  console.log(`>>> Fetching unverified users`);
-  const users = await userService.find({query: {tier: "Unverified"}})
-  if (users.total && Array.isArray(users.data) && users.data.length > 0) {
-		console.log(`>>> Found ${users.total} unverified users. Processing...`);
 
-		for (const user of users.data) {
+  console.log(`>>> Fetching unverified users`);
+  const query = arg == "--all" ? { tier: "Unverified" } : { email: arg };
+  const users = await userService.find({query});
+
+  if (users.total && Array.isArray(users.data) && users.data.length > 0) {
+    console.log(`>>> Found ${users.total} users. Processing...`);
+
+    for (const user of users.data) {
       console.log(`>>> User found: ${user.email}`);
       if (!user.isVerified && user.tier === SubscriptionTypeMap.unverified) {
-        console.log('>>> User is not verified and tier is Unverified, now make it verified and Solo tier...');
-        const as = await authService.create({
-          action: "verifySignupLong",
-          value: user.verifyToken,
-          notifierOptions: {},
-        });
-        console.log('>>>> auth service object: ', as);
+	console.log('>>> User is not verified and tier is Unverified, now make it verified and Solo tier...');
+	const as = await authService.create({
+	  action: "verifySignupLong",
+	  value: user.verifyToken,
+	  notifierOptions: {},
+	});
+	console.log('>>>> auth service object: ', as);
 
-        const ae = await accountEventService.create({
-          event: AccountEventTypeMap.startSoloSubscriptionFromUnverified,
-          userId: user._id.toString(),
-          detail: {
-            subscription: SubscriptionTypeMap.solo,
-            term: SubscriptionTermTypeMap.yearly,
-            currentSubscription: SubscriptionTypeMap.unverified
-          },
-          note: 'used feathersjs-auth-mgmt trigger on new account verification',
-          additionalData: {
-            message: 'This entry created by migration script manually'
-          }
-        }, { user: user })
-        console.log('>>>> account-event object: ', ae);
+	const ae = await accountEventService.create({
+	  event: AccountEventTypeMap.startSoloSubscriptionFromUnverified,
+	  userId: user._id.toString(),
+	  detail: {
+	    subscription: SubscriptionTypeMap.solo,
+	    term: SubscriptionTermTypeMap.yearly,
+	    currentSubscription: SubscriptionTypeMap.unverified
+	  },
+	  note: 'used feathersjs-auth-mgmt trigger on new account verification',
+	  additionalData: {
+	    message: 'This entry created by migration script manually'
+	  }
+	}, { user: user })
+	console.log('>>>> account-event object: ', ae);
       } else {
-        console.log('>>> User is already verified, exiting....');
+	console.log('>>> User is already verified, exiting....');
       }
     }
   } else {
