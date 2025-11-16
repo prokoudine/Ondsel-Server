@@ -10,9 +10,20 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     </template>
     <template #content>
       <v-sheet
-        class="d-flex flex-row flex-wrap justify-center align-center"
+        class="d-flex flex-row flex-md-column flex-wrap justify-center align-center"
       >
-        <v-card title="Login to Ondsel" width="26em" class="pa-2 mt-16">
+        <v-card
+          v-if="siteConfig?.homepageContent?.banner?.enabled"
+          :style="{ backgroundColor: siteConfig.homepageContent.banner.color, color: getTextColorForBackground(siteConfig.homepageContent.banner.color) }"
+          class="compact-banner"
+        >
+          <v-card-title>{{ siteConfig.homepageContent.banner.title }}</v-card-title>
+          <v-card-text>
+            <markdown-viewer :markdown-html="bannerMarkdownHtml"></markdown-viewer>
+          </v-card-text>
+        </v-card>
+        <p></p>
+        <v-card :title="`Login to ${siteConfig?.siteTitle}`" width="26em" class="pa-2 mt-16">
           <v-card-text>
             <template v-slot:loader="{ isActive }">
               <v-progress-linear
@@ -101,15 +112,19 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 <script>
 import {mapState, mapActions, mapGetters} from 'vuex';
+import { marked } from 'marked';
 import { models } from '@feathersjs/vuex';
 import { resetStores } from '@/store';
 import ForgotPasswordDialog from "@/components/ForgotPasswordDialog.vue";
+import MarkdownViewer from '@/components/MarkdownViewer.vue';
 import Main from '@/layouts/default/Main.vue';
+import { getTextColorForBackground } from '@/genericHelpers';
 
 
 export default {
   name: 'Login',
   components: {ForgotPasswordDialog, Main},
+  components: {ForgotPasswordDialog, MarkdownViewer, Main},
   data() {
     return {
       result: {},
@@ -131,7 +146,10 @@ export default {
   computed: {
     User: () => models.api.User,
     ...mapState('auth', ['isAuthenticatePending']),
-    ...mapGetters('app', { userCurrentOrganization: 'currentOrganization' }),
+    ...mapGetters('app', { userCurrentOrganization: 'currentOrganization', siteConfig: 'siteConfig' }),
+    bannerMarkdownHtml() {
+      return marked.parse(this.siteConfig?.homepageContent?.banner?.content || '');
+    },
   },
   mounted() {
     resetStores();
@@ -143,6 +161,7 @@ export default {
   },
   methods: {
     ...mapActions('auth', ['authenticate']),
+    getTextColorForBackground,
     async login() {
       if ( this.isValid ) {
         await this.authenticate({
@@ -179,5 +198,9 @@ export default {
 </script>
 
 <style scoped>
+::v-deep(.compact-banner .markdown h1),
+::v-deep(.compact-banner .markdown h2) {
+  margin: 0.25em 0;
+}
 
 </style>

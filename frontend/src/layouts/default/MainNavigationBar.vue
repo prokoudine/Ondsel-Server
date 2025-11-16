@@ -10,12 +10,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     permanent
   >
     <v-list-item
-      title = "Ondsel Lens"
+      :title="siteConfig?.siteTitle"
       :to="{name: 'LensHome'}"
     >
       <template v-slot:prepend>
         <v-img
-          src="https://ondsel.com/img/Icon_Orange.svg"
+          :src="siteConfig?.logoUrl"
           width="24"
           height="24"
           class="mr-8"
@@ -88,7 +88,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       <v-divider></v-divider>
       <v-list-item
         prepend-icon="mdi-copyright"
-        title="2024 Ondsel Inc."
+        :title="siteConfig?.copyrightText"
       ></v-list-item>
       <v-divider></v-divider>
       <v-list-item
@@ -246,7 +246,7 @@ export default {
   computed: {
     ...mapState('auth', { loggedInUser: 'payload' }),
     ...mapState('auth', ['user']),
-    ...mapGetters('app', { userCurrentOrganization: 'currentOrganization' }),
+    ...mapGetters('app', { userCurrentOrganization: 'currentOrganization', siteConfig: 'siteConfig' }),
     currentRouteName: (vm) => vm.$route.name,
     currentOrganization: (vm) => vm.userCurrentOrganization,
     railIcon () {

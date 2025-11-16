@@ -4,9 +4,11 @@
 
 import { models } from '@feathersjs/vuex';
 import axios from "axios";
+import { SITE_CONFIG_ID } from './site-config';
 
 
 const state = {
+  siteConfig: null,
   currentOrganization: null
 }
 
@@ -22,6 +24,9 @@ export default {
   namespaced: true,
   state,
   getters: {
+    siteConfig (state, getters, rootState, rootGetters) {
+      return state.siteConfig;
+    },
     currentOrganization (state, getters, rootState, rootGetters) {
       if (state.currentOrganization) {
         return state.currentOrganization;
@@ -77,9 +82,22 @@ export default {
   mutations: {
     SET_CURRENT_ORGANIZATION: (stateIn, organization) => {
       stateIn.currentOrganization = organization;
-    }
+    },
+    SET_SITE_CONFIG: (stateIn, siteConfig) => {
+      stateIn.siteConfig = siteConfig;
+    },
   },
   actions: {
+    async loadSiteConfig (context) {
+      try {
+        await models.api.SiteConfig.get(SITE_CONFIG_ID);
+        const result = models.api.SiteConfig.getFromStore(SITE_CONFIG_ID);
+        context.commit('SET_SITE_CONFIG', result);
+      } catch (error) {
+        console.log('Site config not found, using defaults');
+        context.commit('SET_SITE_CONFIG', models.api.SiteConfig.instanceDefaults());
+      }
+    },
     setCurrentOrganization: (context, organization) => {
       context.commit('SET_CURRENT_ORGANIZATION', organization);
 

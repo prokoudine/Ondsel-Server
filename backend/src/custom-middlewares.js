@@ -146,6 +146,28 @@ function handleLocalFileDownload(app) {
   )
 }
 
+function handlePublicBrandingFileDownload(app) {
+  app.use(
+    '/public/branding/:fileName',
+    async (req, res, next) => {
+      try {
+        const { fileName } = req.params;
+
+        const folderPath = path.join('uploads', 'public', 'branding');
+        if (fs.existsSync(path.join(folderPath, fileName))) {
+          res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+          res.sendFile(fileName, { root: folderPath });
+        } else {
+          res.status(500).json({ error: 'File not found!' });
+        }
+      } catch (e) {
+        logger.error(e);
+        next(e);
+      }
+    }
+  )
+}
+
 const tryToAuthentication = async (req, res, next) => {
 
   await authenticate('jwt')(req, res, async (authError) => {
@@ -196,6 +218,7 @@ export function registerCustomMiddlewares(app) {
   handleDownloadFile(app);
   handlePublishedFileDownload(app);
   handleLocalFileDownload(app);
+  handlePublicBrandingFileDownload(app);
   handleStatusEndpoint(app);
 }
 

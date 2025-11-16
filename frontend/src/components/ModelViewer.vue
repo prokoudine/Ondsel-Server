@@ -56,6 +56,7 @@ export default {
 
     reloadOBJ(objUrl) {
       this.objUrl = objUrl;
+      this.viewer.url = objUrl;
       this.viewer.loadOBJ();
     }
 

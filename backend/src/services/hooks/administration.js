@@ -5,25 +5,25 @@
 import {BadRequest, NotAuthenticated} from "@feathersjs/errors";
 import {OrganizationTypeMap} from "../organizations/organizations.subdocs.schema.js";
 
-export const verifyOndselAdministrativePower = async context => {
+export const isOndselAdmin = async (params, app) => {
   let reason = 'External and account does not have permissions for administration';
-  if (context.params.provider === undefined){ // Internal calls are "undefined"
-    return context;
+  if (params.provider === undefined){ // Internal calls are "undefined"
+    return [true, null];
   }
-  const user = context.params.user;
+  const user = params.user;
   const orgList = user.organizations;
   if (orgList) {
     const adminOrg = orgList.find(org => org.type === OrganizationTypeMap.ondsel);
     if (adminOrg) {
       // second check against real org entry
-      const realOrg = await context.app.service('organizations').get(adminOrg._id);
+      const realOrg = await app.service('organizations').get(adminOrg._id);
       if (realOrg) {
         if (realOrg.type === OrganizationTypeMap.ondsel) {
           const userList = realOrg.users
           const matchIndex = userList.findIndex(orgUser => orgUser._id.equals(user._id));
           if (matchIndex !== -1) {
             if (userList[matchIndex].isAdmin === true) {
-              return context;
+              return [true, null];
             } else {
               reason = 'Not an Ondsel admin.'
             }
@@ -34,7 +34,15 @@ export const verifyOndselAdministrativePower = async context => {
       reason = 'Not an Ondsel employee.'
     }
   }
-  throw new NotAuthenticated(reason);
+  return [false, reason];
+}
+
+export const verifyOndselAdministrativePower = async context => {
+  const [isAdmin, reason] = await isOndselAdmin(context.params, context.app);
+  if (!isAdmin) {
+    throw new NotAuthenticated(reason);
+  }
+  return context;
 }
 
 // export const isEndUser = async (context) => {

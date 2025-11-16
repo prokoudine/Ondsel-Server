@@ -13,17 +13,27 @@ import { GetObjectCommand, S3Client, HeadObjectCommand, CopyObjectCommand } from
 import { BadRequest } from '@feathersjs/errors'
 import dauria from 'dauria'
 import crypto from 'crypto'
+import { isOndselAdmin } from '../hooks/administration.js'
 
 const customerFileNameRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\.([0-9a-z]+)$/i;
 const generatedObjRegex = /^[0-9a-fA-F]{24}_generated\.(:?OBJ|BREP|FCSTD)$/;
 const generatedThumbnailRegex = /^[0-9a-fA-F]{24}_thumbnail\.PNG$/;
 const copiedVersionThumbnailRegex = /^[0-9a-fA-F]{24}_[0-9a-fA-F]{24}_versionthumbnail\.PNG$/;
 const exportedFileRegex = /^[0-9a-fA-F]{24}_export\.(?:fcstd|obj|step|stl)$/i;
+const brandingLogoRegex = /^public\/branding\/(?:logo|favicon)\.([0-9a-z]+)$/i;
+const defaultModelThumbnailRegex = /^public\/default-model_thumbnail\.PNG$/;
 
-const isValidFileName = fileName => {
-  return [
+const isValidFileName = (fileName, isAdmin = false) => {
+  const regexes = [
     customerFileNameRegex, generatedObjRegex, generatedThumbnailRegex, copiedVersionThumbnailRegex, exportedFileRegex
-  ].some(regex => regex.test(fileName))
+  ];
+
+  // Allow branding logo and default model thumbnail regex for admin users only
+  if (isAdmin) {
+    regexes.push(brandingLogoRegex, defaultModelThumbnailRegex);
+  }
+
+  return regexes.some(regex => regex.test(fileName))
 }
 
 class UploadService {
@@ -46,6 +56,14 @@ class UploadService {
     }
 
     return `${this.appUrl}/upload/download/${encodeURIComponent(fileName)}`;
+  }
+
+  getPublicBrandingUrl(fileName, bucket) {
+    if (this.useS3) {
+      return `https://${this.options.app.get('awsClientModelBucket')}.s3.amazonaws.com/${fileName}`;
+    }
+
+    return `${this.appUrl}/${fileName}`;
   }
 
   generateLocalSignedUrl(fileName, expiresIn) {
@@ -149,7 +167,9 @@ class UploadService {
       if (_params.query?.fileContent === 'true') {
         return this.getFileContent(bucketName, id);
       }
-      if (id.includes('public/')) {
+      if (id.includes('public/branding/')) {
+        url = this.getPublicBrandingUrl(id, bucketName);
+      } else if (id.includes('public/')) {
         url = this.getPublicUrl(id, bucketName);
       } else {
         url = await this.getSignedFileUrl(id, bucketName, 3600);
@@ -159,7 +179,8 @@ class UploadService {
   }
 
   async create(data, params) {
-    if (!isValidFileName(data['id'])) {
+    const [isAdmin, reason] = await isOndselAdmin(params, this.options.app);
+    if (!isValidFileName(data['id'], isAdmin)) {
       throw new BadRequest('Filename not valid!')
     }
 

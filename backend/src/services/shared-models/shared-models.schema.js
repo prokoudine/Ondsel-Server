@@ -31,8 +31,8 @@ export const sharedModelsSchema = Type.Object(
     createdAt: Type.Number(),
     updatedAt: Type.Number(),
     versionFollowing: Type.Optional(VersionFollowType),
-    userId: Type.String({ objectid: true }),
-    cloneModelId: Type.String({ objectid: true }),
+    userId: ObjectIdSchema(),
+    cloneModelId: ObjectIdSchema(),
     model: Type.Ref(modelSchema),
     title: Type.String(),
     description: Type.String({ maxLength: 100 }),
@@ -62,7 +62,7 @@ export const sharedModelsSchema = Type.Object(
     deleted: Type.Optional(Type.Boolean()),
 
     // Store the state of cloneModelId when share link is created
-    dummyModelId: Type.Optional(Type.String({ objectid: true })),
+    dummyModelId: Type.Optional(ObjectIdSchema()),
 
   },
   { $id: 'SharedModels', additionalProperties: false }
