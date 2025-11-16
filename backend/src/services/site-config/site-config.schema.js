@@ -16,6 +16,7 @@ export const siteConfigId = '000000000000000000000000';
 const homepageContentSchema = Type.Object({
   title: Type.String(),
   markdownContent: Type.String(),
+  rssFeedEnabled: Type.Boolean(),
   rssFeedUrl: Type.String(),
   rssFeedName: Type.String(),
   banner: Type.Object({

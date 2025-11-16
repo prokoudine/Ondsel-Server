@@ -129,19 +129,27 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <v-card class="ma-2" elevation="1">
               <v-card-title>RSS Feed Configuration</v-card-title>
               <v-card-text>
-                <v-text-field 
-                  v-model="rssFeedUrl" 
-                  label="RSS Feed URL" 
-                  :rules="urlRules"
-                  hint="URL for the RSS feed displayed in the sidebar"
-                ></v-text-field>
-                <v-text-field 
-                  v-model="rssFeedName" 
-                  label="RSS Feed Name" 
-                  :rules="nameRules" 
-                  counter="50"
-                  hint="Display name for the RSS feed"
-                ></v-text-field>
+                <v-switch
+                  v-model="rssFeedEnabled"
+                  label="Enable RSS Feed"
+                  color="primary"
+                ></v-switch>
+
+                <template v-if="rssFeedEnabled">
+                  <v-text-field 
+                    v-model="rssFeedUrl" 
+                    label="RSS Feed URL" 
+                    :rules="urlRules"
+                    hint="URL for the RSS feed displayed in the sidebar"
+                  ></v-text-field>
+                  <v-text-field 
+                    v-model="rssFeedName" 
+                    label="RSS Feed Name" 
+                    :rules="nameRules" 
+                    counter="50"
+                    hint="Display name for the RSS feed"
+                  ></v-text-field>
+                </template>
               </v-card-text>
             </v-card>
           </v-col>
@@ -182,8 +190,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
                 <v-sheet class="d-flex flex-column flex-md-row w-100 mt-4">
                   <v-sheet name="left_side" class="flex-grow-1">
-                    <v-container>
-                      <h2>{{ homepageTitle }}</h2>
+                    <v-container :fluid="!rssFeedEnabled">
+                      <h2>{{ siteConfig?.siteTitle }}</h2>
                     </v-container>
                     <v-card class="ma-4">
                       <v-card-title>{{ homepageTitle }}</v-card-title>
@@ -194,6 +202,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                   </v-sheet>
 
                   <v-sheet
+                    v-if="rssFeedEnabled"
                     name="right_side"
                     border
                     class="flex-shrink-0 w-100 w-md-auto ml-md-4"
@@ -244,6 +253,7 @@ export default {
     isSaving: false,
     homepageTitle: '',
     homepageContent: '',
+    rssFeedEnabled: false,
     rssFeedUrl: '',
     rssFeedName: '',
     showSnackbar: false,
@@ -257,15 +267,6 @@ export default {
     contentRules: [
       v => !!v || 'Content is required',
       v => (v && v.length >= 10) || 'Content must be at least 10 characters'
-    ],
-    urlRules: [
-      v => !!v || 'RSS Feed URL is required',
-      v => !v || /^https?:\/\/.+/.test(v) || 'Must be a valid URL'
-    ],
-    nameRules: [
-      v => !!v || 'RSS Feed Name is required',
-      v => (v && v.length <= 50) || 'Name must be less than 50 characters',
-      v => (v && v.length >= 3) || 'Name must be at least 3 characters'
     ],
     bannerEnabled: false,
     bannerTitle: '',
@@ -290,6 +291,19 @@ export default {
     },
     bannerMarkdownHtml() {
       return marked.parse(this.bannerContent || '');
+    },
+    urlRules() {
+      return [
+        v => !this.rssFeedEnabled || !!v || 'RSS Feed URL is required',
+        v => !this.rssFeedEnabled || !v || /^https?:\/\/.+/.test(v) || 'Must be a valid URL'
+      ];
+    },
+    nameRules() {
+      return [
+        v => !this.rssFeedEnabled || !!v || 'RSS Feed Name is required',
+        v => !this.rssFeedEnabled || !v || (v && v.length <= 50) || 'Name must be less than 50 characters',
+        v => !this.rssFeedEnabled || !v || (v && v.length >= 3) || 'Name must be at least 3 characters'
+      ];
     }
   },
   watch: {
@@ -302,6 +316,9 @@ export default {
           }
           if (!this.homepageContent) {
             this.homepageContent = newVal.homepageContent?.markdownContent || '';
+          }
+          if (newVal.homepageContent?.rssFeedEnabled !== undefined && this.rssFeedEnabled === false) {
+            this.rssFeedEnabled = newVal.homepageContent.rssFeedEnabled || false;
           }
           if (!this.rssFeedUrl) {
             this.rssFeedUrl = newVal.homepageContent?.rssFeedUrl || '';
@@ -345,6 +362,7 @@ export default {
           homepageContent: {
             title: this.homepageTitle,
             markdownContent: this.homepageContent,
+            rssFeedEnabled: this.rssFeedEnabled,
             rssFeedUrl: this.rssFeedUrl,
             rssFeedName: this.rssFeedName,
             banner: {

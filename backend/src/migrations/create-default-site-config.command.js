@@ -28,6 +28,7 @@ export async function createDefaultSiteConfigCommand(app) {
     homepageContent: {
       title: 'Welcome to Lens',
       markdownContent: 'Welcome to Lens, your collaborative CAD platform. Upload, view, and share 3D models with version control, export capabilities, and real-time collaboration tools.',
+      rssFeedEnabled: false,
       rssFeedUrl: 'https://ondsel.com/blog/rss',
       rssFeedName: 'Latest Ondsel Blog',
       banner: {

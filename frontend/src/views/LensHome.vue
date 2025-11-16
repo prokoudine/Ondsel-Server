@@ -55,6 +55,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </v-sheet>
 
         <v-sheet
+          v-if="siteConfig?.homepageContent?.rssFeedEnabled"
           name="right_side"
           border
           class="flex-shrink-0 w-100 w-md-auto ml-md-4"
