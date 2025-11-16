@@ -8,9 +8,7 @@
 import { SubscriptionTypeMap, SubscriptionTermTypeMap } from '../services/users/users.subdocs.schema.js';
 import { AccountEventTypeMap } from '../services/account-event/account-event.schema.js';
 
-const userEmail = 'p_a@live.ru';
-
-export async function upgradeUserTierCommand(app) {
+export async function upgradeUserTierCommand(app, userEmail) {
   const userService = app.service('users');
   const accountEventService = app.service('account-event');
   console.log(`>>> Fetching user ${userEmail}`);

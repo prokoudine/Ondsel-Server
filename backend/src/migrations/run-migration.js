@@ -131,7 +131,13 @@ async function runMigration() {
       await addCurationToAllWorkspacesCommand(app);
       break;
     case 'upgradeUserTier':
-      await upgradeUserTierCommand(app);
+      if (process.argv.length == 4) {
+        await upgradeUserTierCommand(app, process.argv[3]);
+      }
+      else{
+        console.error('Please provide the email as argument.');
+	process.exit(1);
+      }
       break;
     case 'addCurationToAllOrganizations':
       await addCurationToAllOrganizationsCommand(app);
@@ -143,7 +149,13 @@ async function runMigration() {
       await fixSharedModelCurationsAndKeywordsCommand(app);
       break;
     case 'upgradeUnverifiedUserToVerifiedAndMigrateToSoloTier':
-      await upgradeUnverifiedUserToVerifiedAndMigrateToSoloTier(app);
+      if (process.argv.length == 4) {
+        await upgradeUnverifiedUserToVerifiedAndMigrateToSoloTier(app, process.argv[3]);
+      }
+      else{
+        console.error('Please provide the email or "--all" as argument.');
+	process.exit(1);
+      }
       break;
     case 'addInitialLensSiteCuration':
       await addInitialLensSiteCurationCommand(app);
