@@ -21,7 +21,7 @@ export async function createDefaultSiteConfigCommand(app) {
   console.log(">>> creating default site config");
   const defaultSiteConfig = {
     _id: new ObjectId(siteConfigId),
-    logoUrl: '/ondsel_logo.svg',
+    logoUrl: '/logo.svg',
     faviconUrl: '/favicon.ico',
     siteTitle: 'Lens',
     copyrightText: '2025 Ondsel Inc.',

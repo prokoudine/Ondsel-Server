@@ -54,6 +54,7 @@ services:
       - VITE_MATOMO_URL
       - VITE_MATOMO_SITE
       - VITE_STRIPE_PURCHASE_PEER_URL
+      - PROXY_SCHEME_PREFIX=${PROXY_SCHEME_PREFIX:-https://}
     ports:
       - "3000:80"
     depends_on:

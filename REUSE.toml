@@ -45,7 +45,7 @@ SPDX-License-Identifier = "AGPL-3.0-or-later"
 [[annotations]]
 path = [
      "frontend/public/favicon.ico",
-     "frontend/public/ondsel_logo.svg",
+     "frontend/public/logo.svg",
      "frontend/src/assets/logo.svg"
 ]
 SPDX-FileCopyrightText = "2024 Ondsel <development@ondsel.com>"

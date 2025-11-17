@@ -57,6 +57,7 @@ services:
       - VITE_MATOMO_URL=${VITE_MATOMO_URL:-http://localhost:7000}
       - VITE_MATOMO_SITE=${VITE_MATOMO_SITE:-1}
       - VITE_STRIPE_PURCHASE_PEER_URL
+      - PROXY_SCHEME_PREFIX=${PROXY_SCHEME_PREFIX:-http://}
     depends_on:
       - backend
 

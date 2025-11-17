@@ -19,7 +19,7 @@ class SiteConfig extends BaseModel {
   // Define default properties here
   static instanceDefaults() {
     return {
-      logoUrl: '/ondsel_logo.svg',
+      logoUrl: '/logo.svg',
       faviconUrl: '/favicon.ico',
       siteTitle: 'Lens',
       copyrightText: '2025 Ondsel Inc.',
