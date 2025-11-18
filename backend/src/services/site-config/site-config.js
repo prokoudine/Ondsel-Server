@@ -158,4 +158,22 @@ export const siteConfig = (app) => {
       all: []
     }
   })
+
+  // Proxy FreeCAD blog feed endpoint
+  app.get('/freecad-blog-rss', async (req, res) => {
+    try {
+      const response = await fetch('https://blog.freecad.org/feed/');
+      if (!response.ok) {
+        return res.status(response.status).json({ error: `Upstream error ${response.status}` });
+      }
+
+      const text = await response.text();
+
+      res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+      res.setHeader('Cache-Control', 'public, max-age=300');
+      return res.send(text);
+    } catch (error) {
+      return res.status(500).json({ error: 'Failed to fetch FreeCAD feed', details: error.message });
+    }
+  });
 }
