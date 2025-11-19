@@ -39,10 +39,10 @@ export async function createDefaultSiteConfigCommand(app) {
       }
     },
     defaultModel: {
-      fileName: 'ondsel.FCStd',
-      filePath: 'ondsel.FCStd',
-      objPath: 'ondsel_generated.FCSTD',
-      thumbnailPath: 'public/ondsel_thumbnail.PNG',
+      fileName: 'sample.FCStd',
+      filePath: 'sample.FCStd',
+      objPath: 'sample_generated.FCSTD',
+      thumbnailPath: 'public/sample_thumbnail.PNG',
       attributes: {
         "Fillet1": {
           "type": "length",

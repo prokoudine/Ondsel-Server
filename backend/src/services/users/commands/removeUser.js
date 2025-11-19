@@ -11,6 +11,7 @@ import {
 } from "../users.subdocs.schema.js";
 import {OrganizationTypeMap} from "../../organizations/organizations.subdocs.schema.js";
 import {buildUserSummary} from "../users.distrib.js";
+import { siteConfigId } from "../../site-config/site-config.schema.js";
 
 export const REDACTED = "<REDACTED>"
 
@@ -18,6 +19,7 @@ export const removeUser = async (context) => {
   //
   // gather data
   //
+  const siteConfigService = context.app.service('site-config');
   const orgService = context.app.service('organizations');
   const wsService = context.app.service('workspaces');
   const dirService = context.app.service('directories');
@@ -26,6 +28,7 @@ export const removeUser = async (context) => {
   const originalUserId = context.id;
   const [trueId, pin] = originalUserId.split("z")
   let user = await context.service.get(trueId);
+  const siteConfig = await siteConfigService.get(siteConfigId);
   let personalOrg = await orgService.get(user.personalOrganization._id);
   const oldOrgCuration = { ...personalOrg.curation};
   const personalOrgId = personalOrg._id;
@@ -61,7 +64,7 @@ export const removeUser = async (context) => {
   //   for now, this applies to pretty much anyone with a non-empty account.
   //
   let reasons = [];
-  let deleteDefaultOndselFile = false;
+  let deleteDefaultModelFile = false;
   if (user.organizations.length > 1) {
     reasons.push('Belongs to other organizations');
   }
@@ -73,8 +76,8 @@ export const removeUser = async (context) => {
   }
   if (rootDir) {
     if (rootDir.files.length > 0) {
-      if (rootDir.files.length === 1 && rootDir.files[0].custFileName === 'Ondsel.FCStd') {
-        deleteDefaultOndselFile = rootDir.files[0]._id;
+      if (rootDir.files.length === 1 && rootDir.files[0].custFileName === siteConfig.defaultModel.fileName) {
+        deleteDefaultModelFile = rootDir.files[0]._id;
       } else {
         reasons.push('Default workspace root directory has files');
       }
@@ -123,9 +126,9 @@ export const removeUser = async (context) => {
   //
   // remove all files, directories, and workspaces
   //
-  if (deleteDefaultOndselFile) {
-    const fileResult = await fileService.remove(deleteDefaultOndselFile);
-    log.push(`deleted ${fileResult._id} default Ondsel.FCStd file`);
+  if (deleteDefaultModelFile) {
+    const fileResult = await fileService.remove(deleteDefaultModelFile);
+    log.push(`deleted ${fileResult._id} default ${siteConfig.defaultModel.fileName} file`);
   }
   // dirService.remove(rootDirId) DOES NOT work as it forbids removing root '/'.
   if (rootDir) {

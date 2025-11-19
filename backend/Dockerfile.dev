@@ -24,9 +24,9 @@ COPY package*.json ./
 RUN npm install
 
 # Copy default uploads directory
-COPY uploads/ondsel* ./uploads/
+COPY uploads/sample* ./uploads/
 COPY uploads/public/branding ./uploads/public/branding
-COPY uploads/public/ondsel* ./uploads/public/
+COPY uploads/public/sample* ./uploads/public/
 
 ENV NODE_ENV development
 
