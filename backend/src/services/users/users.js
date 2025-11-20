@@ -37,7 +37,7 @@ import {
 import {copyUserBeforePatch, distributeUserSummariesHook} from "./users.distrib.js";
 import {buildNewCurationForUser, specialUserOrgCurationHandler} from "./users.curation.js";
 import {changeEmailNotification} from "./commands/changeEmailNotification.js";
-import {verifyOndselAdministrativePower} from "../hooks/administration.js";
+import {verifySiteAdministrativePower} from "../hooks/administration.js";
 import {removeUser} from "./commands/removeUser.js";
 import { handleQueryArgs } from "./helpers.js";
 
@@ -83,7 +83,7 @@ export const user = (app) => {
             ],
           },
           find: {
-            "description": "Retrieves a list users.<ul><li>If publicInfo = true, then multiple users may be located but the information is limited to public info.</li><li>If logged in as Ondsel admin or an internal query, then everything is returned.</li><li>Otherwise, you must be logged in and will only see your own entry.</li></ul>",
+            "description": "Retrieves a list of users.<ul><li>If publicInfo = true, then multiple users may be located but the information is limited to public info.</li><li>If logged in as a site administrator or an internal query, then everything is returned.</li><li>Otherwise, you must be logged in and will only see your own entry.</li></ul>",
             "parameters": [
               {
                 "description": "Number of results to return",
@@ -197,7 +197,7 @@ export const user = (app) => {
         schemaHooks.resolveData(userPatchResolver),
       ],
       remove: [
-        verifyOndselAdministrativePower,
+        verifySiteAdministrativePower,
         removeUser,
       ]
     },

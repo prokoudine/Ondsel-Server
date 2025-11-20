@@ -5,7 +5,7 @@
 import {BadRequest, NotAuthenticated} from "@feathersjs/errors";
 import {OrganizationTypeMap} from "../organizations/organizations.subdocs.schema.js";
 
-export const isOndselAdmin = async (params, app) => {
+export const isSiteAdministrator = async (params, app) => {
   let reason = 'External and account does not have permissions for administration';
   if (params.provider === undefined){ // Internal calls are "undefined"
     return [true, null];
@@ -25,20 +25,20 @@ export const isOndselAdmin = async (params, app) => {
             if (userList[matchIndex].isAdmin === true) {
               return [true, null];
             } else {
-              reason = 'Not an Ondsel admin.'
+              reason = 'Not a site administrator.'
             }
           }
         }
       }
     } else {
-      reason = 'Not an Ondsel employee.'
+      reason = 'Not a member of the site administrators.'
     }
   }
   return [false, reason];
 }
 
-export const verifyOndselAdministrativePower = async context => {
-  const [isAdmin, reason] = await isOndselAdmin(context.params, context.app);
+export const verifySiteAdministrativePower = async context => {
+  const [isAdmin, reason] = await isSiteAdministrator(context.params, context.app);
   if (!isAdmin) {
     throw new NotAuthenticated(reason);
   }

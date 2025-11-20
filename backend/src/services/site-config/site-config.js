@@ -17,7 +17,7 @@ import {
 import { SiteConfigService, getOptions } from './site-config.class.js'
 import { siteConfigPath, siteConfigMethods } from './site-config.shared.js'
 import { siteConfigId } from './site-config.schema.js'
-import { verifyOndselAdministrativePower } from '../hooks/administration.js'
+import { verifySiteAdministrativePower } from '../hooks/administration.js'
 import { setCustomizedFlags } from './set-customized-flags.hook.js'
 import { uploadBrandingLogo } from './upload-branding.hook.js'
 import { uploadDefaultModel, uploadDefaultModelThumbnail } from './upload-default-model.hook.js'
@@ -131,14 +131,14 @@ export const siteConfig = (app) => {
         // Only verify admin power for non-default configs
         async (context) => {
           if (context.id !== siteConfigId) {
-            return verifyOndselAdministrativePower(context);
+            return verifySiteAdministrativePower(context);
           }
           return context;
         }
       ],
       patch: [
         authenticate('jwt'),
-        verifyOndselAdministrativePower,
+        verifySiteAdministrativePower,
         parseSocialLinks,
         uploadBrandingLogo,
         uploadDefaultModel,

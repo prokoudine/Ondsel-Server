@@ -91,7 +91,7 @@ export const organization = (app) => {
             ],
           },
           find: {
-            "description": "Retrieves a list organizations.<ul><li>If publicInfo = true, then multiple orgs may be located but the information is limited to public info.</li><li>If logged in as Ondsel admin or an internal query, then everything is returned.</li><li>Otherwise, the query is not allowed.</li></ul>",
+            "description": "Retrieves a list of organizations.<ul><li>If publicInfo = true, then multiple orgs may be located but the information is limited to public info.</li><li>If logged in as a site administrator or an internal query, then everything is returned.</li><li>Otherwise, the query is not allowed.</li></ul>",
             "parameters": [
               {
                 "description": "Number of results to return",

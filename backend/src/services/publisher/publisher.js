@@ -19,7 +19,7 @@ import {
 import { PublisherService, getOptions } from './publisher.class.js'
 import { publisherPath, publisherMethods } from './publisher.shared.js'
 import {disallow, softDelete} from "feathers-hooks-common";
-import {verifyOndselAdministrativePower} from "../hooks/administration.js";
+import {verifySiteAdministrativePower} from "../hooks/administration.js";
 
 export * from './publisher.class.js'
 export * from './publisher.schema.js'
@@ -87,7 +87,7 @@ export const publisher = (app) => {
         // get called by proxy
       ],
       create: [
-        verifyOndselAdministrativePower,
+        verifySiteAdministrativePower,
         softDelete(),
         schemaHooks.validateData(publisherDataValidator),
         schemaHooks.resolveData(publisherDataResolver)

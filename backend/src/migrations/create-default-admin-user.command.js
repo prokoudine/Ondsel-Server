@@ -11,7 +11,7 @@ export async function addDefaultAdminUserCommand(app) {
   const adminEmail = process.env.DEFAULT_ADMIN_EMAIL || 'admin@local.test';
   const adminUsername = process.env.DEFAULT_ADMIN_USERNAME || 'admin';
   const adminPassword = process.env.DEFAULT_ADMIN_PASSWORD || 'admin@local.test';
-  const adminName = process.env.DEFAULT_ADMIN_NAME || 'Ondsel Admin';
+  const adminName = process.env.DEFAULT_ADMIN_NAME || 'Admin';
 
   // Check/create admin user
   console.log(">>> checking for admin user");

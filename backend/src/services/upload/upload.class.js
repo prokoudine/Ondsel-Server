@@ -13,7 +13,7 @@ import { GetObjectCommand, S3Client, HeadObjectCommand, CopyObjectCommand } from
 import { BadRequest } from '@feathersjs/errors'
 import dauria from 'dauria'
 import crypto from 'crypto'
-import { isOndselAdmin } from '../hooks/administration.js'
+import { isSiteAdministrator } from '../hooks/administration.js'
 
 const customerFileNameRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\.([0-9a-z]+)$/i;
 const generatedObjRegex = /^[0-9a-fA-F]{24}_generated\.(:?OBJ|BREP|FCSTD)$/;
@@ -179,7 +179,7 @@ class UploadService {
   }
 
   async create(data, params) {
-    const [isAdmin, reason] = await isOndselAdmin(params, this.options.app);
+    const [isAdmin, reason] = await isSiteAdministrator(params, this.options.app);
     if (!isValidFileName(data['id'], isAdmin)) {
       throw new BadRequest('Filename not valid!')
     }
