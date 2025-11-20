@@ -133,6 +133,77 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             </v-card>
           </v-col>
         </v-row>
+
+        <!-- Social Links Section -->
+        <v-divider class="my-6"></v-divider>
+
+        <v-row>
+          <v-col cols="12">
+            <v-card class="ma-2" elevation="1">
+              <v-card-title>Social Links</v-card-title>
+              <v-card-text>
+                <p class="text-caption text-grey-darken-1 mb-4">Configure social media links used in email templates. Leave URL empty to exclude from emails.</p>
+                
+                <v-row>
+                  <v-col cols="12" md="4">
+                    <v-text-field 
+                      v-model="socialLinks.forum.label" 
+                      label="Forum Label" 
+                      hint="Display name for the forum link"
+                      persistent-hint
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12" md="8">
+                    <v-text-field 
+                      v-model="socialLinks.forum.url" 
+                      label="Forum URL" 
+                      hint="Full URL to your forum"
+                      persistent-hint
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
+
+                <v-row>
+                  <v-col cols="12" md="4">
+                    <v-text-field 
+                      v-model="socialLinks.discord.label" 
+                      label="Discord Label" 
+                      hint="Display name for the Discord link"
+                      persistent-hint
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12" md="8">
+                    <v-text-field 
+                      v-model="socialLinks.discord.url" 
+                      label="Discord URL" 
+                      hint="Full URL to your Discord server"
+                      persistent-hint
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
+
+                <v-row>
+                  <v-col cols="12" md="4">
+                    <v-text-field 
+                      v-model="socialLinks.youtube.label" 
+                      label="YouTube Label" 
+                      hint="Display name for the YouTube link"
+                      persistent-hint
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12" md="8">
+                    <v-text-field 
+                      v-model="socialLinks.youtube.url" 
+                      label="YouTube URL" 
+                      hint="Full URL to your YouTube channel"
+                      persistent-hint
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
+              </v-card-text>
+            </v-card>
+          </v-col>
+        </v-row>
       </v-form>
     </v-card-text>
 
@@ -154,7 +225,7 @@ import { mapGetters, mapState } from "vuex";
 import { SITE_CONFIG_ID } from '@/store/services/site-config';
 
 export default {
-  name: 'XavierBrandingLogo',
+  name: 'XavierBrandingIdentity',
   data() {
     return {
       valid: false,
@@ -165,6 +236,11 @@ export default {
       previewFaviconUrl: null,
       siteTitle: '',
       copyrightText: '',
+      socialLinks: {
+        forum: { url: '', label: 'Forum' },
+        discord: { url: '', label: 'Discord' },
+        youtube: { url: '', label: 'YouTube' }
+      },
       showSnackbar: false,
       snackbarMessage: '',
       snackbarColor: 'success',
@@ -221,6 +297,17 @@ export default {
           }
           if (newVal.copyrightText && !this.copyrightText) {
             this.copyrightText = newVal.copyrightText;
+          }
+          if (newVal.socialLinks) {
+            if (newVal.socialLinks.forum) {
+              this.socialLinks.forum = { ...newVal.socialLinks.forum };
+            }
+            if (newVal.socialLinks.discord) {
+              this.socialLinks.discord = { ...newVal.socialLinks.discord };
+            }
+            if (newVal.socialLinks.youtube) {
+              this.socialLinks.youtube = { ...newVal.socialLinks.youtube };
+            }
           }
         }
       },
@@ -303,6 +390,7 @@ export default {
           formData.append('faviconFile', this.selectedFaviconFile);
         }
         formData.append('copyrightText', this.copyrightText);
+        formData.append('socialLinks', JSON.stringify(this.socialLinks));
         const response = await fetch(`${import.meta.env.VITE_APP_API_URL}site-config/${SITE_CONFIG_ID}`, {
           method: 'PATCH',
           headers: {

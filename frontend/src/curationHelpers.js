@@ -55,7 +55,7 @@ export function buildNavUrl(nav) {
     case Model.servicePath:
       url = `/model/${nav.modelid}`;
       break;
-    case 'ondsel':
+    case 'lens':
       url = "/";
       break;
   }
@@ -90,7 +90,7 @@ export function buildNavRoute(nav) {
     case Model.servicePath:
       page = { name: 'Home', params: {id: nav.modelid}};
       break;
-    case 'ondsel':
+    case 'lens':
       page = { name: 'LensHome' };
       break;
   }

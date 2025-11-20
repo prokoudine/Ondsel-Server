@@ -49,7 +49,7 @@ import WorkspaceFile from "@/views/WorkspaceFile.vue";
 import WorkerErrorCodes from "@/views/WorkerErrorCodes.vue";
 import XavierUpdateSoftwareReleases from "@/views/XavierUpdateSoftwareReleases.vue";
 import XavierBrandingHub from "@/views/XavierBrandingHub.vue";
-import XavierBrandingLogo from "@/views/XavierBrandingLogo.vue";
+import XavierBrandingIdentity from "@/views/XavierBrandingIdentity.vue";
 import XavierBrandingHomepage from "@/views/XavierBrandingHomepage.vue";
 import XavierBrandingDefaultModel from "@/views/XavierBrandingDefaultModel.vue";
 
@@ -239,8 +239,8 @@ const routes = [
   },
   {
     path: '/xavier-branding-logo-87654321',
-    component: XavierBrandingLogo,
-    name: 'XavierBrandingLogo',
+    component: XavierBrandingIdentity,
+    name: 'XavierBrandingIdentity',
     meta: { requiresAuth: true },
   },
   {

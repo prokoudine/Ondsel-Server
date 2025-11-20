@@ -13,8 +13,9 @@ import {
 import {Type} from "@feathersjs/typebox";
 import {navTargetMap} from "../../curation.schema.js";
 import {strEqual} from "../../helpers.js";
+import { siteConfigId } from "../site-config/site-config.schema.js";
 
-export function translateCollection(collection) {
+export async function translateCollection(collection, context) {
   let tr = '';
   switch (collection) {
     case navTargetMap.workspaces:
@@ -32,14 +33,15 @@ export function translateCollection(collection) {
     case navTargetMap.models:
       tr = 'a CAD model';
       break;
-    case navTargetMap.ondsel:
-      tr = 'Ondsel (the company)'
+    case navTargetMap.lens:
+      const siteConfig = await context.app.service('site-config').get(siteConfigId);
+      tr = siteConfig.siteTitle;
       break;
   }
   return tr;
 }
 
-export async function generateGenericBodySummaryTxt(ntf) {
+export async function generateGenericBodySummaryTxt(ntf, context) {
   let txt = "";
   txt += `User "${ntf.createdBy.name}" `;
   if (ntf.from.type !== OrganizationTypeMap.personal) {
@@ -49,7 +51,7 @@ export async function generateGenericBodySummaryTxt(ntf) {
     case notificationMessageMap.itemShared:
       // later; add support for the other types of things to share.
       txt += 'has shared ';
-      txt += translateCollection(ntf.nav?.target) + ' ';
+      txt += (await translateCollection(ntf.nav?.target, context)) + ' ';
       if (ntf.parameters?.name) {
         txt += `named "${ntf.parameters.name}" `;
       }
@@ -82,6 +84,7 @@ export async function performExternalNotificationDelivery(targetUserId, ntf, con
 
 async function deliverViaMailchimpSMTP(user, ntf, context) {
   const emailService = context.app.service('email');
+  const siteConfig = await context.app.service('site-config').get(siteConfigId);
   let body = ntf.bodySummaryTxt + '\n';
   if (ntf.parameters?.message) {
     body += `\nMessage:\n\n${ntf.parameters.message}\n\n`;
@@ -92,7 +95,7 @@ async function deliverViaMailchimpSMTP(user, ntf, context) {
   let msgDetail = {
     from: context.app.get('smtpFrom'),
     to: user.email,
-    subject: `[Ondsel] notification`,
+    subject: `[${siteConfig.siteTitle}] notification`,
     text: body,
   };
   const result = await emailService.create(msgDetail);

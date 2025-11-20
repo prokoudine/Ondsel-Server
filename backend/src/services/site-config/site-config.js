@@ -21,6 +21,7 @@ import { verifyOndselAdministrativePower } from '../hooks/administration.js'
 import { setCustomizedFlags } from './set-customized-flags.hook.js'
 import { uploadBrandingLogo } from './upload-branding.hook.js'
 import { uploadDefaultModel, uploadDefaultModelThumbnail } from './upload-default-model.hook.js'
+import { parseSocialLinks } from './parse-social-links.hook.js'
 import multer from 'multer'
 
 export * from './site-config.class.js'
@@ -138,6 +139,7 @@ export const siteConfig = (app) => {
       patch: [
         authenticate('jwt'),
         verifyOndselAdministrativePower,
+        parseSocialLinks,
         uploadBrandingLogo,
         uploadDefaultModel,
         uploadDefaultModelThumbnail,

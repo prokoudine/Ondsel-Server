@@ -22,7 +22,7 @@ export async function addInitialLensSiteCurationCommand(app) {
     const lscId = new ObjectId();
     const lscSummary = {
       agreementDocId: lscId,
-      title: 'Ondsel Lens Curation',
+      title: 'Lens Curation',
       effective: new Date(2024, 2, 19).getTime(), // 2 = March
       deprecated: null,
       version: '20240319',
@@ -31,9 +31,9 @@ export async function addInitialLensSiteCurationCommand(app) {
         _id: lscId,
         collection: 'agreements',
         nav: {
-          target: navTargetMap.ondsel,
+          target: navTargetMap.lens,
         },
-        name: 'ondsel-lens-curation',
+        name: 'lens-curation',
         slug: '',
         description: 'Current Headline Goes Here', // max: 80 runes
         longDescriptionMd: '',

@@ -22,6 +22,11 @@ class SiteConfig extends BaseModel {
       logoUrl: '/logo.svg',
       faviconUrl: '/favicon.ico',
       siteTitle: 'Lens',
+      socialLinks: {
+        forum: { url: 'https://forum.freecad.org', label: 'Forum' },
+        discord: { url: 'https://discord.gg/w2cTKGzccC', label: 'Discord' },
+        youtube: { url: '', label: 'YouTube' }
+      },
       copyrightText: '2025 Ondsel Inc.',
       homepageContent: {
         title: 'Welcome to Lens',
@@ -77,6 +82,7 @@ class SiteConfig extends BaseModel {
         logoUrl: false,
         faviconUrl: false,
         siteTitle: false,
+        socialLinks: false,
         copyrightText: false,
         homepageContent: false,
         defaultModel: false

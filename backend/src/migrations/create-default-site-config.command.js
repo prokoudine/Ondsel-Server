@@ -24,6 +24,11 @@ export async function createDefaultSiteConfigCommand(app) {
     logoUrl: '/logo.svg',
     faviconUrl: '/favicon.ico',
     siteTitle: 'Lens',
+    socialLinks: {
+      forum: { url: 'https://forum.freecad.org', label: 'Forum' },
+      discord: { url: 'https://discord.gg/w2cTKGzccC', label: 'Discord' },
+      youtube: { url: '', label: 'YouTube' }
+    },
     copyrightText: '2025 Ondsel Inc.',
     homepageContent: {
       title: 'Welcome to Lens',
@@ -80,6 +85,7 @@ export async function createDefaultSiteConfigCommand(app) {
       logoUrl: false,
       faviconUrl: false,
       siteTitle: false,
+      socialLinks: false,
       copyrightText: false,
       homepageContent: false,
       defaultModel: false,

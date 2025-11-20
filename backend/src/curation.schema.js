@@ -30,7 +30,7 @@ export const navTargetMap = {
   workspaces: workspacePath,
   sharedModels: sharedModelsPath,
   models: modelPath,
-  ondsel: 'ondsel', // meta ref for lens home page, not a collection name
+  lens: 'lens', // meta ref for lens home page, not a collection name
 }
 
 export const navTargetType = StringEnum([
@@ -39,7 +39,7 @@ export const navTargetType = StringEnum([
   navTargetMap.workspaces,
   navTargetMap.sharedModels,
   navTargetMap.models,
-  navTargetMap.ondsel,
+  navTargetMap.lens,
 ])
 
 // TODO: add curation and model support to Models in addition to SharedModels
@@ -89,7 +89,7 @@ export function buildNavUrl(nav, baseUrl) {
     case navTargetMap.models:
       url = `/model/${nav.modelid}`;
       break;
-    case navTargetMap.ondsel:
+    case navTargetMap.lens:
       url = "/";
       break;
   }
@@ -530,7 +530,7 @@ export const beforePatchHandleGenericCuration = (buildFunction) => {
         case navTargetMap.sharedModels:
           isOpenEnoughForKeywords = context.beforePatchCopy.protection === ProtectionTypeMap.listed;
           break;
-        case navTargetMap.ondsel:
+        case navTargetMap.lens:
           isOpenEnoughForKeywords = false; // the curation itself is public; but it is way too meta for keyword search
           break;
       }
