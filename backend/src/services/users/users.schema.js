@@ -183,7 +183,7 @@ export const userQueryResolver = resolve({
   // If there is a user (e.g. with authentication) but not admin, they are only allowed to see their own data
   _id: async (value, user, context) => {
     if (context.params.user) {
-      if (!isAdminUser(context.params.user) || context.$getOnlyAccessTokenUser) {
+      if (!(await isAdminUser(context)) || context.$getOnlyAccessTokenUser) {
         return context.params.user._id
       }
     }

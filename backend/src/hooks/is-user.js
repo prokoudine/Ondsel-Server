@@ -2,25 +2,22 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import { isSiteAdministrator } from "../services/hooks/administration.js";
+
 export const isEndUser = async (context) => {
   const provider = context.params.provider; // Internal calls are "undefined"
   if (provider === undefined) {
     return false;
   }
-  if (isAdminUser(context.params?.user)) {
+  if (await isAdminUser(context)) {
     return false;
   } else {
     return true;
   }
 }
 
-export const isAdminUser = (user) => {
-  // to be deprecated as .isTripe is to be deprecated; use verifySiteAdministrativePower instead
-  let email = user?.email;
-  let flag = user?.isTripe;
-  if (flag === true && email.includes("@ondsel.com")) {
-    return true;
-  }
-  return false;
+export const isAdminUser = async (context) => {
+  const [isAdmin] = await isSiteAdministrator(context.params, context.app);
+  return isAdmin;
 }
 

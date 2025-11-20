@@ -339,7 +339,7 @@ const detectUsernameInId = async context => {
   const id = context.id.toString();
   if (id.length < 24) { // a 24 character id is an OID not a username, so only look at username if shorter
     if (context.params?.user?.username !== context.id) {
-      if (!isAdminUser(context.params.user)) {
+      if (!(await isAdminUser(context))) {
         context.publicDataOnly = true;
       }
     }

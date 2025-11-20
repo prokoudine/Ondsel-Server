@@ -22,7 +22,6 @@ import swagger from "feathers-swagger";
 import {disallow, iff, isProvider, preventChanges} from "feathers-hooks-common";
 import {canUserAccessDirectoryOrFilePatchMethod} from "../directories/helpers.js";
 import {BadRequest} from "@feathersjs/errors";
-import {isAdminUser} from "../../hooks/is-user.js";
 import {verifySiteAdministrativePower} from "../hooks/administration.js";
 
 export * from './agreements.class.js'
