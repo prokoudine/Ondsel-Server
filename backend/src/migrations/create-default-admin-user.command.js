@@ -43,14 +43,6 @@ export async function addDefaultAdminUserCommand(app) {
   }
   process.env.DISABLE_SEND_VERIFICATION_EMAIL = originalDisableSendVerificationEmail;
 
-  // Set isTripe directly in the database since it's protected from API changes
-  const db = await app.get('mongodbClient');
-  const usersCollection = db.collection('users');
-  await usersCollection.updateOne(
-    { _id: user._id },
-    { $set: { isTripe: true } }
-  );
-
   // Check/create Admin organization and add admin user to it
   console.log(">>> setting up Admin organization for admin user");
   const organizations = await organizationService.find({ query: { refName: 'AdminOrganization' } });

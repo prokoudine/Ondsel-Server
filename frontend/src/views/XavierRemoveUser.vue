@@ -75,7 +75,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 <script>
 
-import {mapState} from "vuex";
+import {mapActions, mapState} from "vuex";
 import {crc32} from "@/refNameFunctions";
 import {models} from "@feathersjs/vuex";
 import _ from "lodash";
@@ -93,9 +93,10 @@ export default {
     isRemovalPending: false,
   }),
   async created() {
-    if (!this.user || !this.user.isTripe) {
+    if (!(await this.isSiteAdministrator())) {
       console.log("alert-33235-ru");
       this.$router.push({name: 'LensHome', params: {}});
+      return;
     }
     if (this.$route.query.i) {
       this.userId = this.$route.query.i;
@@ -109,6 +110,7 @@ export default {
     ...mapState('auth', ['user']),
   },
   methods: {
+    ...mapActions('app', ['isSiteAdministrator']),
     async doUserRemoval() {
       this.isRemovalPending = true;
       let hasError = false;

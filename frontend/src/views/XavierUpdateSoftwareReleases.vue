@@ -70,7 +70,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 <script>
 
 import Main from '@/layouts/default/Main.vue';
-import {mapState} from "vuex";
+import {mapActions, mapState} from "vuex";
 import XavierUploadSoftwareDialog from "@/components/XavierUploadSoftwareDialog.vue";
 import {models} from "@feathersjs/vuex";
 
@@ -115,9 +115,10 @@ export default {
     ...mapState('auth', ['user']),
   },
   async created() {
-    if (!this.user || !this.user.isTripe) {
+    if (!(await this.isSiteAdministrator())) {
       console.log("alert-33235-ru");
       this.$router.push({name: 'LensHome', params: {}});
+      return;
     }
     for (const key of this.releaseFileTypes) {
       this.releases.push({
@@ -136,6 +137,7 @@ export default {
     await this.scanPublisherCollection();
   },
   methods: {
+    ...mapActions('app', ['isSiteAdministrator']),
     async scanPublisherCollection() {
       const results = await Publisher.find({query: {$limit: 100}});
       const publishedList = results.data;

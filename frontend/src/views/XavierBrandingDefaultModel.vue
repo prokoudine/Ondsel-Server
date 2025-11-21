@@ -101,7 +101,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 </template>
 
 <script>
-import { mapGetters, mapState } from "vuex";
+import { mapActions, mapGetters, mapState } from "vuex";
 import { SITE_CONFIG_ID } from "@/store/services/site-config";
 import ModelViewer from "@/components/ModelViewer.vue";
 
@@ -151,12 +151,14 @@ export default {
   },
   async created() {
     // Check if user is admin
-    if (!this.user || !this.user.isTripe) {
+    if (!(await this.isSiteAdministrator())) {
       console.log("alert-33238-dm");
       this.$router.push({ name: "LensHome", params: {} });
+      return;
     }
   },
   methods: {
+    ...mapActions('app', ['isSiteAdministrator']),
     async uploadModel() {
       if (!this.selectedFile) {
         this.showMessage("Please select a file first", "error");

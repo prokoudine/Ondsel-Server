@@ -19,9 +19,7 @@ import { AgreementsService, getOptions } from './agreements.class.js'
 import { agreementsPath, agreementsMethods } from './agreements.shared.js'
 import {authenticate} from "@feathersjs/authentication";
 import swagger from "feathers-swagger";
-import {disallow, iff, isProvider, preventChanges} from "feathers-hooks-common";
 import {canUserAccessDirectoryOrFilePatchMethod} from "../directories/helpers.js";
-import {BadRequest} from "@feathersjs/errors";
 import {verifySiteAdministrativePower} from "../hooks/administration.js";
 
 export * from './agreements.class.js'
@@ -65,10 +63,7 @@ export const agreements = (app) => {
         schemaHooks.resolveData(agreementsDataResolver)
       ],
       patch: [
-        iff(
-          isProvider('external'),
-          isTripe
-        ),
+        verifySiteAdministrativePower,
         schemaHooks.validateData(agreementsPatchValidator),
         schemaHooks.resolveData(agreementsPatchResolver)
       ],
@@ -81,11 +76,4 @@ export const agreements = (app) => {
       all: []
     }
   })
-}
-
-export const isTripe = async context => {
-  if (context.params.user && context.params.user.isTripe) {
-    return context;
-  }
-  throw new BadRequest({ type: 'PermissionError', msg: 'You dont have permission'});
 }

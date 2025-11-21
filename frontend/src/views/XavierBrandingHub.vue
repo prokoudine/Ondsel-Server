@@ -242,16 +242,17 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 </template>
 
 <script>
-import {mapState, mapGetters} from "vuex";
+import {mapState, mapGetters, mapActions} from "vuex";
 import Main from '@/layouts/default/Main.vue';
 
 export default {
   name: 'XavierBrandingHub',
   components: { Main },
   async created() {
-    if (!this.user || !this.user.isTripe) {
+    if (!(await this.isSiteAdministrator())) {
       console.log("alert-33235-bh");
       this.$router.push({name: 'LensHome', params: {}});
+      return;
     }
   },
   computed: {
@@ -259,6 +260,7 @@ export default {
     ...mapGetters('app', ['siteConfig']),
   },
   methods: {
+    ...mapActions('app', ['isSiteAdministrator']),
     isConfigured(section) {
       if (!this.siteConfig || !this.siteConfig.customized) return false;
       

@@ -165,10 +165,6 @@ export const user = (app) => {
       ],
       patch: [
         copyUserBeforePatch,
-        preventChanges(
-          false,
-          'isTripe',
-        ),
         iff(
           isEndUser,
           preventChanges(

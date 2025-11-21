@@ -68,7 +68,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 <script>
 
-import {mapState} from "vuex";
+import {mapActions, mapState} from "vuex";
 import {models} from "@feathersjs/vuex";
 import {marked} from "marked";
 import MarkdownViewer from "@/components/MarkdownViewer.vue";
@@ -103,9 +103,10 @@ export default {
     ]
   }),
   async created() {
-    if (!this.user || !this.user.isTripe) {
+    if (!(await this.isSiteAdministrator())) {
       console.log("alert-7492783-mlhpc");
       this.$router.push({name: 'LensHome', params: {}});
+      return;
     }
     await this.update();
   },
@@ -114,6 +115,7 @@ export default {
     docName: vm => vm.$route.params.name,
   },
   methods: {
+    ...mapActions('app', ['isSiteAdministrator']),
     update() {
       models.api.Agreements.find({
         query: {category: this.docName}

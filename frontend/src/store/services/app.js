@@ -104,6 +104,36 @@ export default {
       // Save to DB
       models.api.User.patch(context.rootState.auth.user._id, { currentOrganizationId: organization._id });
     },
+    async isSiteAdministrator(context) {
+      const user = context.rootGetters['auth/user'];
+      if (!user || !user.organizations) {
+        return false;
+      }
+
+      const adminOrg = user.organizations.find(org => org.type === 'Admin');
+      if (!adminOrg) {
+        return false;
+      }
+
+      let fullOrg = models.api.Organization.getFromStore(adminOrg._id);
+      if (!fullOrg) {
+        try {
+          fullOrg = await models.api.Organization.get(adminOrg._id);
+        } catch (error) {
+          console.error('Error fetching Admin organization:', error);
+          return false;
+        }
+      }
+
+      if (fullOrg && fullOrg.users) {
+        const userInOrg = fullOrg.users.find(orgUser =>
+          orgUser._id === user._id || orgUser._id?.toString() === user._id?.toString()
+        );
+        return userInOrg?.isAdmin === true;
+      }
+
+      return false;
+    },
     getOrgByIdOrNamePublic: async (context, name) => {
       // get the public details of any organization using _id or refName (slug)
       let result = undefined;

@@ -44,7 +44,6 @@ export const userSchema = Type.Object(
     lastName: Type.String(), // deprecated
     subscriptionDetail: subscriptionDetailSchema,
     userAccounting: userAccountingSchema,
-    isTripe: Type.Optional(Type.Boolean()),
     // private fields (required by feathers-authentication-management)
     isVerified: Type.Boolean(),
     verifyToken: Type.Optional(Type.String()), // for Email
@@ -105,7 +104,6 @@ export const userDataResolver = resolve({
   password: passwordHash({ strategy: 'local' }),
   createdAt: async () => Date.now(),
   updatedAt: async () => Date.now(),
-  isTripe: async () => null,
   usernameHash: async (_value, message, _context) => {
     return refNameHasher(message.username)
   },
@@ -238,8 +236,5 @@ export const uniqueUserPatchValidator = async (context) => {
         errors: { email: 'Username already taken' }
       })
     }
-  }
-  if (context.data.isTripe) {
-    throw new BadRequest('Invalid: tripetitude not settable via API');
   }
 }
