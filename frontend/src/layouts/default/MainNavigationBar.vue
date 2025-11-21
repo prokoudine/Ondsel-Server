@@ -318,7 +318,7 @@ export default {
         },
         {
           icon: 'mdi-download-outline',
-          title: `Download ${this.siteConfig?.softwareTitle}`,
+          title: `Download ${this.siteConfig?.desktopApp?.name}`,
           condition: true,
           route: {name: 'DownloadAndExplore'}
         },

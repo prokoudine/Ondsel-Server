@@ -122,7 +122,7 @@ export async function createDefaultPublisherEntriesCommand(app) {
     console.log(`>>>   - ${weeklyEntries.length} weekly build entries`);
 
     console.log(">>> updating site config stable release version");
-    await siteConfigService.patch(siteConfigId, { stableReleaseVersion: stableVersion }, { user: adminUser });
+    await siteConfigService.patch(siteConfigId, { desktopApp: { ...siteConfig.desktopApp, version: stableVersion } }, { user: adminUser });
     console.log(`>>> site config stable release version updated to: ${stableVersion}`);
 
     console.log(">>> default publisher entries setup completed");

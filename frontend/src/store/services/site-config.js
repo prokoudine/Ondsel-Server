@@ -78,8 +78,12 @@ class SiteConfig extends BaseModel {
           }
         }
       },
-      softwareTitle: 'FreeCAD',
-      stableReleaseVersion: '',
+      desktopApp: {
+        name: 'FreeCAD',
+        version: '',
+        enabledOpenInDesktopApp: false,
+        protocol: 'freecad:',
+      },
       customized: {
         logoUrl: false,
         faviconUrl: false,
@@ -88,8 +92,7 @@ class SiteConfig extends BaseModel {
         copyrightText: false,
         homepageContent: false,
         defaultModel: false,
-        softwareTitle: false,
-        stableReleaseVersion: false,
+        desktopApp: false,
       }
     }
   }

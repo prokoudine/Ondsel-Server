@@ -47,6 +47,13 @@ const socialLinksSchema = Type.Object({
   youtube: Type.Optional(socialLinkSchema)
 })
 
+const desktopAppSchema = Type.Object({
+  name: Type.String(),
+  version: Type.String(),
+  enabledOpenInDesktopApp: Type.Boolean(),
+  protocol: Type.String(),
+})
+
 // Main data model schema
 export const siteConfigSchema = Type.Object(
   {
@@ -58,8 +65,7 @@ export const siteConfigSchema = Type.Object(
     copyrightText: Type.String({ minLength: 5, maxLength: 80 }),
     homepageContent: homepageContentSchema,
     defaultModel: defaultModelSchema,
-    softwareTitle: Type.String(),
-    stableReleaseVersion: Type.String(),
+    desktopApp: desktopAppSchema,
     customized: Type.Object({
       logoUrl: Type.Boolean(),
       faviconUrl: Type.Boolean(),
@@ -68,8 +74,7 @@ export const siteConfigSchema = Type.Object(
       copyrightText: Type.Boolean(),
       homepageContent: Type.Boolean(),
       defaultModel: Type.Boolean(),
-      softwareTitle: Type.Boolean(),
-      stableReleaseVersion: Type.Boolean(),
+      desktopApp: Type.Boolean(),
     }),
     updatedAt: Type.Number(),
     updatedBy: Type.Optional(userSummarySchema)

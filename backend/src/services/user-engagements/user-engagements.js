@@ -24,7 +24,7 @@ import {
 } from './user-engagements.schema.js'
 import { UserEngagementsService, getOptions } from './user-engagements.class.js'
 import { userEngagementsPath, userEngagementsMethods } from './user-engagements.shared.js'
-import { createLaunchShareLinkInOndselEsEntry } from './commands/launchOndselEsCommand.js';
+import { createLaunchShareLinkInDesktopAppEntry } from './commands/launchDesktopAppCommand.js';
 
 export * from './user-engagements.class.js'
 export * from './user-engagements.schema.js'
@@ -64,8 +64,8 @@ export const userEngagements = (app) => {
       get: [],
       create: [
         iff(
-          context => context.data.shouldLaunchShareLinkInOndselEsEntry,
-          createLaunchShareLinkInOndselEsEntry,
+          context => context.data.shouldLaunchShareLinkInDesktopAppEntry,
+          createLaunchShareLinkInDesktopAppEntry,
         ),
         schemaHooks.validateData(userEngagementsDataValidator),
         schemaHooks.resolveData(userEngagementsDataResolver)

@@ -81,8 +81,12 @@ export async function createDefaultSiteConfigCommand(app) {
         }
       }
     },
-    softwareTitle: 'FreeCAD',
-    stableReleaseVersion: '',
+    desktopApp: {
+      name: 'FreeCAD',
+      version: '',
+      enabledOpenInDesktopApp: false,
+      protocol: 'freecad:',
+    },
     customized: {
       logoUrl: false,
       faviconUrl: false,
@@ -91,8 +95,7 @@ export async function createDefaultSiteConfigCommand(app) {
       copyrightText: false,
       homepageContent: false,
       defaultModel: false,
-      softwareTitle: false,
-      stableReleaseVersion: false,
+      desktopApp: false,
     }
   };
 

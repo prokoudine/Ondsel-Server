@@ -10,24 +10,66 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       Xavier Update Software Releases
     </template>
     <template #content>
-      <div class="d-flex ml-4">
-        <v-text-field
-          v-model="softwareTitle"
-          label="Software Title"
-          density="compact"
-          variant="outlined"
-          class="mr-2 mt-1"
-          style="max-width: 200px;"
-        ></v-text-field>
-        <v-btn
-          variant="text"
-          icon
-          :disabled="!softwareTitle"
-          @click="saveSoftwareTitle(softwareTitle)"
-        >
-          <v-icon>mdi-content-save</v-icon>
-        </v-btn>
-      </div>
+      <v-card class="mb-4" elevation="1">
+        <v-card-text>
+          <div class="d-flex align-center flex-wrap ga-4">
+            <v-text-field
+              v-model="desktopAppName"
+              label="Software Title"
+              density="compact"
+              variant="outlined"
+              style="max-width: 200px;"
+              hide-details
+            ></v-text-field>
+            <v-text-field
+              v-model="desktopAppProtocol"
+              label="Desktop App Protocol"
+              density="compact"
+              variant="outlined"
+              style="max-width: 200px;"
+              hide-details
+            >
+              <template v-slot:append-inner>
+                <v-tooltip location="top" max-width="350">
+                  <template v-slot:activator="{ props }">
+                    <v-icon
+                      v-bind="props"
+                      size="small"
+                      color="primary"
+                      style="cursor: help;"
+                    >mdi-information-outline</v-icon>
+                  </template>
+                  <div class="pa-2">
+                    <div class="text-body-2 font-weight-bold mb-1">Desktop App Protocol</div>
+                    <div class="text-caption">
+                      The URL scheme/protocol handler for opening files in the desktop app (e.g., 'appname:').
+                      This is used to generate links like <code>appname:file/123/version/456</code> that the desktop app can handle.
+                      <br><br>
+                      <strong>Important:</strong> Include the colon (:) in the value (e.g., 'appname:' not 'appname').
+                    </div>
+                  </div>
+                </v-tooltip>
+              </template>
+            </v-text-field>
+            <v-switch
+              v-model="openInDesktopAppEnabled"
+              label="Enable Open in Desktop App"
+              density="compact"
+              hide-details
+              class="ml-2"
+            ></v-switch>
+            <v-spacer></v-spacer>
+            <v-btn
+              variant="text"
+              icon
+              :disabled="!desktopAppName || !desktopAppProtocol"
+              @click="saveDesktopAppDetails()"
+            >
+              <v-icon>mdi-content-save</v-icon>
+            </v-btn>
+          </div>
+        </v-card-text>
+      </v-card>
       <v-data-table :items="releases" :headers="headers">
         <template v-slot:top>
           <v-toolbar flat>
@@ -222,8 +264,10 @@ export default {
       { title: 'Download URL', key: 'downloadUrlResolved', sortable: false },
       { title: 'Actions', key: 'actions', sortable: false, align: 'end' },
     ],
-    softwareTitle: '',
+    desktopAppName: '',
     releaseVersion: '',
+    desktopAppProtocol: '',
+    openInDesktopAppEnabled: false,
     hasScannedEntries: false,
     isSaving: false,
     showEditDialog: false,
@@ -278,8 +322,10 @@ export default {
   methods: {
     ...mapActions('app', ['isSiteAdministrator']),
     async scanPublisherCollection() {
-      this.softwareTitle = this.siteConfig?.softwareTitle || '';
-      this.releaseVersion = this.siteConfig?.stableReleaseVersion || '';
+      this.desktopAppName = this.siteConfig?.desktopApp?.name || '';
+      this.releaseVersion = this.siteConfig?.desktopApp?.version || '';
+      this.desktopAppProtocol = this.siteConfig?.desktopApp?.protocol || '';
+      this.openInDesktopAppEnabled = this.siteConfig?.desktopApp?.enabledOpenInDesktopApp || false;
 
       const results = await Publisher.find({query: {$limit: 100}});
       const publishedList = results.data;
@@ -367,22 +413,31 @@ export default {
       this.snackbarColor = color;
       this.showSnackbar = true;
     },
-    async saveSoftwareTitle(title) {
-      try {
-        await SiteConfig.patch(SITE_CONFIG_ID, { softwareTitle: title });
-        this.showSnackbarMessage('Software title updated successfully', 'success');
-      } catch (error) {
-        console.error('Error updating software title:', error);
-        this.showSnackbarMessage('Error updating software title: ' + (error.message || 'Unknown error'), 'error');
-      }
-    },
     async saveVersion(version) {
       try {
-        await SiteConfig.patch(SITE_CONFIG_ID, { stableReleaseVersion: version });
+        await SiteConfig.patch(SITE_CONFIG_ID, { desktopApp: { ...this.siteConfig.desktopApp, version: version } });
         this.showSnackbarMessage('Version updated successfully', 'success');
       } catch (error) {
         console.error('Error updating version:', error);
         this.showSnackbarMessage('Error updating version: ' + (error.message || 'Unknown error'), 'error');
+      }
+    },
+    async saveDesktopAppDetails() {
+      try {
+        await SiteConfig.patch(
+          SITE_CONFIG_ID, {
+          desktopApp: {
+              ...this.siteConfig.desktopApp,
+              name: this.desktopAppName,
+              protocol: this.desktopAppProtocol,
+              enabledOpenInDesktopApp: this.openInDesktopAppEnabled
+            }
+          }
+        );
+        this.showSnackbarMessage('Desktop app details updated successfully', 'success');
+      } catch (error) {
+        console.error('Error updating desktop app details:', error);
+        this.showSnackbarMessage('Error updating desktop app details: ' + (error.message || 'Unknown error'), 'error');
       }
     },
     async refreshFromDB() {
@@ -412,10 +467,7 @@ export default {
 
         const result = await Publisher.create(allEntries);
 
-        if (this.softwareTitle && this.softwareTitle !== this.siteConfig?.softwareTitle) {
-          await this.saveSoftwareTitle(this.softwareTitle);
-        }
-        if (this.releaseVersion && this.releaseVersion !== this.siteConfig?.stableReleaseVersion) {
+        if (this.releaseVersion && this.releaseVersion !== this.siteConfig?.desktopApp?.version) {
           await this.saveVersion(this.releaseVersion);
         }
 

@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 <template>
   <v-container class="d-flex flex-column justify-center">
-    <signup-progress-bar step="2" :msg="`recommend downloading ${siteConfig.softwareTitle} next`"></signup-progress-bar>
+    <signup-progress-bar step="2" :msg="`recommend downloading ${siteConfig?.desktopApp?.name} next`"></signup-progress-bar>
     <v-card v-if="promptForSurvey">
       <v-card-text>
         <markdown-viewer :markdown-html="promptForSurveyHtml"></markdown-viewer>
@@ -17,8 +17,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         <v-card-title>Download</v-card-title>
         <v-card-text>
           <v-card width="30em">
-            <v-card-title>{{siteConfig.softwareTitle}}</v-card-title>
-            <v-card-subtitle>v {{siteConfig.stableReleaseVersion}}</v-card-subtitle>
+            <v-card-title>{{siteConfig?.desktopApp?.name}}</v-card-title>
+            <v-card-subtitle>v {{siteConfig?.desktopApp?.version}}</v-card-subtitle>
             <v-card-text class="overflow-y-auto" >
               <v-container class="d-flex flex-row justify-start">
                 <v-avatar width="7em" rounded="0" class="mr-2">
@@ -122,7 +122,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           <v-card class="mt-4" width="30em">
             <v-card-title>Pre-Releases</v-card-title>
             <v-card-text class="overflow-y-auto" >
-              <b>The latest pre-release version of {{siteConfig.softwareTitle}} was built on {{weeklyBuildDate}}</b>
+              <b>The latest pre-release version of {{siteConfig?.desktopApp?.name}} was built on {{weeklyBuildDate}}</b>
               <p>
                 ⚠️ These are intended for testing purposes only. Please don't use them for regular work. ⚠️
               </p>
