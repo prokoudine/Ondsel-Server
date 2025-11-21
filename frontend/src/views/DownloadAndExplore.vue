@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 <template>
   <v-container class="d-flex flex-column justify-center">
-    <signup-progress-bar step="2" msg="recommend downloading Ondsel ES next"></signup-progress-bar>
+    <signup-progress-bar step="2" :msg="`recommend downloading ${siteConfig.softwareTitle} next`"></signup-progress-bar>
     <v-card v-if="promptForSurvey">
       <v-card-text>
         <markdown-viewer :markdown-html="promptForSurveyHtml"></markdown-viewer>
@@ -17,36 +17,40 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         <v-card-title>Download</v-card-title>
         <v-card-text>
           <v-card width="30em">
-            <v-card-title>Ondsel ES</v-card-title>
-            <v-card-subtitle>v {{ondselEsVersionTxt}}</v-card-subtitle>
+            <v-card-title>{{siteConfig.softwareTitle}}</v-card-title>
+            <v-card-subtitle>v {{siteConfig.stableReleaseVersion}}</v-card-subtitle>
             <v-card-text class="overflow-y-auto" >
               <v-container class="d-flex flex-row justify-start">
                 <v-avatar width="7em" rounded="0" class="mr-2">
                   <v-img
                     width="6em"
                     alt="Linux"
-                    src="https://ondsel.com/img/os_linux.svg"
+                    src="/img/icon-linux.svg"
                   />
                 </v-avatar>
                 <v-container style="border-left: 4px solid black;">
                   <download-published-link
-                    :details="ondselEsDownload['Linux-x86_64.AppImage']"
+                    :details="releaseDownload['Linux-x86_64.AppImage']"
+                    :use-direct-link="releaseDownload['Linux-x86_64.AppImage']?.useDirectLink"
                     :user-id="userId"
                     :small="false"
                   ></download-published-link>
                   <download-published-link
-                    :details="ondselEsDownload['Linux-x86_64.AppImage-SHA256.txt']"
+                    :details="releaseDownload['Linux-x86_64.AppImage-SHA256.txt']"
+                    :use-direct-link="releaseDownload['Linux-x86_64.AppImage-SHA256.txt']?.useDirectLink"
                     :user-id="userId"
                     :small="true"
                   ></download-published-link>
                   <p/>
                   <download-published-link
-                    :details="ondselEsDownload['Linux-aarch64.AppImage']"
+                    :details="releaseDownload['Linux-aarch64.AppImage']"
+                    :use-direct-link="releaseDownload['Linux-aarch64.AppImage']?.useDirectLink"
                     :user-id="userId"
                     :small="false"
                   ></download-published-link>
                   <download-published-link
-                    :details="ondselEsDownload['Linux-aarch64.AppImage-SHA256.txt']"
+                    :details="releaseDownload['Linux-aarch64.AppImage-SHA256.txt']"
+                    :use-direct-link="releaseDownload['Linux-aarch64.AppImage-SHA256.txt']?.useDirectLink"
                     :user-id="userId"
                     :small="true"
                   ></download-published-link>
@@ -58,28 +62,32 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                   <v-img
                     width="6em"
                     alt="Mac"
-                    src="https://ondsel.com/img/os_mac.svg"
+                    src="/img/icon-apple.svg"
                   />
                 </v-avatar>
                 <v-container style="border-left: 4px solid black;">
                   <download-published-link
-                    :details="ondselEsDownload['macOS-apple-silicon-arm64.dmg']"
+                    :details="releaseDownload['macOS-apple-silicon-arm64.dmg']"
+                    :use-direct-link="releaseDownload['macOS-apple-silicon-arm64.dmg']?.useDirectLink"
                     :user-id="userId"
                     :small="false"
                   ></download-published-link>
                   <download-published-link
-                    :details="ondselEsDownload['macOS-apple-silicon-arm64.dmg-SHA256.txt']"
+                    :details="releaseDownload['macOS-apple-silicon-arm64.dmg-SHA256.txt']"
+                    :use-direct-link="releaseDownload['macOS-apple-silicon-arm64.dmg-SHA256.txt']?.useDirectLink"
                     :user-id="userId"
                     :small="true"
                   ></download-published-link>
                   <p/>
                   <download-published-link
-                    :details="ondselEsDownload['macOS-intel-x86_64.dmg']"
+                    :details="releaseDownload['macOS-intel-x86_64.dmg']"
+                    :use-direct-link="releaseDownload['macOS-intel-x86_64.dmg']?.useDirectLink"
                     :user-id="userId"
                     :small="false"
                   ></download-published-link>
                   <download-published-link
-                    :details="ondselEsDownload['macOS-intel-x86_64.dmg-SHA256.txt']"
+                    :details="releaseDownload['macOS-intel-x86_64.dmg-SHA256.txt']"
+                    :use-direct-link="releaseDownload['macOS-intel-x86_64.dmg-SHA256.txt']?.useDirectLink"
                     :user-id="userId"
                     :small="true"
                   ></download-published-link>
@@ -90,17 +98,19 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                   <v-img
                     width="6em"
                     alt="Windows"
-                    src="https://ondsel.com/img/os_windows.svg"
+                    src="/img/icon-windows.svg"
                   />
                 </v-avatar>
                 <v-container style="border-left: 4px solid black;">
                   <download-published-link
-                    :details="ondselEsDownload['Windows-x86_64-installer.exe']"
+                    :details="releaseDownload['Windows-x86_64-installer.exe']"
+                    :use-direct-link="releaseDownload['Windows-x86_64-installer.exe']?.useDirectLink"
                     :user-id="userId"
                     :small="false"
                   ></download-published-link>
                   <download-published-link
-                    :details="ondselEsDownload['Windows-x86_64-installer.exe-SHA256.txt']"
+                    :details="releaseDownload['Windows-x86_64-installer.exe-SHA256.txt']"
+                    :use-direct-link="releaseDownload['Windows-x86_64-installer.exe-SHA256.txt']?.useDirectLink"
                     :user-id="userId"
                     :small="true"
                   ></download-published-link>
@@ -112,7 +122,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           <v-card class="mt-4" width="30em">
             <v-card-title>Pre-Releases</v-card-title>
             <v-card-text class="overflow-y-auto" >
-              <b>The latest pre-release version of Ondsel ES was built on {{weeklyBuildDate}}</b>
+              <b>The latest pre-release version of {{siteConfig.softwareTitle}} was built on {{weeklyBuildDate}}</b>
               <p>
                 ⚠️ These are intended for testing purposes only. Please don't use them for regular work. ⚠️
               </p>
@@ -121,7 +131,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                   <v-img
                     width="6em"
                     alt="Linux"
-                    src="https://ondsel.com/img/os_linux.svg"
+                    src="/img/icon-linux.svg"
                   />
                 </v-avatar>
                 <v-container style="border-left: 4px solid black;">
@@ -130,12 +140,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                       <v-expansion-panel-text>
                         <download-published-link
                           :details="weeklyDownload['Linux-x86_64.AppImage']"
+                          :use-direct-link="weeklyDownload['Linux-x86_64.AppImage']?.useDirectLink"
                           :user-id="userId"
                           :small="false"
                         ></download-published-link>
                         <p/>
                         <download-published-link
                           :details="weeklyDownload['Linux-aarch64.AppImage']"
+                          :use-direct-link="weeklyDownload['Linux-aarch64.AppImage']?.useDirectLink"
                           :user-id="userId"
                           :small="false"
                         ></download-published-link>
@@ -150,7 +162,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                   <v-img
                     width="6em"
                     alt="Mac"
-                    src="https://ondsel.com/img/os_mac.svg"
+                    src="/img/icon-apple.svg"
                   />
                 </v-avatar>
                 <v-container style="border-left: 4px solid black;">
@@ -159,12 +171,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                       <v-expansion-panel-text>
                         <download-published-link
                           :details="weeklyDownload['macOS-apple-silicon-arm64.dmg']"
+                          :use-direct-link="weeklyDownload['macOS-apple-silicon-arm64.dmg']?.useDirectLink"
                           :user-id="userId"
                           :small="false"
                         ></download-published-link>
                         <p/>
                         <download-published-link
                           :details="weeklyDownload['macOS-intel-x86_64.dmg']"
+                          :use-direct-link="weeklyDownload['macOS-intel-x86_64.dmg']?.useDirectLink"
                           :user-id="userId"
                           :small="false"
                         ></download-published-link>
@@ -178,7 +192,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                   <v-img
                     width="6em"
                     alt="Windows"
-                    src="https://ondsel.com/img/os_windows.svg"
+                    src="/img/icon-windows.svg"
                   />
                 </v-avatar>
                 <v-container style="border-left: 4px solid black;">
@@ -187,6 +201,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                       <v-expansion-panel-text>
                         <download-published-link
                           :details="weeklyDownload['Windows-x86_64.7z']"
+                          :use-direct-link="weeklyDownload['Windows-x86_64.7z']?.useDirectLink"
                           :user-id="userId"
                           :small="false"
                         ></download-published-link>
@@ -220,7 +235,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
     <v-card flat>
       <v-card-text>
-        <i>You can always get back to this page from the right-hand app-bar menu.</i>
+        <i>You can always get back to this page from the left-hand app-bar menu.</i>
       </v-card-text>
     </v-card>
   </v-container>
@@ -244,8 +259,7 @@ export default {
   data: () => ({
     promptForSurvey: false,
     promptForSurveyHtml: '',
-    ondselEsDownload: {},
-    ondselEsVersionTxt: 'tbd',
+    releaseDownload: {},
     weeklyDownload: {},
     weeklyBuildDate: 'tbd',
     releaseFileTypes: {
@@ -272,45 +286,49 @@ export default {
   computed: {
     ...mapState('auth', { loggedInUser: 'payload' }),
     ...mapState('auth', ['user']),
+    ...mapState('app', ['siteConfig']),
   },
   async created() {
     if (this.loggedInUser.user.tier === SubscriptionTypeMap.unverified) {
       this.$router.push({name: 'PendingVerification'})
     }
     await this.getSurveyPrompt();
-    let osVer = 'unknown';
     let buildDate = 'unknown';
-    let osd = {};
-    let wd = {};
+    let _releaseDownload = {};
+    let _weeklyDownload = {};
     const results = await Publisher.find({query: {$limit: 100}});
     const publishedList = results.data;
     for (const item of publishedList) {
       const target = item.target;
       const cadence = item.releaseCadence;
       let url;
-      if (import.meta.env.VITE_DEV_PROXY_TO_API_HACK) {
+      let useDirectLink = false;
+      if (item.downloadUrl && item.downloadUrlResolved) {
+        url = item.downloadUrlResolved;
+        useDirectLink = true;
+      } else if (import.meta.env.VITE_DEV_PROXY_TO_API_HACK) {
         url = `${import.meta.env.VITE_DEV_PROXY_TO_API_HACK}/publisher/${item._id}/download/${item.filename}`;
       } else {
         url = `/publisher/${item._id}/download/${item.filename}`;
       }
       if (cadence === 'stable') {
         const shortName = this.releaseFileTypes[target];
-        osd[target] = item;
-        osd[target].browser_download_url = url;
-        osd[target].shortName = shortName;
-        osd[target].releaseDate = false; // prevents display
-        osVer = item.release;
+        _releaseDownload[target] = item;
+        _releaseDownload[target].browser_download_url = url;
+        _releaseDownload[target].shortName = shortName;
+        _releaseDownload[target].releaseDate = false; // prevents display
+        _releaseDownload[target].useDirectLink = useDirectLink;
       } else {
         const shortName = this.weeklyFileTypes[target];
-        wd[target] = item;
-        wd[target].browser_download_url = url;
-        wd[target].shortName = shortName;
+        _weeklyDownload[target] = item;
+        _weeklyDownload[target].browser_download_url = url;
+        _weeklyDownload[target].shortName = shortName;
+        _weeklyDownload[target].useDirectLink = useDirectLink;
         buildDate = this.dateFormat(item.releaseDate);
       }
     }
-    this.ondselEsDownload = osd;
-    this.ondselEsVersionTxt = osVer;
-    this.weeklyDownload = wd;
+    this.releaseDownload = _releaseDownload;
+    this.weeklyDownload = _weeklyDownload;
     this.weeklyBuildDate = buildDate;
     this.userId = this.user._id.toString();
   },

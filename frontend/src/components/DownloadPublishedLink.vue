@@ -5,14 +5,15 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
 <template>
-  <form method="POST" :action="`${details?.browser_download_url}`">
+  <form method="POST" :action="`${details?.browser_download_url}`" @submit="handleDownload">
     <input type="hidden" name="downloadCounter" :value="`${getObscuredForCustomMiddleware()}`">
     <v-btn
       v-if="small"
       flat
       size="x-small"
       class="text-caption text-red"
-      type="submit"
+      :type="useDirectLink ? 'button' : 'submit'"
+      @click="handleDownload"
     >{{details.shortName}}</v-btn>
     <v-btn
       v-else
@@ -20,7 +21,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       variant="outlined"
       class="text-none justify-start mt-4"
       min-width="14em"
-      type="submit"
+      :type="useDirectLink ? 'button' : 'submit'"
+      @click="handleDownload"
     >
       <span>
         {{details.shortName}}
@@ -53,7 +55,11 @@ export default {
     small: {
       type: Boolean,
       default: false,
-    }
+    },
+    useDirectLink: {
+      type: Boolean,
+      default: false,
+    },
   },
   created() {
   },
@@ -62,6 +68,14 @@ export default {
   computed: {
   },
   methods: {
+    handleDownload(event) {
+      if (this.useDirectLink) {
+        event.preventDefault();
+        if (this.details?.browser_download_url) {
+          window.open(this.details.browser_download_url, '_blank', 'noopener,noreferrer');
+        }
+      }
+    },
     getObscuredForCustomMiddleware() {
       return this.rot13rot5(this.userId);
     },

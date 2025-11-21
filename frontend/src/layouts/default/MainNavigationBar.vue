@@ -316,6 +316,12 @@ export default {
           condition: this.user,
           route: {name: 'Bookmarks'}
         },
+        {
+          icon: 'mdi-download-outline',
+          title: `Download ${this.siteConfig?.softwareTitle}`,
+          condition: true,
+          route: {name: 'DownloadAndExplore'}
+        },
       ].filter(item => item.condition);
     },
   },

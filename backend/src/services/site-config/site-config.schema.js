@@ -58,6 +58,8 @@ export const siteConfigSchema = Type.Object(
     copyrightText: Type.String({ minLength: 5, maxLength: 80 }),
     homepageContent: homepageContentSchema,
     defaultModel: defaultModelSchema,
+    softwareTitle: Type.String(),
+    stableReleaseVersion: Type.String(),
     customized: Type.Object({
       logoUrl: Type.Boolean(),
       faviconUrl: Type.Boolean(),
@@ -66,6 +68,8 @@ export const siteConfigSchema = Type.Object(
       copyrightText: Type.Boolean(),
       homepageContent: Type.Boolean(),
       defaultModel: Type.Boolean(),
+      softwareTitle: Type.Boolean(),
+      stableReleaseVersion: Type.Boolean(),
     }),
     updatedAt: Type.Number(),
     updatedBy: Type.Optional(userSummarySchema)

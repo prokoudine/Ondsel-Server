@@ -78,6 +78,8 @@ class SiteConfig extends BaseModel {
           }
         }
       },
+      softwareTitle: 'FreeCAD',
+      stableReleaseVersion: '',
       customized: {
         logoUrl: false,
         faviconUrl: false,
@@ -85,7 +87,9 @@ class SiteConfig extends BaseModel {
         socialLinks: false,
         copyrightText: false,
         homepageContent: false,
-        defaultModel: false
+        defaultModel: false,
+        softwareTitle: false,
+        stableReleaseVersion: false,
       }
     }
   }

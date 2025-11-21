@@ -5,6 +5,7 @@ npm run migration addInitialTosPp
 npm run migration updateTos2023Aug31
 npm run migration createDefaultSiteConfig
 npm run migration addDefaultAdminUser
+npm run migration createDefaultPublisherEntries
 
 # Start the application
 if [ "$NODE_ENV" = "development" ]; then
