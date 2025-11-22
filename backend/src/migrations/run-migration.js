@@ -10,7 +10,6 @@ import {updateModelsForFilesCommand} from "./update-models-for-files.command.js"
 import { migrateWorkspaceGroupsOrUsersCommand } from "./update-workspace-groupsOrUsers.js";
 import {updateDirectoryFileSummariesCommand} from "./update-directory-file-summaries.command.js";
 import {addInitialTosPp} from "./add-initial-tos-pp.js";
-import {updateTos2023Aug31Command} from "./update-tos-2023-aug-31.command.js";
 import {addMissingRefNamesCommand} from "./add-missing-ref-names.command.js";
 import { updateDirectoryWorkspaceSubDocs } from './update-workspaceSubDocs-for-directory.js';
 import { addOwnerToOrganizationCommand } from './add-owner-to-organization.js';
@@ -68,9 +67,6 @@ async function runMigration() {
     //   break;
     case 'addInitialTosPp':
       await addInitialTosPp(app);
-      break;
-    case 'updateTos2023Aug31':
-      await updateTos2023Aug31Command(app);
       break;
     // case 'addUsername':
     //   await addUsernameCommand(app);
