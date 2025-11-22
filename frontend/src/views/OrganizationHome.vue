@@ -183,7 +183,7 @@ export default {
         this.$router.push({ name: 'UserHome', params: { slug: this.targetOrgDetail.owner.username } });
         return;
       }
-      if (this.targetOrgDetail.type === 'Ondsel') {
+      if (this.targetOrgDetail.type === 'Admin') {
         this.$router.push({ name: 'LensHome' });
       }
       const wsList = await Workspace.find({

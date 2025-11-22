@@ -92,7 +92,7 @@ export default {
   async created() {
     const response = await Organization.find({
       query: {
-        type: 'Ondsel',
+        type: 'Admin',
         publicInfo: 'true',
       }
     });

@@ -53,7 +53,7 @@ export async function addDefaultAdminUserCommand(app) {
     adminOrganization = await organizationService.create({
       name: 'Admin Organization',
       refName: 'AdminOrganization',
-      type: OrganizationTypeMap.ondsel,
+      type: OrganizationTypeMap.admin,
     }, { user: user });
     console.log(">>> Admin Organization created");
   } else {

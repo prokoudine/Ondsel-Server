@@ -34,7 +34,7 @@ Organization Types:
 - Personal: All workspaces, files, and activity are public by default. This can be changed by the user unless using solo tier subscription.
 - Open: All workspaces, files, and activity are publicly visible.
 - Private: All workspaces, files, and activity are private by default.
-- Ondsel: Special organization type for the site administrators.
+- Admin: Special organization type for the site administrators.
 
 Public view of organization can be accessed by anyone at the url:
 ```

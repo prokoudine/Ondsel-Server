@@ -13,12 +13,12 @@ export const isSiteAdministrator = async (params, app) => {
   const user = params.user;
   const orgList = user.organizations;
   if (orgList) {
-    const adminOrg = orgList.find(org => org.type === OrganizationTypeMap.ondsel);
+    const adminOrg = orgList.find(org => org.type === OrganizationTypeMap.admin);
     if (adminOrg) {
       // second check against real org entry
       const realOrg = await app.service('organizations').get(adminOrg._id);
       if (realOrg) {
-        if (realOrg.type === OrganizationTypeMap.ondsel) {
+        if (realOrg.type === OrganizationTypeMap.admin) {
           const userList = realOrg.users
           const matchIndex = userList.findIndex(orgUser => orgUser._id.equals(user._id));
           if (matchIndex !== -1) {

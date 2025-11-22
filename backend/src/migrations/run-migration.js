@@ -39,7 +39,7 @@ import {
   addOrgSecondaryReferencesToAllOrganizationsCommand
 } from "./add-org-secondary-references-to-all-organizations.command.js";
 import { addMessagesFieldsToSharedModelsCommand } from './add-messages-fields-to-shared-models.command.js';
-import { createOndselOrganizationCommand } from './create-ondsel-organization.command.js';
+import { createAdminOrganizationCommand } from './create-admin-organization.command.js';
 import {addNotificationsIdToUsersCommand} from "./add-notificationsId-to-users.command.js";
 import { addProtectionFieldToSharedModelCommand } from "./addProtectionFieldToSharedModel.js";
 import { addFollowSupportToSharedModelsCommand } from "./add-follow-support-to-shared-models.command.js";
@@ -50,6 +50,7 @@ import {fixedSharedWithMeSchemasCommand} from "./fixed-shared-with-me-schemas.co
 import {addDefaultAdminUserCommand} from "./create-default-admin-user.command.js";
 import {createDefaultSiteConfigCommand} from "./create-default-site-config.command.js";
 import {createDefaultPublisherEntriesCommand} from "./create-default-publisher-entries.command.js";
+import {migrateOndselToAdminOrganizationCommand} from "./migrate-ondsel-to-admin-organization.command.js";
 
 
 async function runMigration() {
@@ -173,8 +174,8 @@ async function runMigration() {
     case 'addMessagesFieldsToSharedModels':
       await addMessagesFieldsToSharedModelsCommand(app);
       break;
-    case 'createOndselOrganization':
-      await createOndselOrganizationCommand(app);
+    case 'createAdminOrganization':
+      await createAdminOrganizationCommand(app);
       break;
     case 'addNotificationsIdToUsers':
       await addNotificationsIdToUsersCommand(app);
@@ -205,6 +206,9 @@ async function runMigration() {
       break;
     case 'createDefaultPublisherEntries':
       await createDefaultPublisherEntriesCommand(app);
+      break;
+    case 'migrateOndselToAdminOrganization':
+      await migrateOndselToAdminOrganizationCommand(app);
       break;
     default:
       console.error('Please specify the migration command.')
