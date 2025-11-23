@@ -17,7 +17,7 @@ export const LicenseTypeMap = {
   cc0: 'CC0 1.0',
   ccBy: 'CC BY 4.0',
   ccBySa: 'CC BY-SA 4.0',
-  arr: 'All Rights Reserved',  // no license given; making available via Ondsel for public display
+  arr: 'All Rights Reserved',  // no license given; making available via this platform for public display
 }
 
 export const LicenseType = StringEnum([
