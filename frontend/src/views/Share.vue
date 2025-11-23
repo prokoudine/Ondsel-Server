@@ -310,7 +310,7 @@ export default {
     ...mapGetters('app', ['siteConfig', 'selfPronoun', 'selfName', 'currentOrganization']),
     isWindowLoadedInIframe: (vm) => vm.$route.meta.isWindowLoadedInIframe,
     hasBasicRights: (vm) => vm.isAuthenticated && vm.user?.tier !== undefined && vm.user?.tier !== 'Unverified',
-    title: (vm) => `${vm.sharedModel?.title || ''} - Ondsel`,
+    title: (vm) => `${vm.sharedModel?.title || ''} - ${vm.siteConfig?.siteTitle}`,
   },
   methods: {
     async fetchShareLink() {

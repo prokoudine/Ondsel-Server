@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       ></v-progress-linear>
       <v-form v-model="isValid" @submit.prevent="sendResetEmail">
       <v-card-text>
-        Fill out your account's email address and click "Send Email" below. Ondsel will send an email with
+        Fill out your account's email address and click "Send Email" below. We will send an email with
         a link (containing a security code) allowing you to reset your password.
       </v-card-text>
       <v-text-field

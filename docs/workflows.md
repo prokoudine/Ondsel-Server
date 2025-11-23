@@ -1,7 +1,7 @@
 # Different Workflows:
 
 ## Signup Workflow:
-The signup workflow in Ondsel involves several steps and services working together:
+The signup workflow in Lens involves several steps and services working together:
 
 1. User Registration:
    - User provides email, password and other required details
@@ -16,7 +16,7 @@ The signup workflow in Ondsel involves several steps and services working togeth
 
 3. Post-Verification:
    - After successful email verification, user subscription tier is upgraded from unverified to solo
-   - Frontend redirects to onboarding download/explore ondsel page
+   - Frontend redirects to onboarding download/explore lens page
 
 The workflow utilizes multiple services including:
 - Users Service: For user account management

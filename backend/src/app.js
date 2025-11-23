@@ -56,8 +56,8 @@ app.configure(swagger({
   ui: swagger.swaggerUI({}),
   specs: {
     info: {
-      title: 'Ondsel Server API',
-      description: 'API documentation for Ondsel backend API',
+      title: 'Lens Server API',
+      description: 'API documentation for Lens backend API',
       version: '1.0.0',
     },
     schemes: ['http', 'https'], // Optionally set the protocol schema used (sometimes required when host on https)

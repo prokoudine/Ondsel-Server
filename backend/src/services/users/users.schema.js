@@ -11,7 +11,7 @@ import { dataValidator, queryValidator } from '../../validators.js'
 
 import {organizationSummarySchema} from '../organizations/organizations.subdocs.schema.js';
 import {
-  agreementsAcceptedSchema, getConstraint, NotificationCadenceType, NotificationCadenceTypeMap, OndselUsageType,
+  agreementsAcceptedSchema, getConstraint, NotificationCadenceType, NotificationCadenceTypeMap, LensUsageType,
   SubscriptionConstraintsType,
   subscriptionDetailSchema,
   SubscriptionStateMap,
@@ -54,7 +54,7 @@ export const userSchema = Type.Object(
     resetShortToken: Type.Optional(Type.String()), // for SMS
     resetExpires: Type.Number(),
     resetAttempts: Type.Number(),
-    usageType: OndselUsageType,
+    usageType: LensUsageType,
 
     // public fields
     username: Type.String(),

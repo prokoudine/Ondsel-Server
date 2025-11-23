@@ -98,7 +98,7 @@ services:
       - MATOMO_DATABASE_USER=matomo
       - MATOMO_DATABASE_PASSWORD=matomo
       - MATOMO_DATABASE_NAME=matomo
-      - MATOMO_WEBSITE_NAME=Ondsel LENS
+      - MATOMO_WEBSITE_NAME=Lens
       - MATOMO_WEBSITE_HOST=${FRONTEND_URL:-http://localhost:3000}
       - MATOMO_USERNAME=${MATOMO_USERNAME:-admin}
       - MATOMO_PASSWORD=${MATOMO_PASSWORD:-admin@local.test}

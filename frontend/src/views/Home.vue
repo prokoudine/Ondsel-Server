@@ -409,7 +409,7 @@ export default {
           return {
             code: vm.model.errorMsg.code,
             label: 'Internal server error',
-            desc: 'Not able to process model, please contact the <a href="https://ondsel.com/support/">support team</a>',
+            desc: 'Not able to process model, please contact the support team',
           }
         } else {
           return {

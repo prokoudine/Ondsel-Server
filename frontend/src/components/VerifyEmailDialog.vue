@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         bottom
       ></v-progress-linear>
       <v-card-text>
-        Clicking on "Send Email" below will cause Ondsel to send an email to {{user.email}}. The email will contain
+        Clicking on "Send Email" below will cause us to send an email to {{user.email}}. The email will contain
         a link (containing a security code) allowing you to verify the email account.
       </v-card-text>
       <v-card-actions class="justify-center">

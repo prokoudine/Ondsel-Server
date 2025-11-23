@@ -77,7 +77,7 @@ The upload service handles the upload of actual files to the workspace. Key feat
 
 
 ## Models Service:
-The model is the 3D model object in Ondsel. This can be rendered in the frontend using the FC-Worker service. Key features include:
+The model is the 3D model object in Lens. This can be rendered in the frontend using the FC-Worker service. Key features include:
 - Create, update, and delete models.
 - Intagrates with file service for version control for models.
 - Integrates with fc-worker service for model rendering and export to different formats.

@@ -105,7 +105,7 @@ export default {
     ...mapActions('app', ['getUserByIdOrNamePublic', 'getWorkspaceByIdPublic', 'getOrgByIdOrNamePublic']),
     async reCalc() {
       const org = await Organization.get(this.userCurrentOrganization._id);
-      this.promoterType = 'organizations'; // only this for now; later adding "Ondsel" and possibly other promoters
+      this.promoterType = 'organizations'; // only this for now; later adding "Lens" and possibly other promoters
                                            // note: a 'user' promotes using the Personal 'organizaton'
       this.promoterId = org._id.toString();
       this.promoterObj = org;

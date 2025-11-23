@@ -53,7 +53,7 @@ For accepting and invite with a PATCH /org-invites/6557efc97854628b50509ddd. USE
   }
 
 The "result" part is optional. The date/time of handling and log is set in the result object by the API.
-The users official Ondsel email address is used for the confirmation email, regardless of the invitation address.
+The logged-in user's account email address is used for the confirmation email, regardless of the invitation address.
 
 For a user rejecting an invite (or an org member cancelling and invite) with a PAtCH. USER taking action must be logged
 in:

@@ -280,7 +280,7 @@ const routes = [
     meta: { tryAuth: true },
   },
   //
-  // ONDSEL pages
+  // Lens pages
   //
   {
     path: '/',

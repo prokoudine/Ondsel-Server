@@ -4,20 +4,20 @@ SPDX-FileCopyrightText: 2024 Ondsel <development@ondsel.com>
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
-# Ondsel-Server
+# Lens Platform
 
 ## Getting Started
 
 ### Clone the repository with submodules
 
 ```bash
-git clone --recurse-submodules https://github.com/FreeCAD/Ondsel-Server.git
-cd Ondsel-Server
+git clone --recurse-submodules https://github.com/FreeCAD/Ondsel-Server.git Lens
+cd Lens
 ```
 
 ## Installation
 
-You can install Ondsel-Server in two ways:
+You can install Lens in two ways:
 1. Using docker-compose (Recommended, only requires Docker)
 2. Manual installation (Requires all dependencies)
 
@@ -176,9 +176,9 @@ curl -v http://127.0.0.1:9000/2015-03-31/functions/function/invocations -X POST 
 <!--     - Backend API: http://ec2-54-234-132-150.compute-1.amazonaws.com/ -->
 <!--     - API docs: http://ec2-54-234-132-150.compute-1.amazonaws.com/docs/ -->
 <!-- - Production -->
-<!--     - Frontend: https://lens.ondsel.com/ -->
-<!--     - Backend API: https://lens-api.ondsel.com/ -->
-<!--     - API docs: https://lens-api.ondsel.com/docs/ -->
+<!--     - Frontend: https://lens.example.com/ -->
+<!--     - Backend API: https://lens-api.example.com/ -->
+<!--     - API docs: https://lens-api.example.com/docs/ -->
 
 
 <!-- ## Deployment -->
@@ -196,13 +196,13 @@ curl -v http://127.0.0.1:9000/2015-03-31/functions/function/invocations -X POST 
 <!--     1. `zip -r ./od-frontend.zip .` -->
 <!-- 1. Login to AWS dashboard (https://console.aws.amazon.com/console/home). -->
 <!-- 1. Open `Elastic Beanstalk` app (https://us-east-1.console.aws.amazon.com/elasticbeanstalk/home?region=us-east-1#/environments) -->
-<!-- 1. Deploying backend service (https://lens-api.ondsel.com/). -->
+<!-- 1. Deploying backend service (https://lens-api.example.com/). -->
 <!--     1. Open `od-backend-prod-app-env` environment. -->
 <!--     1. Click on `Upload and deploy` button. -->
 <!--     1. This will open a dialog to upload ZIP. -->
 <!--     1. Upload `od-backend.zip` file and in Version label put commit hash (i.e  `d7fb86244117efb679edd0bb41bedf230cb2fc19`) -->
-<!--     1. This will deploy backend service (https://lens-api.ondsel.com/) -->
-<!-- 1. Deploying frontend service (https://lens.ondsel.com/). -->
+<!--     1. This will deploy backend service (https://lens-api.example.com/) -->
+<!-- 1. Deploying frontend service (https://lens.example.com/). -->
 <!--     1. Open `od-frontend-prod-app-env` environment. -->
 <!--     1. Click on `Upload and deploy` button. -->
 <!--     1. This will open a dialog to upload ZIP. -->
