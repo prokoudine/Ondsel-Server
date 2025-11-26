@@ -27,7 +27,7 @@ class SiteConfig extends BaseModel {
         discord: { url: 'https://discord.gg/w2cTKGzccC', label: 'Discord' },
         youtube: { url: '', label: 'YouTube' }
       },
-      copyrightText: '2025 FreeCAD Inc.',
+      copyrightText: '2025 FreeCAD',
       homepageContent: {
         title: 'Welcome to Lens',
         markdownContent: 'Welcome to Lens, your collaborative CAD platform. Upload, view, and share 3D models with version control, export capabilities, and real-time collaboration tools.',
