@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# SPDX-FileCopyrightText: 2025 Amritpal Singh <amrit3701@gmail.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 # Set default values for environment variables
 if [ -z "$VITE_APP_API_URL" ]; then
   VITE_APP_API_URL=$(. /env.sh && echo $VITE_APP_API_URL)
