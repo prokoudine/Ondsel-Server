@@ -131,8 +131,8 @@ npm run dev -- --host 0.0.0.0
 
 - Go to the `backend` directory
 - Rename `env.example` or `env.with-aws.example` (for using AWS S3 for storage) to `.env` (Or export variables)
-- Install frontend dependencies `npm ci`
-- Optionally, initialize the MongoDB database `npm run migration addDefaultAdminUser`
+- Install backend dependencies `npm ci`
+- Run the required migrations (see below)
 - Finally, run server `npm run dev`
 
 ```bash
@@ -140,10 +140,20 @@ $ cd backend
 $ mv env.example .env # or `mv env.with-aws.example .env` for using AWS S3 for storage
 $ set -a; . ./.env; set +a
 $ npm ci
-$ npm run migration addDefaultAdminUser
 ```
 
-Then:
+##### Running Migrations
+
+When running the backend for the first time, you need to run migrations to set up the database. These are automatically handled by `entry.sh` when using docker-compose, but must be run manually otherwise.
+
+```bash
+npm run migration addInitialTosPp             # Creates placeholder Terms of Service and Privacy Policy
+npm run migration createDefaultSiteConfig     # Creates default site configuration for branding
+npm run migration addDefaultAdminUser         # Creates admin user (email: admin@local.test, password: admin@local.test)
+npm run migration createDefaultPublisherEntries  # Creates publisher entries for software releases page
+```
+
+Then start the server:
 
 ```bash
 npm run dev
