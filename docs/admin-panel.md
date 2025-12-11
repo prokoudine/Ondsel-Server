@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 The Xavier admin panel is a hidden administrative interface for site administrators to manage platform configuration, branding, software releases, legal documents, and user management.
 
-> **Access:** Navigate to `http://localhost:3000/xavier-68373833` (requires site administrator)
+> **Access:** Navigate to `<base_url>/xavier-68373833` (requires site administrator)
 >
 > **Site Administrator:** A user who is a member of the admin organization with `isAdmin: true`
 >
