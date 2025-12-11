@@ -147,9 +147,9 @@ $ npm ci
 When running the backend for the first time, you need to run migrations to set up the database. These are automatically handled by `entry.sh` when using docker-compose, but must be run manually otherwise.
 
 ```bash
-npm run migration addInitialTosPp             # Creates placeholder Terms of Service and Privacy Policy
-npm run migration createDefaultSiteConfig     # Creates default site configuration for branding
-npm run migration addDefaultAdminUser         # Creates admin user (email: admin@local.test, password: admin@local.test)
+npm run migration addInitialTosPp                # Creates placeholder Terms of Service and Privacy Policy
+npm run migration createDefaultSiteConfig        # Creates default site configuration for branding
+npm run migration addDefaultAdminUser            # Creates admin user (email: admin@local.test, password: admin@local.test)
 npm run migration createDefaultPublisherEntries  # Creates publisher entries for software releases page
 ```
 
