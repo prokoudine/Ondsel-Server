@@ -21,8 +21,8 @@ This guide provides step-by-step instructions for installing Lens on TrueNAS SCA
 
 The Lens App deploys a complete Lens stack on TrueNAS SCALE, including:
 
-- **Backend API** - Main application server (port 30301)
-- **Frontend** - Web interface (port 30300)
+- **Backend API** - Main application server (port 30305)
+- **Frontend** - Web interface (port 30306)
 - **MongoDB** - Database (port 27018)
 - **Redis** - Cache and message broker for workers
 - **FC Worker API** - FreeCAD worker API
@@ -111,8 +111,8 @@ Update the `HOSTNAME`, `FRONTEND_URL`, and `VITE_APP_API_URL` environment variab
 ```yaml
 environment:
   - HOSTNAME=192.168.1.100  # Replace with your TrueNAS IP or hostname
-  - FRONTEND_URL=http://192.168.1.100:30300  # Update accordingly
-  - VITE_APP_API_URL=http://192.168.1.100:30301/  # Backend API URL for frontend
+  - FRONTEND_URL=http://192.168.1.100:30306  # Update accordingly
+  - VITE_APP_API_URL=http://192.168.1.100:30305/  # Backend API URL for frontend
 ```
 
 #### Admin Credentials
@@ -144,8 +144,8 @@ environment:
 
 Adjust ports if they conflict with other services:
 
-- Backend: `30301:30301` (change first number if needed)
-- Frontend: `30300:80` (change first number if needed)
+- Backend: `30305:30305` (change this port if needed)
+- Frontend: `30306:80` (change first number if needed)
 - MongoDB: `27018:27017` (change first number if needed)
 
 ### Step 4: Deploy
@@ -172,7 +172,7 @@ Adjust ports if they conflict with other services:
 | Variable | Description | Required | Default |
 |----------|-------------|----------|---------|
 | `HOSTNAME` | Server hostname or IP | Yes | - |
-| `PORT` | Backend API port | No | 30301 |
+| `PORT` | Backend API port | No | 30305 |
 | `FRONTEND_URL` | Frontend application URL | Yes | - |
 | `SMTP_HOST` | SMTP server hostname | No | - |
 | `SMTP_PORT` | SMTP server port | No | 465 |
@@ -202,6 +202,6 @@ Adjust ports if they conflict with other services:
 
 ## Accessing Services
 
-- **Frontend**: `http://[HOSTNAME]:30300`
-- **Backend API**: `http://[HOSTNAME]:30301`
+- **Frontend**: `http://[HOSTNAME]:30306`
+- **Backend API**: `http://[HOSTNAME]:30305`
 - **MongoDB** (external): `mongodb://[HOSTNAME]:27018`

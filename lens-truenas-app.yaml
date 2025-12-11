@@ -48,9 +48,9 @@ services:
     user: "0:0"
     environment:
       - HOSTNAME=192.168.1.100
-      - PORT=30301
+      - PORT=30305
       - DB_URL=mongodb://mongodb:27017/backend-db
-      - FRONTEND_URL=http://192.168.1.100:30300
+      - FRONTEND_URL=http://192.168.1.100:30306
       - FC_WORKER_URL=http://0.0.0.0:8080/2015-03-31/functions/function/invocations
       - SMTP_HOST=
       - SMTP_PORT=465
@@ -65,14 +65,14 @@ services:
     volumes:
       - /mnt/[your-pool]/ix-applications/lens/uploads_data:/app/uploads
     ports:
-      - 30301:30301
+      - 30305:30305
     depends_on:
       lens-init:
         condition: service_completed_successfully
       mongodb:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--spider", "http://127.0.0.1:30301/"]
+      test: ["CMD", "wget", "--quiet", "--spider", "http://127.0.0.1:30305/"]
       interval: 30s
       timeout: 5s
       retries: 5
@@ -88,11 +88,11 @@ services:
       - SETUID
       - SETGID
     environment:
-      - VITE_APP_API_URL=http://192.168.1.100:30301/
+      - VITE_APP_API_URL=http://192.168.1.100:30305/
       - VITE_STRIPE_PURCHASE_PEER_URL=
       - PROXY_SCHEME_PREFIX=http://
     ports:
-      - 30300:80
+      - 30306:80
     depends_on:
       backend:
         condition: service_healthy
@@ -145,7 +145,7 @@ services:
     environment:
       - REDIS_HOST=fc-worker-redis
       - REDIS_PORT=6379
-      - BACKEND_URL=http://backend:30301
+      - BACKEND_URL=http://backend:30305
     depends_on:
       backend:
         condition: service_healthy
