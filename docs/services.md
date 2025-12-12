@@ -106,3 +106,14 @@ Protection Types:
 The account event service handles account-related events. Key features include:
 - Subscription tier changes
 - Create, update, and delete account events.
+
+
+## Site Config Service:
+The site config service manages platform-wide configuration and branding settings. Key features include:
+- Site branding (title, logo, favicon, copyright text)
+- Social links for email templates (Forum, Discord, YouTube)
+- Homepage content (title, markdown content, RSS feed, banner)
+- Default model for new user registrations
+- Desktop app settings (name, protocol, version)
+
+This service is used by the [Xavier admin panel](admin-panel.md) for site-wide customization.
