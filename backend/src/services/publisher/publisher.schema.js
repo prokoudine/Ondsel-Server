@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 // // For more information about this file see https://dove.feathersjs.com/guides/cli/service.schemas.html
-import { resolve } from '@feathersjs/schema'
+import { resolve, virtual } from '@feathersjs/schema'
 import { Type, getValidator, querySyntax } from '@feathersjs/typebox'
 import { ObjectIdSchema } from '@feathersjs/typebox'
 import { dataValidator, queryValidator } from '../../validators.js'
@@ -20,18 +20,26 @@ export const publisherSchema = Type.Object(
     target: PublishedFileTargetType,
     createdBy: ObjectIdSchema(),
     createdAt: Type.Number(),
-    releaseDate: Type.Number(),
+    releaseDate: Type.Optional(Type.Number()),
     releaseCadence: PublishedReleaseCadenceType,
     release: Type.Optional(Type.String()),
-    filename: Type.String(), // ex: "Ondsel_ES-2024.2.2.37240-Windows-x86_64-installer.exe"
+    filename: Type.String(),
     uploadedUniqueFilename: Type.String(), // ex: "66a8e0f9-0e0b-4712-84d7-455e457a7812"; see 'upload' endpoint
+    downloadUrl: Type.Optional(Type.String()),
 
     deleted: Type.Optional(Type.Boolean),
   },
   { $id: 'Publisher', additionalProperties: false }
 )
 export const publisherValidator = getValidator(publisherSchema, dataValidator)
-export const publisherResolver = resolve({})
+export const publisherResolver = resolve({
+  downloadUrlResolved: virtual(async (message, context) => {
+    if (message.downloadUrl) {
+      return message.downloadUrl;
+    }
+    return context.app.get('frontendUrl') + `/publisher/${message._id}/download/${message.filename}`;
+  })
+})
 
 export const publisherExternalResolver = resolve({})
 
@@ -39,9 +47,8 @@ export const publisherExternalResolver = resolve({})
 export const publisherDataSchema = Type.Pick(publisherSchema, [
   'target',
   'releaseCadence',
-  'release',
-  'filename',
-  'uploadedUniqueFilename',
+  'downloadUrl',
+  'releaseDate',
 ], {
   $id: 'PublisherData'
 })
@@ -51,7 +58,9 @@ export const publisherDataResolver = resolve({
     return context.params.user._id
   },
   createdAt: async () => Date.now(),
-  releaseDate: async () => Date.now(),
+  releaseDate: async (_value, _message, _context) => {
+    return _value ?? Date.now();
+  },
 })
 
 // Schema for updating existing entries

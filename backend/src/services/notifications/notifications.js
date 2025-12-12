@@ -26,7 +26,6 @@ import _ from "lodash";
 import {shouldSendUserNotification} from "./commands/should-send-user-notification.js";
 import {copyBeforePatch, strEqual} from "../../helpers.js";
 import {shouldMarkReadOrUnread} from "./commands/should-mark-read-or-unread.js";
-import {isAdminUser} from "../../hooks/is-user.js";
 import {shouldDelete} from "./commands/should-delete.js";
 import {validateNavObject} from "../../curation.schema.js";
 

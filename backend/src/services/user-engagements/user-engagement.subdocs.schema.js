@@ -6,14 +6,14 @@ import {StringEnum} from "@feathersjs/typebox";
 
 export const SourceTypeMap = {
   lens: 'lens',
-  ondsel: 'ondseles',
+  desktopApp: 'desktop-app',
   freecad: 'freecad',
   unknown: 'unknown'
 }
 
 export const SourceType = StringEnum([
   SourceTypeMap.lens,
-  SourceTypeMap.ondsel,
+  SourceTypeMap.desktopApp,
   SourceTypeMap.freecad,
   SourceTypeMap.unknown,
 ])

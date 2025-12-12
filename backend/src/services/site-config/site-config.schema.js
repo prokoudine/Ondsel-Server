@@ -35,6 +35,25 @@ const defaultModelSchema = Type.Object({
   attributes: Type.Object({})
 })
 
+// Social links sub-schema
+const socialLinkSchema = Type.Object({
+  url: Type.String(),
+  label: Type.String()
+})
+
+const socialLinksSchema = Type.Object({
+  forum: Type.Optional(socialLinkSchema),
+  discord: Type.Optional(socialLinkSchema),
+  youtube: Type.Optional(socialLinkSchema)
+})
+
+const desktopAppSchema = Type.Object({
+  name: Type.String(),
+  version: Type.String(),
+  enabledOpenInDesktopApp: Type.Boolean(),
+  protocol: Type.String(),
+})
+
 // Main data model schema
 export const siteConfigSchema = Type.Object(
   {
@@ -42,16 +61,20 @@ export const siteConfigSchema = Type.Object(
     logoUrl: Type.String(),
     faviconUrl: Type.String(),
     siteTitle: Type.String(),
+    socialLinks: socialLinksSchema,
     copyrightText: Type.String({ minLength: 5, maxLength: 80 }),
     homepageContent: homepageContentSchema,
     defaultModel: defaultModelSchema,
+    desktopApp: desktopAppSchema,
     customized: Type.Object({
       logoUrl: Type.Boolean(),
       faviconUrl: Type.Boolean(),
       siteTitle: Type.Boolean(),
+      socialLinks: Type.Boolean(),
       copyrightText: Type.Boolean(),
       homepageContent: Type.Boolean(),
       defaultModel: Type.Boolean(),
+      desktopApp: Type.Boolean(),
     }),
     updatedAt: Type.Number(),
     updatedBy: Type.Optional(userSummarySchema)

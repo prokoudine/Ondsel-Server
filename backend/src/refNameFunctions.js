@@ -35,7 +35,7 @@ export function conformRefName(inputName) {
   //   3. all other characters are ignored
   //   3. double underscores forbidden
   //   4. leading and trailing underscores forbidden
-  //   5. the character sequences 'admin' and 'ondsel' are not permitted
+  //   5. the character sequence 'admin' is not permitted
   //   6. max of 20 characters
   //   7. simple names used in URL segments such as "file" and "org" and "dir" are not permitted and are appended
   let result = "";
@@ -53,9 +53,8 @@ export function conformRefName(inputName) {
       // ignore all else and leave 'justSawUnderscore' alone
     }
   }
-  // remove the forbidden 'admin' and 'ondsel' character sequences
+  // remove the forbidden 'admin' character sequence
   result = result.replace(/admin/i, '');
-  result = result.replace(/ondsel/i, '');
   // trim
   result = result.replace(/_+$/,''); // remove trailing slashes
   result = result.substring(0, 20);                        // trim to 20 chars

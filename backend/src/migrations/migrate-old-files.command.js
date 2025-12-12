@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-// Migrate old files objects which were created before https://github.com/Ondsel-Development/Ondsel-Server/pull/60.
+// Migrate old files objects which were created before commit 21b8ef8 (PR: #60).
 import _ from 'lodash';
 
 export async function migrateOldFilesCommand(app) {

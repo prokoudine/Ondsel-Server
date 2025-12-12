@@ -5,41 +5,148 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
 <template>
-  <Main>
+  <Main fluid>
     <template #title>
       Xavier Update Software Releases
     </template>
     <template #content>
-      <h2>Releases</h2>
-      <v-data-table :items="releases"></v-data-table>
-      <h2>Weekly Builds</h2>
-      <v-data-table :items="weeklies"></v-data-table>
-      <pre>
-        <a href="https://github.com/Ondsel-Development/assets/releases">https://github.com/Ondsel-Development/assets/releases</a>
-      </pre>
-      <v-btn
-        class="mr-2 mt-2"
-        color="secondary"
-        variant="elevated"
-        @click="$refs.uploadSoftwareDialog.openFileUploadDialog();"
-      >
-        Upload File
-      </v-btn>
-      <v-btn
-        class="mr-2 mt-2"
-        color="secondary"
-        variant="elevated"
-        @click="scanPublisherCollection()"
-      >
-        Refresh Lens Column From Database
-      </v-btn>
-      <v-card>
+      <v-card class="mb-4" elevation="1">
+        <v-card-text>
+          <div class="d-flex align-center flex-wrap ga-4">
+            <v-text-field
+              v-model="desktopAppName"
+              label="Software Title"
+              density="compact"
+              variant="outlined"
+              style="max-width: 200px;"
+              hide-details
+            ></v-text-field>
+            <v-text-field
+              v-model="desktopAppProtocol"
+              label="Desktop App Protocol"
+              density="compact"
+              variant="outlined"
+              style="max-width: 200px;"
+              hide-details
+            >
+              <template v-slot:append-inner>
+                <v-tooltip location="top" max-width="350">
+                  <template v-slot:activator="{ props }">
+                    <v-icon
+                      v-bind="props"
+                      size="small"
+                      color="primary"
+                      style="cursor: help;"
+                    >mdi-information-outline</v-icon>
+                  </template>
+                  <div class="pa-2">
+                    <div class="text-body-2 font-weight-bold mb-1">Desktop App Protocol</div>
+                    <div class="text-caption">
+                      The URL scheme/protocol handler for opening files in the desktop app (e.g., 'appname:').
+                      This is used to generate links like <code>appname:file/123/version/456</code> that the desktop app can handle.
+                      <br><br>
+                      <strong>Important:</strong> Include the colon (:) in the value (e.g., 'appname:' not 'appname').
+                    </div>
+                  </div>
+                </v-tooltip>
+              </template>
+            </v-text-field>
+            <v-switch
+              v-model="openInDesktopAppEnabled"
+              label="Enable Open in Desktop App"
+              density="compact"
+              hide-details
+              class="ml-2"
+            ></v-switch>
+            <v-spacer></v-spacer>
+            <v-btn
+              variant="text"
+              icon
+              :disabled="!desktopAppName || !desktopAppProtocol"
+              @click="saveDesktopAppDetails()"
+            >
+              <v-icon>mdi-content-save</v-icon>
+            </v-btn>
+          </div>
+        </v-card-text>
+      </v-card>
+      <v-data-table :items="releases" :headers="headers">
+        <template v-slot:top>
+          <v-toolbar flat>
+            <v-toolbar-title>Releases</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-btn
+              v-if="hasScannedEntries && releases.length > 0"
+              color="info"
+              variant="elevated"
+              class="mr-4"
+              @click="refreshFromDB()"
+            >
+              Refresh from DB
+            </v-btn>
+            <v-text-field
+              v-model="releaseVersion"
+              label="Version"
+              density="compact"
+              variant="outlined"
+              class="mr-2 mt-6"
+              style="max-width: 150px;"
+            ></v-text-field>
+            <v-btn
+              size="small"
+              variant="text"
+              icon
+              :disabled="!releaseVersion"
+              @click="saveVersion(releaseVersion)"
+            >
+              <v-icon>mdi-content-save</v-icon>
+            </v-btn>
+          </v-toolbar>
+        </template>
+        <template #item.actions="{ item }">
+          <v-icon
+            size="small"
+            class="mr-2"
+            @click="openEditDialog(item)"
+          >
+            mdi-pencil
+          </v-icon>
+        </template>
+      </v-data-table>
+      <v-data-table :items="weeklies" :headers="headers">
+        <template v-slot:top>
+          <v-toolbar flat>
+            <v-toolbar-title>Weekly Builds</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-btn
+              v-if="hasScannedEntries && weeklies.length > 0"
+              color="info"
+              variant="elevated"
+              class="mr-4"
+              @click="refreshFromDB()"
+            >
+              Refresh from DB
+            </v-btn>
+          </v-toolbar>
+        </template>
+        <template #item.actions="{ item }">
+          <v-icon
+            size="small"
+            class="mr-2"
+            @click="openEditDialog(item)"
+          >
+            mdi-pencil
+          </v-icon>
+        </template>
+      </v-data-table>
+
+      <v-card class="mt-4">
         <v-card-title>
           <div class="text-center">Update GH JSON</div>
         </v-card-title>
         <v-card-subtitle>
           <pre>gh auth login</pre>
-          <pre>gh api --method GET /repos/Ondsel-Development/assets/releases --header 'Accept: application/vnd.github+json' > latest_releases.json</pre>
+          <pre>gh api --method GET /repos/USERNAME/REPO/releases --header 'Accept: application/vnd.github+json' > latest_releases.json</pre>
         </v-card-subtitle>
         <v-card-text>
           <v-textarea
@@ -55,14 +162,62 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             variant="elevated"
             @click="scanReleaseJson()"
           >SCAN JSON</v-btn>
+          <v-btn
+            v-if="hasScannedEntries && totalScannedEntries > 0"
+            type="submit"
+            color="success"
+            variant="elevated"
+            :loading="isSaving"
+            @click="bulkSaveAll()"
+          >SAVE ALL ({{ totalScannedEntries }})</v-btn>
         </v-card-actions>
       </v-card>
-      <xavier-upload-software-dialog
-        ref="uploadSoftwareDialog"
-        :release-file-types="releaseFileTypes"
-        :weekly-file-types="weeklyFileTypes"
-        @uploaded-file="updateEntry()"
-      ></xavier-upload-software-dialog>
+      <v-snackbar v-model="showSnackbar" :timeout="2000" :color="snackbarColor">
+        {{ snackbarMessage }}
+      </v-snackbar>
+
+      <v-dialog
+        v-model="showEditDialog"
+        width="auto"
+        persistent
+      >
+        <v-form v-model="isValid" @submit.prevent="commitNewVersion">
+          <v-card width="500" max-height="800">
+            <v-card-title><div class="text-center">{{ currentEditItem.releaseCadence === 'stable' ? 'Update Stable Release' : 'Update Weekly Build' }}</div></v-card-title>
+            <v-card-text>
+              <v-text-field
+                :model-value="currentEditItem.releaseCadence"
+                label="Release Cadence"
+                readonly
+              ></v-text-field>
+              <v-text-field
+                :model-value="currentEditItem.target"
+                label="Release Target"
+                readonly
+              ></v-text-field>
+              <v-text-field
+                v-model="editDownloadUrl"
+                label="Download URL"
+                :rules="[rules.isUrl]"
+                hint="Enter the download URL (e.g., GitHub releases URL)"
+              ></v-text-field>
+            </v-card-text>
+            <v-card-actions class="justify-center">
+              <v-btn
+                color="cancel"
+                variant="elevated"
+                @click="showEditDialog = false"
+              >Cancel</v-btn>
+              <v-btn
+                type="submit"
+                color="primary"
+                variant="elevated"
+                :disabled="!isValid"
+              >Save Changes</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-form>
+      </v-dialog>
     </template>
   </Main>
 </template>
@@ -70,147 +225,264 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 <script>
 
 import Main from '@/layouts/default/Main.vue';
-import {mapState} from "vuex";
-import XavierUploadSoftwareDialog from "@/components/XavierUploadSoftwareDialog.vue";
+import {mapActions, mapState} from "vuex";
 import {models} from "@feathersjs/vuex";
+import { SITE_CONFIG_ID } from '@/store/services/site-config';
 
-const { Publisher } = models.api;
+const { Publisher, SiteConfig } = models.api;
 
 export default {
   name: 'XavierUpdateSoftwareReleases',
   components: {
-    XavierUploadSoftwareDialog,
     Main
   },
   data: () => ({
-    ondselSeDownload: {},
-    ondselSeVersionTxt: 'tbd',
-    weeklyDownload: {},
-    weeklyBuildDate: 'tbd',
     rawJson: '',
     releases: [],
-    releaseFileTypes: [
-      'Linux-x86_64.AppImage',
-      'Linux-x86_64.AppImage-SHA256.txt',
-      'Linux-aarch64.AppImage',
-      'Linux-aarch64.AppImage-SHA256.txt',
-      'macOS-apple-silicon-arm64.dmg',
-      'macOS-apple-silicon-arm64.dmg-SHA256.txt',
-      'macOS-intel-x86_64.dmg',
-      'macOS-intel-x86_64.dmg-SHA256.txt',
-      'Windows-x86_64-installer.exe',
-      'Windows-x86_64-installer.exe-SHA256.txt',
-    ],
+    releaseFileTypes: {
+      'Linux-x86_64.AppImage': /.*Linux-x86_64.*\.AppImage$/i,
+      'Linux-x86_64.AppImage-SHA256.txt': /.*Linux-x86_64.*\.AppImage-SHA256\.txt$/i,
+      'Linux-aarch64.AppImage': /.*Linux-aarch64.*\.AppImage$/i,
+      'Linux-aarch64.AppImage-SHA256.txt': /.*Linux-aarch64.*\.AppImage-SHA256\.txt$/i,
+      'macOS-apple-silicon-arm64.dmg': /.*macOS-arm64.*\.dmg$/i,
+      'macOS-apple-silicon-arm64.dmg-SHA256.txt': /.*macOS-arm64.*\.dmg-SHA256\.txt$/i,
+      'macOS-intel-x86_64.dmg': /.*macOS-x86_64.*\.dmg$/i,
+      'macOS-intel-x86_64.dmg-SHA256.txt': /.*macOS-x86_64.*\.dmg-SHA256\.txt$/i,
+      'Windows-x86_64-installer.exe': /.*Windows-x86_64-installer.*\.exe$/i,
+      'Windows-x86_64-installer.exe-SHA256.txt': /.*Windows-x86_64-installer.*\.exe-SHA256\.txt$/i,
+    },
     weeklies: [],
-    weeklyFileTypes: [
-      'Linux-aarch64.AppImage',
-      'Linux-x86_64.AppImage',
-      'macOS-apple-silicon-arm64.dmg',
-      'macOS-intel-x86_64.dmg',
-      'Windows-x86_64.7z',
+    weeklyFileTypes: {
+      'Linux-aarch64.AppImage': /.*Linux-aarch64.*\.AppImage$/i,
+      'Linux-x86_64.AppImage': /.*Linux-x86_64.*\.AppImage$/i,
+      'macOS-apple-silicon-arm64.dmg': /.*macOS-arm64.*\.dmg$/i,
+      'macOS-intel-x86_64.dmg': /.*macOS-x86_64.*\.dmg$/i,
+      'Windows-x86_64.7z': /.*Windows-x86_64.*\.7z$/i,
+    },
+    headers: [
+      { title: 'Name', key: 'target', sortable: true },
+      { title: 'Download URL', key: 'downloadUrlResolved', sortable: false },
+      { title: 'Actions', key: 'actions', sortable: false, align: 'end' },
     ],
+    desktopAppName: '',
+    releaseVersion: '',
+    desktopAppProtocol: '',
+    openInDesktopAppEnabled: false,
+    hasScannedEntries: false,
+    isSaving: false,
+    showEditDialog: false,
+    currentEditItem: null,
+    editDownloadUrl: '',
+    isValid: true,
+    rules: {
+      isUrl: v => {
+        if (!v) return 'URL is required';
+        try {
+          new URL(v);
+          return true;
+        } catch {
+          return 'Must be a valid URL';
+        }
+      },
+    },
+    showSnackbar: false,
+    snackbarMessage: '',
+    snackbarColor: 'success',
   }),
   computed: {
     ...mapState('auth', { loggedInUser: 'payload' }),
     ...mapState('auth', ['user']),
+    ...mapState('app', ['siteConfig']),
+    totalScannedEntries() {
+      return this.releases.length + this.weeklies.length;
+    },
   },
   async created() {
-    if (!this.user || !this.user.isTripe) {
+    if (!(await this.isSiteAdministrator())) {
       console.log("alert-33235-ru");
       this.$router.push({name: 'LensHome', params: {}});
+      return;
     }
-    for (const key of this.releaseFileTypes) {
+    for (const key in this.releaseFileTypes) {
       this.releases.push({
-        "name": key,
-        "GH url": "TBD",
-        "Lens": "TBD",
+        "target": key,
+        "downloadUrlResolved": "--not-set--",
+        "releaseCadence": "stable",
       })
     }
-    for (const key of this.weeklyFileTypes) {
+    for (const key in this.weeklyFileTypes) {
       this.weeklies.push({
-        "name": key,
-        "GH url": "TBD",
-        "Lens": "TBD",
+        "target": key,
+        "downloadUrlResolved": "--not-set--",
+        "releaseCadence": "weekly-builds",
       })
     }
     await this.scanPublisherCollection();
   },
   methods: {
+    ...mapActions('app', ['isSiteAdministrator']),
     async scanPublisherCollection() {
+      this.desktopAppName = this.siteConfig?.desktopApp?.name || '';
+      this.releaseVersion = this.siteConfig?.desktopApp?.version || '';
+      this.desktopAppProtocol = this.siteConfig?.desktopApp?.protocol || '';
+      this.openInDesktopAppEnabled = this.siteConfig?.desktopApp?.enabledOpenInDesktopApp || false;
+
       const results = await Publisher.find({query: {$limit: 100}});
       const publishedList = results.data;
       for (const item of publishedList) {
-        const name = item.target;
         const cadence = item.releaseCadence;
         if (cadence === 'stable') {
-          this.setWebRelease(name, item);
+          this.setWebRelease(item.target, {downloadUrlResolved: item.downloadUrlResolved});
         } else {
-          this.setWebWeekly(name, item);
+          this.setWebWeekly(item.target, {downloadUrlResolved: item.downloadUrlResolved});
         }
       }
     },
     async scanReleaseJson() {
       let json = JSON.parse(this.rawJson);
-      let wd = {};
-      let osVer = 'unknown';
-      let buildDate = 'unknown';
-      const justCurrent = json.filter(build => build.prerelease !== true);
-      const tagsFound = justCurrent.map(build => build.tag_name);
-      const semverExp = new RegExp('^\\d{4}.'); // must start with four digits and a dot
-      let semverTags = tagsFound.filter(tag => semverExp.test(tag));
-      semverTags.sort();
-      osVer = semverTags.pop();
-      const ondselSeBuild = json.find(build => build.tag_name === osVer);
-      let assets = ondselSeBuild.assets || []
-      let temp = {}
-      for (let key of this.releaseFileTypes) {
-        temp = assets.find(asset => asset.name.endsWith(key));
-        this.setGHRelease(key, temp);
-      }
-      const testingBuild = json.find(build => build.tag_name === 'weekly-builds');
-      buildDate = testingBuild.created_at;
-      assets = testingBuild.assets || []
-      for (let key of this.weeklyFileTypes) {
-        temp = assets.find(asset => asset.name.endsWith(key));
-        this.setGHWeekly(key, temp);
-      }
-      for (const [k, v] of Object.entries(wd)) {
-        if (v.created_at) {
-          if (v.created_at > buildDate) {
-            buildDate = v.created_at;
-          }
+
+      const latestRelease = json.find(release => release.prerelease !== true);
+      this.releaseVersion = latestRelease.tag_name;
+      let assets = latestRelease.assets || []
+      for (let [key, value] of Object.entries(this.releaseFileTypes)) {
+        let temp = assets.find(asset => value.test(asset.name));
+        if (temp) {
+          this.setWebRelease(key, {
+            downloadUrlResolved: temp.browser_download_url,
+            releaseDate: new Date(latestRelease.published_at).getTime()
+          });
         }
       }
-      this.ondselSeVersionTxt = osVer;
-      this.weeklyDownload = wd;
-      this.weeklyBuildDate = buildDate.slice(0,10);
+
+      const testingRelease = json.find(release => release.prerelease === true);
+      assets = testingRelease.assets || []
+      for (let [key, value] of Object.entries(this.weeklyFileTypes)) {
+        let temp = assets.find(asset => value.test(asset.name));
+        if (temp) {
+          this.setWebWeekly(key, {
+            downloadUrlResolved: temp.browser_download_url,
+            releaseDate: new Date(testingRelease.published_at).getTime()
+          });
+        }
+      }
+
+      this.hasScannedEntries = true;
     },
-    setGHRelease(name, obj) {
-      let index = this.releases.findIndex(entry => entry.name === name);
+    setWebRelease(target, params) {
+      let index = this.releases.findIndex(entry => entry.target === target);
       if (index >= 0) {
-        this.releases[index]["GH url"] = obj.browser_download_url;
+        this.releases[index] = {...this.releases[index], ...params};
       }
     },
-    setGHWeekly(name, obj) {
-      let index = this.weeklies.findIndex(entry => entry.name === name);
+    setWebWeekly(target, params) {
+      let index = this.weeklies.findIndex(entry => entry.target === target);
       if (index >= 0) {
-        this.weeklies[index]["GH url"] = obj.browser_download_url;
+        this.weeklies[index] = {...this.weeklies[index], ...params};
       }
     },
-    setWebRelease(name, obj) {
-      let index = this.releases.findIndex(entry => entry.name === name);
-      if (index >= 0) {
-        this.releases[index]["Lens"] = obj.filename;
+    openEditDialog(item) {
+      this.currentEditItem = item;
+      this.editDownloadUrl = item.downloadUrlResolved || '';
+      this.showEditDialog = true;
+    },
+    async commitNewVersion() {
+      if (this.isValid) {
+        if (this.hasScannedEntries) {
+          if (this.currentEditItem.releaseCadence == 'stable') {
+            this.releases = this.releases.map(release => release.target === this.currentEditItem.target ? { ...release, downloadUrlResolved: this.editDownloadUrl } : release);
+          } else {
+            this.weeklies = this.weeklies.map(weekly => weekly.target === this.currentEditItem.target ? { ...weekly, downloadUrlResolved: this.editDownloadUrl } : weekly);
+          }
+
+          this.showEditDialog = false;
+        } else {
+          await Publisher.create({
+            target: this.currentEditItem.target,
+            releaseCadence: this.currentEditItem.releaseCadence,
+            downloadUrl: this.editDownloadUrl,
+          });
+
+          this.showEditDialog = false;
+          await this.scanPublisherCollection();
+        }
+
       }
     },
-    setWebWeekly(name, obj) {
-      let index = this.weeklies.findIndex(entry => entry.name === name);
-      if (index >= 0) {
-        this.weeklies[index]["Lens"] = obj.filename;
+    showSnackbarMessage(message, color = 'success') {
+      this.snackbarMessage = message;
+      this.snackbarColor = color;
+      this.showSnackbar = true;
+    },
+    async saveVersion(version) {
+      try {
+        await SiteConfig.patch(SITE_CONFIG_ID, { desktopApp: { ...this.siteConfig.desktopApp, version: version } });
+        this.showSnackbarMessage('Version updated successfully', 'success');
+      } catch (error) {
+        console.error('Error updating version:', error);
+        this.showSnackbarMessage('Error updating version: ' + (error.message || 'Unknown error'), 'error');
       }
     },
-    async updateEntry() {
+    async saveDesktopAppDetails() {
+      try {
+        await SiteConfig.patch(
+          SITE_CONFIG_ID, {
+          desktopApp: {
+              ...this.siteConfig.desktopApp,
+              name: this.desktopAppName,
+              protocol: this.desktopAppProtocol,
+              enabledOpenInDesktopApp: this.openInDesktopAppEnabled
+            }
+          }
+        );
+        this.showSnackbarMessage('Desktop app details updated successfully', 'success');
+      } catch (error) {
+        console.error('Error updating desktop app details:', error);
+        this.showSnackbarMessage('Error updating desktop app details: ' + (error.message || 'Unknown error'), 'error');
+      }
+    },
+    async refreshFromDB() {
+      this.rawJson = '';
+      this.hasScannedEntries = false;
       await this.scanPublisherCollection();
+      this.showSnackbarMessage('Refreshed from database', 'info');
+    },
+    async bulkSaveAll() {
+      this.isSaving = true;
+      try {
+        // Combine all entries from releases and weeklies
+        const allEntries = [
+          ...this.releases.map(entry => ({
+            target: entry.target,
+            releaseCadence: entry.releaseCadence,
+            downloadUrl: entry.downloadUrlResolved || entry.downloadUrl || '',
+            releaseDate: entry.releaseDate,
+          })),
+          ...this.weeklies.map(entry => ({
+            target: entry.target,
+            releaseCadence: entry.releaseCadence,
+            downloadUrl: entry.downloadUrlResolved || entry.downloadUrl || '',
+            releaseDate: entry.releaseDate,
+          })),
+        ];
+
+        const result = await Publisher.create(allEntries);
+
+        if (this.releaseVersion && this.releaseVersion !== this.siteConfig?.desktopApp?.version) {
+          await this.saveVersion(this.releaseVersion);
+        }
+
+        this.rawJson = '';
+        this.hasScannedEntries = false;
+
+        await this.scanPublisherCollection();
+
+        this.showSnackbarMessage(`Successfully saved ${result.created} entries.`, 'success');
+      } catch (error) {
+        console.error('Error bulk saving entries:', error);
+        this.showSnackbarMessage('Error saving entries: ' + (error.message || 'Unknown error'), 'error');
+      } finally {
+        this.isSaving = false;
+      }
     },
   },
 }

@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 Amritpal Singh <amrit3701@gmail.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 services:
   mongodb:
     image: mongo:latest
@@ -7,7 +11,7 @@ services:
       - mongodb_data:/data/db
 
   backend:
-    image: ondsel-server-backend-dev
+    image: lens-backend-dev
     build:
       context: ./backend
       dockerfile: Dockerfile.dev
@@ -43,7 +47,7 @@ services:
       - mongodb
 
   frontend:
-    image: ondsel-server-frontend-dev
+    image: lens-frontend-dev
     build:
       context: ./frontend
       dockerfile: Dockerfile.dev
@@ -57,6 +61,7 @@ services:
       - VITE_MATOMO_URL=${VITE_MATOMO_URL:-http://localhost:7000}
       - VITE_MATOMO_SITE=${VITE_MATOMO_SITE:-1}
       - VITE_STRIPE_PURCHASE_PEER_URL
+      - PROXY_SCHEME_PREFIX=${PROXY_SCHEME_PREFIX:-http://}
     depends_on:
       - backend
 
@@ -64,7 +69,7 @@ services:
     image: redis:alpine
 
   fc-worker-api:
-    image: ondsel-server-fc-worker-api-dev
+    image: lens-fc-worker-api-dev
     build:
       context: ./FC-Worker
       dockerfile: Dockerfile.api.dev
@@ -80,7 +85,7 @@ services:
       - fc-worker-redis
 
   fc-worker-celery:
-    image: ondsel-server-fc-worker-celery-dev
+    image: lens-fc-worker-celery-dev
     build:
       context: ./FC-Worker
       dockerfile: Dockerfile.celery.dev
@@ -121,7 +126,7 @@ services:
       - MATOMO_DATABASE_USER=matomo
       - MATOMO_DATABASE_PASSWORD=matomo
       - MATOMO_DATABASE_NAME=matomo
-      - MATOMO_WEBSITE_NAME=Ondsel LENS (dev)
+      - MATOMO_WEBSITE_NAME=Lens (dev)
       - MATOMO_WEBSITE_HOST=${FRONTEND_URL:-http://localhost:3000}
       - MATOMO_USERNAME=${MATOMO_USERNAME:-admin}
       - MATOMO_PASSWORD=${MATOMO_PASSWORD:-admin@local.test}

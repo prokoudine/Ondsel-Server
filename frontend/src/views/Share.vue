@@ -91,12 +91,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         location="start"
       >Open messages</v-tooltip>
     </v-btn>
-    <v-btn v-if="sharedModel" icon flat @click="openModelInOndselEsDialog">
+    <v-btn v-if="sharedModel && siteConfig?.desktopApp?.enabledOpenInDesktopApp" icon flat @click="openModelInDesktopAppDialog">
       <v-icon>mdi-open-in-app</v-icon>
       <v-tooltip
         activator="parent"
         location="start"
-      >Open model in Ondsel ES desktop app</v-tooltip>
+      >Open model in {{ siteConfig?.desktopApp?.name }} desktop app</v-tooltip>
     </v-btn>
   </v-navigation-drawer>
   <ModelViewer ref="modelViewer" :full-screen="isWindowLoadedInIframe" @model:loaded="modelLoaded" @object:clicked="objectClicked"/>
@@ -237,10 +237,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     ref="manageBookmarkDialog"
     :shared-model="sharedModel"
   />
-  <launch-ondsel-es-dialog
-    ref="launchOndselEsDialog"
-    :launching-in-progress="checkingOndselEsIsInstalled"
-    @launch-ondsel-es="openModelInOndselEs(getOndselEsUrl(sharedModel._id))"
+  <launch-desktop-app-dialog
+    ref="launchDesktopAppDialog"
+    :launching-in-progress="checkingDesktopAppIsInstalled"
+    @launch-desktop-app="openModelInDesktopApp(getDesktopAppUrl(sharedModel._id))"
   />
 </template>
 
@@ -258,8 +258,8 @@ import ManageBookmarkDialog from '@/components/ManageBookmarkDialog.vue';
 import Messages from "@/components/Messages.vue";
 import ShareWithUserDialog from "@/components/ShareWithUserDialog.vue";
 import SharedModelInfo from "@/components/SharedModelInfo.vue";
-import openOndselEsMixin from '@/mixins/openOndselEsMixin';
-import LaunchOndselEsDialog from '@/components/LaunchOndselEsDialog.vue';
+import openDesktopAppMixin from '@/mixins/openDesktopAppMixin';
+import LaunchDesktopAppDialog from '@/components/LaunchDesktopAppDialog.vue';
 
 const { SharedModel, Model, OrgSecondaryReference } = models.api;
 
@@ -276,9 +276,9 @@ export default {
     ExportModelDialog,
     SharedModelInfo,
     ObjectsListView,
-    LaunchOndselEsDialog,
+    LaunchDesktopAppDialog,
   },
-  mixins: [openOndselEsMixin],
+  mixins: [openDesktopAppMixin],
   data: () => ({
     dialog: true,
     sharedModel: null,
@@ -310,7 +310,7 @@ export default {
     ...mapGetters('app', ['siteConfig', 'selfPronoun', 'selfName', 'currentOrganization']),
     isWindowLoadedInIframe: (vm) => vm.$route.meta.isWindowLoadedInIframe,
     hasBasicRights: (vm) => vm.isAuthenticated && vm.user?.tier !== undefined && vm.user?.tier !== 'Unverified',
-    title: (vm) => `${vm.sharedModel?.title || ''} - Ondsel`,
+    title: (vm) => `${vm.sharedModel?.title || ''} - ${vm.siteConfig?.siteTitle}`,
   },
   methods: {
     async fetchShareLink() {
@@ -484,11 +484,11 @@ export default {
       this.$refs.shareWithUserDialog.$data.isPatchPending = false;
       this.$refs.shareWithUserDialog.$data.dialog = false;
     },
-    openModelInOndselEsDialog() {
-      this.$refs.launchOndselEsDialog.openDialog();
+    openModelInDesktopAppDialog() {
+      this.$refs.launchDesktopAppDialog.openDialog();
     },
-    getOndselEsUrl(shareId) {
-      return `ondsel:share/${shareId}`;
+    getDesktopAppUrl(shareId) {
+      return `${this.siteConfig.desktopApp.protocol}share/${shareId}`;
     },
   },
   watch: {

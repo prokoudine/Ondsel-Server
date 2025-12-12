@@ -174,7 +174,7 @@ export default {
         case 'models':
           this.$router.push({ name: 'Home', params: { id: nav.modelid } })
           break;
-        case 'ondsel': // not sure why this would ever show up; but for completeness...
+        case 'lens': // not sure why this would ever show up; but for completeness...
           this.$router.push({ name: 'LensHome' } )
           break;
       }

@@ -11,7 +11,7 @@ export async function addDefaultAdminUserCommand(app) {
   const adminEmail = process.env.DEFAULT_ADMIN_EMAIL || 'admin@local.test';
   const adminUsername = process.env.DEFAULT_ADMIN_USERNAME || 'admin';
   const adminPassword = process.env.DEFAULT_ADMIN_PASSWORD || 'admin@local.test';
-  const adminName = process.env.DEFAULT_ADMIN_NAME || 'Ondsel Admin';
+  const adminName = process.env.DEFAULT_ADMIN_NAME || 'Admin';
 
   // Check/create admin user
   console.log(">>> checking for admin user");
@@ -43,14 +43,6 @@ export async function addDefaultAdminUserCommand(app) {
   }
   process.env.DISABLE_SEND_VERIFICATION_EMAIL = originalDisableSendVerificationEmail;
 
-  // Set isTripe directly in the database since it's protected from API changes
-  const db = await app.get('mongodbClient');
-  const usersCollection = db.collection('users');
-  await usersCollection.updateOne(
-    { _id: user._id },
-    { $set: { isTripe: true } }
-  );
-
   // Check/create Admin organization and add admin user to it
   console.log(">>> setting up Admin organization for admin user");
   const organizations = await organizationService.find({ query: { refName: 'AdminOrganization' } });
@@ -61,7 +53,7 @@ export async function addDefaultAdminUserCommand(app) {
     adminOrganization = await organizationService.create({
       name: 'Admin Organization',
       refName: 'AdminOrganization',
-      type: OrganizationTypeMap.ondsel,
+      type: OrganizationTypeMap.admin,
     }, { user: user });
     console.log(">>> Admin Organization created");
   } else {

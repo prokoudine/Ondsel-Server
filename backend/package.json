@@ -1,6 +1,6 @@
 {
   "name": "backend",
-  "description": "Backend for Ondsel-Server",
+  "description": "Backend server for Lens Platform",
   "version": "1.0.0",
   "homepage": "",
   "private": true,

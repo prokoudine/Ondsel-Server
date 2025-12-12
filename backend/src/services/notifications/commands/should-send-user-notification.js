@@ -41,7 +41,7 @@ export const shouldSendUserNotification = async (context) => {
   const currentUserOrg = context.params.user.organizations.find((org) => strEqual(org._id, currentOrgId));
   ntf.from = buildOrganizationSummary(currentUserOrg);
   ntf.when = Date.now();
-  ntf.bodySummaryTxt = await generateGenericBodySummaryTxt(ntf);
+  ntf.bodySummaryTxt = await generateGenericBodySummaryTxt(ntf, context);
   //
   // deliver to email, sms, etc
   //

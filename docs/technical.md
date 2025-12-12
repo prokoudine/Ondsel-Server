@@ -1,7 +1,13 @@
+<!--
+SPDX-FileCopyrightText: 2025 Amritpal Singh <amrit3701@gmail.com>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+-->
+
 # Technical Details:
 
 ## System Components:
-The Ondsel platform consists of several key components that work together:
+The Lens platform consists of several key components that work together:
 
 ### Backend Server
 - Node.js/Feathers.js REST API server

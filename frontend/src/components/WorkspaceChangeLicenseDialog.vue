@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           <v-card-text>
             <ul>
               <li><a href="https://creativecommons.org/">Link for more information about Creative Commons licenses.</a></li>
-              <li>"All Rights Reserved" is not a license per se but simply an indicator you are using Ondsel for Public and/or Private Display of design and data, but are not assigning away any specific rights.</li>
+              <li>"All Rights Reserved" is not a license per se but simply an indicator you are using this platform for Public and/or Private Display of design and data, but are not assigning away any specific rights.</li>
             </ul>
           </v-card-text>
         </v-card-text>

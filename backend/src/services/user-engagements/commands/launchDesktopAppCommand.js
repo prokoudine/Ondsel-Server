@@ -7,28 +7,28 @@ import { BadRequest } from '@feathersjs/errors';
 import { getSource } from '../../hooks/userEngagements.js';
 
 
-const validateLaunchShareLinkInOndselEsPayload = payload => {
+const validateLaunchShareLinkInDesktopAppPayload = payload => {
   if (!payload.contextId) {
     throw new BadRequest(
-      'The payload must contain a "contextId", which is the share link ID required to open in OndselES.'
+      'The payload must contain a "contextId", which is the share link ID required to open in the desktop app.'
     )
   }
 }
 
-export const createLaunchShareLinkInOndselEsEntry = context => {
+export const createLaunchShareLinkInDesktopAppEntry = context => {
   const { data, params } = context;
 
-  validateLaunchShareLinkInOndselEsPayload(data);
+  validateLaunchShareLinkInDesktopAppPayload(data);
 
   const version = _.get(params.headers, 'x-lens-version');
 
   context.data = {
-    ..._.omit(data, ['shouldLaunchShareLinkInOndselEsEntry']),
+    ..._.omit(data, ['shouldLaunchShareLinkInDesktopAppEntry']),
     source: getSource(params),
     path: 'shared-models',
     method: 'get',
     connection: params.provider,
-    event: 'LAUNCH_ONDSEL_ES',
+    event: 'LAUNCH_DESKTOP_APP',
     ...(version && {version: version}),
   };
 

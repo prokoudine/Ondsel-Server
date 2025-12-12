@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2025 Amritpal Singh <amrit3701@gmail.com>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+-->
+
 # Different Backend Services:
 
 ## User Service:
@@ -34,9 +40,9 @@ Organization Types:
 - Personal: All workspaces, files, and activity are public by default. This can be changed by the user unless using solo tier subscription.
 - Open: All workspaces, files, and activity are publicly visible.
 - Private: All workspaces, files, and activity are private by default.
-- Ondsel: Special organization type for the Ondsel admins.
+- Admin: Special organization type for the site administrators.
 
-Publice view of organization can be accessed by anyone at the url:
+Public view of organization can be accessed by anyone at the url:
 ```
 https://{frontend_base_url}/org/{organization_slug}
 ```
@@ -77,7 +83,7 @@ The upload service handles the upload of actual files to the workspace. Key feat
 
 
 ## Models Service:
-The model is the 3D model object in Ondsel. This can be rendered in the frontend using the FC-Worker service. Key features include:
+The model is the 3D model object in Lens. This can be rendered in the frontend using the FC-Worker service. Key features include:
 - Create, update, and delete models.
 - Intagrates with file service for version control for models.
 - Integrates with fc-worker service for model rendering and export to different formats.

@@ -41,7 +41,7 @@ const eventNameMapping = {
   'directories.remove': 'REMOVE_DIRECTORIES',
   'keywords.find': 'SEARCH',
   'org-secondary-references.patch': 'UPDATE_ORG_SECONDARY_REFERENCES',
-  'publisher.get': 'DOWNLOAD_ONDSEL_ES',
+  'publisher.get': 'DOWNLOAD_DESKTOP_APP',
   'status.find': 'FETCH_STATUS',
 }
 

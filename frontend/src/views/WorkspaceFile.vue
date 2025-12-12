@@ -84,13 +84,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                   @click="$refs.uploadNewVersionFile.openFileUploadDialog();"
                 >Upload New Version</v-btn>
                 <!-- <v-btn
-                  v-if="file?._id"
+                  v-if="file?._id && siteConfig?.desktopApp?.enabledOpenInDesktopApp"
                   class="mr-2 mt-2"
                   color="secondary"
                   variant="elevated"
                   append-icon="mdi-open-in-app"
-                  @click="ondselEsUrl = getOndselEsUrl(file._id, file.currentVersionId); $refs.launchOndselEsDialog.openDialog();"
-                >Open In Ondsel ES</v-btn>-->
+                  @click="desktopAppUrl = getDesktopAppUrl(file._id, file.currentVersionId); $refs.launchDesktopAppDialog.openDialog();"
+                >Open In {{ siteConfig?.desktopApp?.name }}</v-btn>-->
               </v-sheet>
               <file-view-port
                 :file="file"
@@ -107,7 +107,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                   :active-version-thumbnail-available="activeVersionThumbnailAvailable"
                   @change-visible-version="changeViewPort"
                   @changed-file="reloadFileAndWorkspace"
-                  @launch-ondsel-es="versionId => { ondselEsUrl = getOndselEsUrl(file._id, versionId); $refs.launchOndselEsDialog.openDialog();}"
+                  @launch-desktop-app="versionId => { desktopAppUrl = getDesktopAppUrl(file._id, versionId); $refs.launchDesktopAppDialog.openDialog();}"
                 >
                 </file-versions-table>
               </v-sheet>
@@ -156,9 +156,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           </v-card-text>
         </v-card>
       </v-sheet>
-      <launch-ondsel-es-dialog
-        ref="launchOndselEsDialog"
-        @launch-ondsel-es="openModelInOndselEs(ondselEsUrl)"
+      <launch-desktop-app-dialog
+        ref="launchDesktopAppDialog"
+        @launch-desktop-app="openModelInDesktopApp(desktopAppUrl)"
       />
     </template>
   </Main>
@@ -176,8 +176,8 @@ import RepresentWorkspaceDialog from "@/components/RepresentWorkspaceDialog.vue"
 import FileVersionsTable from "@/components/FileVersionsTable.vue";
 import fileDownloadMixin from "@/mixins/fileDownloadMixin";
 import FileViewPort from "@/components/FileViewPort.vue";
-import LaunchOndselEsDialog from '@/components/LaunchOndselEsDialog.vue';
-import openOndselEsMixin from '@/mixins/openOndselEsMixin';
+import LaunchDesktopAppDialog from '@/components/LaunchDesktopAppDialog.vue';
+import openDesktopAppMixin from '@/mixins/openDesktopAppMixin';
 import {deriveOwnerDescAndRoute} from "@/genericHelpers";
 
 const { File } = models.api;
@@ -191,9 +191,9 @@ export default {
     UploadNewVersionFileDialog,
     DeleteFileDialog,
     Main,
-    LaunchOndselEsDialog,
+    LaunchDesktopAppDialog,
   },
-  mixins: [fileDownloadMixin, openOndselEsMixin],
+  mixins: [fileDownloadMixin, openDesktopAppMixin],
   data() {
     return {
       activeVersionThumbnailAvailable: false,
@@ -211,7 +211,7 @@ export default {
       orgRefName: '',
       slug: '',
       representingWorkspaceOrg: false,
-      ondselEsUrl: '',
+      desktopAppUrl: '',
     };
   },
   async created() {
@@ -260,7 +260,7 @@ export default {
     ]
   },
   computed: {
-    ...mapGetters('app', ['currentOrganization', 'selfPronoun', 'selfName']),
+    ...mapGetters('app', ['siteConfig', 'currentOrganization', 'selfPronoun', 'selfName']),
     ...mapState('auth', ['user']),
     userRouteFlag: vm => vm.$route.path.startsWith("/user"),
     fileModelUrl: vm => `${window.location.origin}/model/${vm.file.modelId}`,
@@ -273,8 +273,8 @@ export default {
       'getWorkspaceByNamePrivate',
       'getWorkspaceByNamePublic',
     ]),
-    getOndselEsUrl(fileId, versionId) {
-      return `ondsel:file/${fileId}/version/${versionId}`;
+    getDesktopAppUrl(fileId, versionId) {
+      return `${this.siteConfig.desktopApp.protocol}file/${fileId}/version/${versionId}`;
     },
     refLabel(refId) {
       return ".." + refId.substr(-6);

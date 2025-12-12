@@ -19,27 +19,32 @@ class SiteConfig extends BaseModel {
   // Define default properties here
   static instanceDefaults() {
     return {
-      logoUrl: '/ondsel_logo.svg',
+      logoUrl: '/logo.svg',
       faviconUrl: '/favicon.ico',
       siteTitle: 'Lens',
-      copyrightText: '2025 Ondsel Inc.',
+      socialLinks: {
+        forum: { url: 'https://forum.freecad.org', label: 'Forum' },
+        discord: { url: 'https://discord.gg/w2cTKGzccC', label: 'Discord' },
+        youtube: { url: '', label: 'YouTube' }
+      },
+      copyrightText: '2025 FreeCAD',
       homepageContent: {
         title: 'Welcome to Lens',
         markdownContent: 'Welcome to Lens, your collaborative CAD platform. Upload, view, and share 3D models with version control, export capabilities, and real-time collaboration tools.',
-        rssFeedEnabled: false,
-        rssFeedUrl: 'https://ondsel.com/blog/rss',
-        rssFeedName: 'Latest Ondsel Blog',
+        rssFeedEnabled: true,
+        rssFeedUrl: `${import.meta.env.VITE_APP_API_URL}/freecad-blog-rss`,
+        rssFeedName: 'Latest FreeCAD Blog',
         banner: {
           enabled: false,
-          title: 'Shutdown Notice',
-          content: '# Service is Shutting Down as of November 22nd, 2024\n## Please download any of your files that you want to keep!',
+          title: 'Maintenance Notice',
+          content: '# Service will be under maintenance from 10:00 to 12:00 UTC on 2099-12-31',
           color: '#283593'
         },
       },
       defaultModel: {
-        filePath: 'ondsel.FCStd',
-        objPath: 'ondsel_generated.FCSTD',
-        thumbnailPath: 'public/ondsel_thumbnail.PNG',
+        filePath: 'sample.FCStd',
+        objPath: 'sample_generated.FCSTD',
+        thumbnailPath: 'public/sample_thumbnail.PNG',
         attributes: {
           "Fillet1": {
             "type": "length",
@@ -73,13 +78,21 @@ class SiteConfig extends BaseModel {
           }
         }
       },
+      desktopApp: {
+        name: 'FreeCAD',
+        version: '',
+        enabledOpenInDesktopApp: false,
+        protocol: 'freecad:',
+      },
       customized: {
         logoUrl: false,
         faviconUrl: false,
         siteTitle: false,
+        socialLinks: false,
         copyrightText: false,
         homepageContent: false,
-        defaultModel: false
+        defaultModel: false,
+        desktopApp: false,
       }
     }
   }

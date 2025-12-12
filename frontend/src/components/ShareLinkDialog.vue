@@ -138,7 +138,7 @@ export default {
     },
     iFrameUrl: (vm) => {
       if (vm.sharedModel) {
-        return `<iframe width="560" height="315" src="${vm.sharedModelUrl}" title="Ondsel"></iframe>`
+        return `<iframe width="560" height="315" src="${vm.sharedModelUrl}" title="Lens"></iframe>`
       }
       return ''
 

@@ -11,7 +11,7 @@ import { dataValidator, queryValidator } from '../../validators.js'
 
 import {organizationSummarySchema} from '../organizations/organizations.subdocs.schema.js';
 import {
-  agreementsAcceptedSchema, getConstraint, NotificationCadenceType, NotificationCadenceTypeMap, OndselUsageType,
+  agreementsAcceptedSchema, getConstraint, NotificationCadenceType, NotificationCadenceTypeMap, LensUsageType,
   SubscriptionConstraintsType,
   subscriptionDetailSchema,
   SubscriptionStateMap,
@@ -44,7 +44,6 @@ export const userSchema = Type.Object(
     lastName: Type.String(), // deprecated
     subscriptionDetail: subscriptionDetailSchema,
     userAccounting: userAccountingSchema,
-    isTripe: Type.Optional(Type.Boolean()),
     // private fields (required by feathers-authentication-management)
     isVerified: Type.Boolean(),
     verifyToken: Type.Optional(Type.String()), // for Email
@@ -55,7 +54,7 @@ export const userSchema = Type.Object(
     resetShortToken: Type.Optional(Type.String()), // for SMS
     resetExpires: Type.Number(),
     resetAttempts: Type.Number(),
-    usageType: OndselUsageType,
+    usageType: LensUsageType,
 
     // public fields
     username: Type.String(),
@@ -105,7 +104,6 @@ export const userDataResolver = resolve({
   password: passwordHash({ strategy: 'local' }),
   createdAt: async () => Date.now(),
   updatedAt: async () => Date.now(),
-  isTripe: async () => null,
   usernameHash: async (_value, message, _context) => {
     return refNameHasher(message.username)
   },
@@ -183,7 +181,7 @@ export const userQueryResolver = resolve({
   // If there is a user (e.g. with authentication) but not admin, they are only allowed to see their own data
   _id: async (value, user, context) => {
     if (context.params.user) {
-      if (!isAdminUser(context.params.user) || context.$getOnlyAccessTokenUser) {
+      if (!(await isAdminUser(context)) || context.$getOnlyAccessTokenUser) {
         return context.params.user._id
       }
     }
@@ -238,8 +236,5 @@ export const uniqueUserPatchValidator = async (context) => {
         errors: { email: 'Username already taken' }
       })
     }
-  }
-  if (context.data.isTripe) {
-    throw new BadRequest('Invalid: tripetitude not settable via API');
   }
 }

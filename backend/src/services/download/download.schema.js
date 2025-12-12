@@ -16,7 +16,7 @@ export const downloadSchema = Type.Object(
     fileKey: Type.String(),  // File name store in S3
     pin: Type.Optional(Type.String()),
     createdAt: Type.Number(),
-    // Below fields user later to download Ondsel ES
+    // Below fields user later to download Desktop App
     expireAt: Type.Optional(Type.Number()),
     user: Type.Optional(userSummarySchema),
   },

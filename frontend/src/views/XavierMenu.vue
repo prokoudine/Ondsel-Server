@@ -73,7 +73,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 <script>
 
-import {mapState} from "vuex";
+import {mapActions, mapState} from "vuex";
 import SearchPopupDialog from "@/components/SearchPopupDialog.vue";
 
 export default {
@@ -83,15 +83,17 @@ export default {
   data: () => ({
   }),
   async created() {
-    if (!this.user || !this.user.isTripe) {
+    if (!(await this.isSiteAdministrator())) {
       console.log("alert-33234");
       this.$router.push({name: 'LensHome', params: {}});
+      return;
     }
   },
   computed: {
     ...mapState('auth', ['user']),
   },
   methods: {
+    ...mapActions('app', ['isSiteAdministrator']),
   },
   watch: {
   }

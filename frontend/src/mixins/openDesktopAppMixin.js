@@ -5,11 +5,11 @@
 export default {
   data: () => ({
     blurListener: null,
-    checkingOndselEsIsInstalled: false,
+    checkingDesktopAppIsInstalled: false,
   }),
   methods: {
-    openModelInOndselEs(url) {
-      this.checkingOndselEsIsInstalled = true;
+    openModelInDesktopApp(url) {
+      this.checkingDesktopAppIsInstalled = true;
       const timeoutDuration = 1500; // Time to wait to check if app opened
       let isAppOpened = false;
 
@@ -25,7 +25,7 @@ export default {
 
       // Start timeout to check if the app opened
       setTimeout(() => {
-        this.checkingOndselEsIsInstalled = false;
+        this.checkingDesktopAppIsInstalled = false;
         if (!isAppOpened) {
           // if app not installed
         }

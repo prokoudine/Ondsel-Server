@@ -19,7 +19,7 @@ import {
 import { PublisherService, getOptions } from './publisher.class.js'
 import { publisherPath, publisherMethods } from './publisher.shared.js'
 import {disallow, softDelete} from "feathers-hooks-common";
-import {verifyOndselAdministrativePower} from "../hooks/administration.js";
+import {verifySiteAdministrativePower} from "../hooks/administration.js";
 
 export * from './publisher.class.js'
 export * from './publisher.schema.js'
@@ -39,7 +39,7 @@ export * from './publisher.schema.js'
 // hex index). Since that ID isn't really private, I'm not too concerned about it.
 //
 // The download links will look like this:
-//   `https://lens.ondsel.com/published/a438f938493849348384/Ondsel_ES-2024.2.2.37240-Windows-x86_64-installer.exe`
+//   `{frontend_url}/published/a438f938493849348384/Windows-x86_64-installer.exe`
 //
 // When the user downloads that URL, NGINX will catch the "/published" link and do two things:
 //
@@ -87,7 +87,7 @@ export const publisher = (app) => {
         // get called by proxy
       ],
       create: [
-        verifyOndselAdministrativePower,
+        verifySiteAdministrativePower,
         softDelete(),
         schemaHooks.validateData(publisherDataValidator),
         schemaHooks.resolveData(publisherDataResolver)

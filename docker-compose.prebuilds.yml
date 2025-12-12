@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 Amritpal Singh <amrit3701@gmail.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 services:
   mongodb:
     image: mongo:latest
@@ -45,6 +49,7 @@ services:
       - VITE_MATOMO_URL
       - VITE_MATOMO_SITE
       - VITE_STRIPE_PURCHASE_PEER_URL
+      - PROXY_SCHEME_PREFIX=${PROXY_SCHEME_PREFIX:-http://}
     depends_on:
       - backend
 
@@ -97,7 +102,7 @@ services:
       - MATOMO_DATABASE_USER=matomo
       - MATOMO_DATABASE_PASSWORD=matomo
       - MATOMO_DATABASE_NAME=matomo
-      - MATOMO_WEBSITE_NAME=Ondsel LENS
+      - MATOMO_WEBSITE_NAME=Lens
       - MATOMO_WEBSITE_HOST=${FRONTEND_URL:-http://localhost:3000}
       - MATOMO_USERNAME=${MATOMO_USERNAME:-admin}
       - MATOMO_PASSWORD=${MATOMO_PASSWORD:-admin@local.test}

@@ -208,7 +208,11 @@ class FreeCadDocument
             for (let objectElement of objectElements) {
                 let name = objectElement.getAttribute ('name');
                 let type = objectElement.getAttribute ('type');
-                let fileName = `ondsel_${name}.brp`
+                // Check for BREP file with new naming first, then fallback to old naming for backward compatibility
+                let fileName = `lens_${name}.brp`
+                if (!this.HasFile(fileName)) {
+                  fileName = `ondsel_${name}.brp` // backward compatibility for old files
+                }
                 // Hack for ObjectList view to avoid showing Origin and Plane object. For new files we already fixed on
                 // FC_Worker side, this is for already generated files.
                 if (excludedObjects.includes(type)) {
@@ -286,7 +290,11 @@ class FreeCadDocument
                 }
 
                 if (!hasShapePrp) {
-                  let fileName = `ondsel_${name}.brp`
+                  // Check for BREP file with new naming first, then fallback to old naming for backward compatibility
+                  let fileName = `lens_${name}.brp`
+                  if (!this.HasFile (fileName)) {
+                    fileName = `ondsel_${name}.brp` // backward compatibility for old files
+                  }
                   if (!this.HasFile (fileName)) {
                       continue;
                   }

@@ -10,7 +10,6 @@ import {updateModelsForFilesCommand} from "./update-models-for-files.command.js"
 import { migrateWorkspaceGroupsOrUsersCommand } from "./update-workspace-groupsOrUsers.js";
 import {updateDirectoryFileSummariesCommand} from "./update-directory-file-summaries.command.js";
 import {addInitialTosPp} from "./add-initial-tos-pp.js";
-import {updateTos2023Aug31Command} from "./update-tos-2023-aug-31.command.js";
 import {addMissingRefNamesCommand} from "./add-missing-ref-names.command.js";
 import { updateDirectoryWorkspaceSubDocs } from './update-workspaceSubDocs-for-directory.js';
 import { addOwnerToOrganizationCommand } from './add-owner-to-organization.js';
@@ -39,7 +38,7 @@ import {
   addOrgSecondaryReferencesToAllOrganizationsCommand
 } from "./add-org-secondary-references-to-all-organizations.command.js";
 import { addMessagesFieldsToSharedModelsCommand } from './add-messages-fields-to-shared-models.command.js';
-import { createOndselOrganizationCommand } from './create-ondsel-organization.command.js';
+import { createAdminOrganizationCommand } from './create-admin-organization.command.js';
 import {addNotificationsIdToUsersCommand} from "./add-notificationsId-to-users.command.js";
 import { addProtectionFieldToSharedModelCommand } from "./addProtectionFieldToSharedModel.js";
 import { addFollowSupportToSharedModelsCommand } from "./add-follow-support-to-shared-models.command.js";
@@ -49,6 +48,8 @@ import {handleStepFileAsModelCommand} from "./handle-step-file-as-model.js";
 import {fixedSharedWithMeSchemasCommand} from "./fixed-shared-with-me-schemas.command.js";
 import {addDefaultAdminUserCommand} from "./create-default-admin-user.command.js";
 import {createDefaultSiteConfigCommand} from "./create-default-site-config.command.js";
+import {createDefaultPublisherEntriesCommand} from "./create-default-publisher-entries.command.js";
+import {migrateOndselToAdminOrganizationCommand} from "./migrate-ondsel-to-admin-organization.command.js";
 
 
 async function runMigration() {
@@ -66,9 +67,6 @@ async function runMigration() {
     //   break;
     case 'addInitialTosPp':
       await addInitialTosPp(app);
-      break;
-    case 'updateTos2023Aug31':
-      await updateTos2023Aug31Command(app);
       break;
     // case 'addUsername':
     //   await addUsernameCommand(app);
@@ -172,8 +170,8 @@ async function runMigration() {
     case 'addMessagesFieldsToSharedModels':
       await addMessagesFieldsToSharedModelsCommand(app);
       break;
-    case 'createOndselOrganization':
-      await createOndselOrganizationCommand(app);
+    case 'createAdminOrganization':
+      await createAdminOrganizationCommand(app);
       break;
     case 'addNotificationsIdToUsers':
       await addNotificationsIdToUsersCommand(app);
@@ -201,6 +199,12 @@ async function runMigration() {
       break;
     case 'createDefaultSiteConfig':
       await createDefaultSiteConfigCommand(app);
+      break;
+    case 'createDefaultPublisherEntries':
+      await createDefaultPublisherEntriesCommand(app);
+      break;
+    case 'migrateOndselToAdminOrganization':
+      await migrateOndselToAdminOrganizationCommand(app);
       break;
     default:
       console.error('Please specify the migration command.')

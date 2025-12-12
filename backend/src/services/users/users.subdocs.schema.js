@@ -292,14 +292,14 @@ export const UserOrgSchema = Type.Intersect(
   ]
 )
 
-export const ondselUsageTypeMap = {
+export const lensUsageTypeMap = {
   work: 'work',
   personal: 'personal',
   both: 'both'
 }
 
-export const OndselUsageType = StringEnum([
-  ondselUsageTypeMap.work,
-  ondselUsageTypeMap.personal,
-  ondselUsageTypeMap.both
+export const LensUsageType = StringEnum([
+  lensUsageTypeMap.work,
+  lensUsageTypeMap.personal,
+  lensUsageTypeMap.both
 ])

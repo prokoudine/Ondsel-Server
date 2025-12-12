@@ -17,10 +17,11 @@ import {
 import { SiteConfigService, getOptions } from './site-config.class.js'
 import { siteConfigPath, siteConfigMethods } from './site-config.shared.js'
 import { siteConfigId } from './site-config.schema.js'
-import { verifyOndselAdministrativePower } from '../hooks/administration.js'
+import { verifySiteAdministrativePower } from '../hooks/administration.js'
 import { setCustomizedFlags } from './set-customized-flags.hook.js'
 import { uploadBrandingLogo } from './upload-branding.hook.js'
 import { uploadDefaultModel, uploadDefaultModelThumbnail } from './upload-default-model.hook.js'
+import { parseSocialLinks } from './parse-social-links.hook.js'
 import multer from 'multer'
 
 export * from './site-config.class.js'
@@ -130,14 +131,15 @@ export const siteConfig = (app) => {
         // Only verify admin power for non-default configs
         async (context) => {
           if (context.id !== siteConfigId) {
-            return verifyOndselAdministrativePower(context);
+            return verifySiteAdministrativePower(context);
           }
           return context;
         }
       ],
       patch: [
         authenticate('jwt'),
-        verifyOndselAdministrativePower,
+        verifySiteAdministrativePower,
+        parseSocialLinks,
         uploadBrandingLogo,
         uploadDefaultModel,
         uploadDefaultModelThumbnail,
@@ -158,4 +160,22 @@ export const siteConfig = (app) => {
       all: []
     }
   })
+
+  // Proxy FreeCAD blog feed endpoint
+  app.get('/freecad-blog-rss', async (req, res) => {
+    try {
+      const response = await fetch('https://blog.freecad.org/feed/');
+      if (!response.ok) {
+        return res.status(response.status).json({ error: `Upstream error ${response.status}` });
+      }
+
+      const text = await response.text();
+
+      res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+      res.setHeader('Cache-Control', 'public, max-age=300');
+      return res.send(text);
+    } catch (error) {
+      return res.status(500).json({ error: 'Failed to fetch FreeCAD feed', details: error.message });
+    }
+  });
 }

@@ -237,7 +237,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 </template>
 
 <script>
-import { mapState, mapGetters } from "vuex";
+import { mapActions, mapState, mapGetters } from "vuex";
 import { marked } from "marked";
 import MarkdownViewer from "@/components/MarkdownViewer.vue";
 import VueRssFeed from "@/components/VueRssFeed.vue";
@@ -346,12 +346,14 @@ export default {
     }
   },
   async created() {
-    if (!this.user || !this.user.isTripe) {
+    if (!(await this.isSiteAdministrator())) {
       console.log("alert-33237-hp");
       this.$router.push({name: 'LensHome', params: {}});
+      return;
     }
   },
   methods: {
+    ...mapActions('app', ['isSiteAdministrator']),
     getTextColorForBackground,
     async saveConfig() {
       if (!this.valid) return;

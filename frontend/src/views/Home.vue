@@ -55,12 +55,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         location="start"
       >Click new thumbnail</v-tooltip>
     </v-btn>
-    <!-- <v-btn v-if="model" icon flat @click="openModelInOndselEsDialog">
+    <!-- <v-btn v-if="model && siteConfig?.desktopApp?.enabledOpenInDesktopApp" icon flat @click="openModelInDesktopAppDialog">
       <v-icon>mdi-open-in-app</v-icon>
       <v-tooltip
         activator="parent"
         location="start"
-      >Open model in Ondsel ES desktop app</v-tooltip>
+      >Open model in {{ siteConfig?.desktopApp?.name }} desktop app</v-tooltip>
     </v-btn> -->
   </v-navigation-drawer>
   <ModelViewer ref="modelViewer" @model:loaded="modelLoaded" @object:clicked="objectClicked"/>
@@ -231,10 +231,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       <ModelInfo ref="modelInfoDrawer" v-else-if="drawerActiveWindow === 'modelInfo'" :model="model"/>
     </v-navigation-drawer>
   </div>
-  <launch-ondsel-es-dialog
-    ref="launchOndselEsDialog"
-    :launching-in-progress="checkingOndselEsIsInstalled"
-    @launch-ondsel-es="openModelInOndselEs(getOndselEsUrl(model))"
+  <launch-desktop-app-dialog
+    ref="launchDesktopAppDialog"
+    :launching-in-progress="checkingDesktopAppIsInstalled"
+    @launch-desktop-app="openModelInDesktopApp(getDesktopAppUrl(model))"
   />
 </template>
 
@@ -250,8 +250,8 @@ import ExportModelDialog from '@/components/ExportModelDialog';
 import MangeSharedModels from '@/components/MangeSharedModels';
 import ModelInfo from '@/components/ModelInfo.vue';
 import ObjectsListView from '@/components/ObjectsListView.vue';
-import openOndselEsMixin from '@/mixins/openOndselEsMixin';
-import LaunchOndselEsDialog from '@/components/LaunchOndselEsDialog.vue';
+import openDesktopAppMixin from '@/mixins/openDesktopAppMixin';
+import LaunchDesktopAppDialog from '@/components/LaunchDesktopAppDialog.vue';
 
 const { Model, SharedModel, Workspace, Organization } = models.api;
 
@@ -264,9 +264,9 @@ export default {
     ExportModelDialog,
     ModelInfo,
     ObjectsListView,
-    LaunchOndselEsDialog,
+    LaunchDesktopAppDialog,
   },
-  mixins: [openOndselEsMixin],
+  mixins: [openDesktopAppMixin],
   data: () => ({
     dialog: true,
     model: null,
@@ -313,6 +313,7 @@ export default {
   computed: {
     ...mapState('auth', ['accessToken', 'user']),
     ...mapGetters('auth', ['isAuthenticated']),
+    ...mapGetters('app', ['siteConfig']),
     canHaveWriteAccess: vm => vm.workspace ? vm.workspace.haveWriteAccess : false,
     workspace: vm => vm.model && vm.model.file && Workspace.getFromStore(vm.model.file.workspace._id),
     organization: vm => vm.workspace && Organization.getFromStore(vm.workspace.organizationId),
@@ -408,7 +409,7 @@ export default {
           return {
             code: vm.model.errorMsg.code,
             label: 'Internal server error',
-            desc: 'Not able to process model, please contact the <a href="https://ondsel.com/support/">support team</a>',
+            desc: 'Not able to process model, please contact the support team',
           }
         } else {
           return {
@@ -531,11 +532,11 @@ export default {
         })
       }
     },
-    getOndselEsUrl(model) {
-      return `ondsel:file/${model.file._id}/version/${model.file.currentVersionId}`;
+    getDesktopAppUrl(model) {
+      return `${this.siteConfig.desktopApp.protocol}file/${model.file._id}/version/${model.file.currentVersionId}`;
     },
-    openModelInOndselEsDialog() {
-      this.$refs.launchOndselEsDialog.openDialog();
+    openModelInDesktopAppDialog() {
+      this.$refs.launchDesktopAppDialog.openDialog();
     }
   },
   watch: {

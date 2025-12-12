@@ -361,7 +361,7 @@ export default {
         this.forbidNameChange = false;
         this.changableVisibility = true;
         break;
-      case 'Ondsel':
+      case 'Admin':
         this.forbidNameChange = false;
         this.changableVisibility = true;
         break;

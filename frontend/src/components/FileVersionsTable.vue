@@ -66,11 +66,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           ShareLinks
         </v-btn>
         <v-btn
+          v-if="siteConfig?.desktopApp?.enabledOpenInDesktopApp"
           class="my-2"
           append-icon="mdi-open-in-app"
-          @click="$emit('launchOndselEs', item._id)"
+          @click="$emit('launchDesktopApp', item._id)"
         >
-          Open In Ondsel ES
+          Open In {{ siteConfig?.desktopApp?.name }}
         </v-btn>
 <!--        <v-sheet width="3em">-->
 <!--          <v-btn-->
@@ -231,7 +232,7 @@ const { SharedModel } = models.api;
 export default {
   name: "FileVersionsTable",
   components: {DirectShareToUsersDialog, ShareLinkCrudDialog, FileInfoDialog },
-  emits: ['changeVisibleVersion', 'changedFile', 'launchOndselEs'],
+  emits: ['changeVisibleVersion', 'changedFile', 'launchDesktopApp'],
   props: {
     file: Object,
     canUserWrite: {
@@ -250,7 +251,7 @@ export default {
     displayLinks: {},
   }),
   computed: {
-    ...mapGetters('app', ['currentOrganization']),
+    ...mapGetters('app', ['siteConfig', 'currentOrganization']),
     versionRows() {
       let newRows = [];
       if (this.file && this.file?.versions) {

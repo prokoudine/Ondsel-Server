@@ -21,11 +21,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </div>
         <div v-else>
           <p>
-            For some reason, the transaction finished, but Ondsel's system had difficulty recording the transaction. Please hit the "try recording again" button below to re-attempt.
+            For some reason, the transaction finished, but the system had difficulty recording the transaction. Please hit the "try recording again" button below to re-attempt.
           </p>
           &nbsp;
           <p>
-            If this continues to fail, please contact <a href="mailto:contact@ondsel.com">contact@ondsel.com</a> for support.
+            If this continues to fail, please contact support for assistance.
           </p>
           &nbsp;
           <p>

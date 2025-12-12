@@ -35,7 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
         <!-- Configuration Cards -->
         <v-row>
-          <!-- Logo, Site Title & Copyright Text Card -->
+          <!-- Brand Identity Text Card -->
           <v-col cols="12" md="6" lg="4">
             <v-card
               variant="elevated"
@@ -45,14 +45,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             >
               <v-card-title class="d-flex align-center">
                 <v-icon color="primary" class="mr-3">mdi-image</v-icon>
-                <span class="text-h6">Logo, Site Title & Copyright</span>
+                <span class="text-h6">Brand Identity</span>
               </v-card-title>
               <v-card-text>
                 <p class="text-body-2 text-grey-darken-1 mb-4">
-                  Configure the site logo, favicon, site title, and copyright text.
+                  Configure your platform's visual identity, branding elements, and social media links.
                 </p>
                 <v-chip
-                  v-if="isConfigured('logo-site-title-copyright-text')"
+                  v-if="isConfigured('brand-identity')"
                   color="success"
                   variant="tonal"
                   size="small"
@@ -78,7 +78,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                   variant="elevated"
                   block
                   prepend-icon="mdi-cog"
-                  @click="$router.push({ name: 'XavierBrandingLogo', params: {} })"
+                  @click="$router.push({ name: 'XavierBrandingIdentity', params: {} })"
                 >
                   Configure
                 </v-btn>
@@ -242,16 +242,17 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 </template>
 
 <script>
-import {mapState, mapGetters} from "vuex";
+import {mapState, mapGetters, mapActions} from "vuex";
 import Main from '@/layouts/default/Main.vue';
 
 export default {
   name: 'XavierBrandingHub',
   components: { Main },
   async created() {
-    if (!this.user || !this.user.isTripe) {
+    if (!(await this.isSiteAdministrator())) {
       console.log("alert-33235-bh");
       this.$router.push({name: 'LensHome', params: {}});
+      return;
     }
   },
   computed: {
@@ -259,12 +260,19 @@ export default {
     ...mapGetters('app', ['siteConfig']),
   },
   methods: {
+    ...mapActions('app', ['isSiteAdministrator']),
     isConfigured(section) {
       if (!this.siteConfig || !this.siteConfig.customized) return false;
       
       switch (section) {
-        case 'logo-site-title-copyright-text':
-          return this.siteConfig.customized.siteTitle || this.siteConfig.customized.logoUrl || this.siteConfig.customized.faviconUrl || this.siteConfig.customized.copyrightText;
+        case "brand-identity":
+          return (
+            this.siteConfig.customized.siteTitle ||
+            this.siteConfig.customized.logoUrl ||
+            this.siteConfig.customized.faviconUrl ||
+            this.siteConfig.customized.copyrightText ||
+            this.siteConfig.customized.socialLinks
+          );
         case 'homepage':
           return this.siteConfig.customized.homepageContent;
         case 'defaultModel':
