@@ -112,7 +112,7 @@ Update the `HOSTNAME`, `FRONTEND_URL`, and `VITE_APP_API_URL` environment variab
 environment:
   - HOSTNAME=192.168.1.100  # Replace with your TrueNAS IP or hostname
   - FRONTEND_URL=http://192.168.1.100:30306  # Update accordingly
-  - VITE_APP_API_URL=http://192.168.1.100:30305/  # Backend API URL for frontend
+  - VITE_APP_API_URL=http://192.168.1.100:30305/  # Backend API URL (used by both frontend and backend)
 ```
 
 #### Admin Credentials
@@ -174,6 +174,7 @@ Adjust ports if they conflict with other services:
 | `HOSTNAME` | Server hostname or IP | Yes | - |
 | `PORT` | Backend API port | No | 30305 |
 | `FRONTEND_URL` | Frontend application URL | Yes | - |
+| `VITE_APP_API_URL` | Backend API URL (used by both frontend and backend) | Yes | - |
 | `SMTP_HOST` | SMTP server hostname | No | - |
 | `SMTP_PORT` | SMTP server port | No | 465 |
 | `SMTP_USER` | SMTP username | No | - |
