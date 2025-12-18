@@ -42,7 +42,7 @@ class UploadService {
     this.blobService = blobService;
     this.s3Client = s3Client;
     this.useS3 = options.app.get('useS3'); // Flag to toggle S3 usage
-    this.appUrl = `http://${options.app.get('host')}:${options.app.get('port')}`
+    this.appUrl = options.app.get('backendUrl').replace(/\/$/, '');
     this.localSignedUrlSecret = options.app.get('localSignedUrlSecret') || crypto.randomBytes(32).toString('hex');
   }
 

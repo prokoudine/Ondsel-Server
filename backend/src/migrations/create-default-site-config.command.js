@@ -34,7 +34,7 @@ export async function createDefaultSiteConfigCommand(app) {
       title: 'Welcome to Lens',
       markdownContent: 'Welcome to Lens, your collaborative CAD platform. Upload, view, and share 3D models with version control, export capabilities, and real-time collaboration tools.',
       rssFeedEnabled: true,
-      rssFeedUrl: `http://${app.get('host')}:${app.get('port')}/freecad-blog-rss`,
+      rssFeedUrl: `${app.get('backendUrl').replace(/\/$/, '')}/freecad-blog-rss`,
       rssFeedName: 'Latest FreeCAD Blog',
       banner: {
         enabled: false,
