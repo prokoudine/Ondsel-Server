@@ -1,0 +1,160 @@
+# SPDX-FileCopyrightText: 2025 Amritpal Singh <amrit3701@gmail.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+services:
+  lens-init:
+    image: amrit3701/lens:backend-latest
+    container_name: lens-init
+    user: "0:0"
+    volumes:
+      - /mnt/[your-pool]/ix-applications/lens/uploads_data:/mnt/uploads
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        set -e
+        echo "Initializing uploads directory..."
+        if [ -z "$(ls -A /mnt/uploads 2>/dev/null)" ] && [ -d /app/uploads ]; then
+          echo "Copying sample files from image to volume..."
+          cp -r /app/uploads/* /mnt/uploads/ 2>/dev/null || true
+          echo "Sample files copied successfully"
+        else
+          echo "Uploads directory already contains files, skipping copy"
+        fi
+        echo "Uploads directory initialized"
+    restart: on-failure
+    network_mode: "none"
+
+  mongodb:
+    image: mongo:latest
+    container_name: lens-mongodb
+    restart: unless-stopped
+    user: "568:568"
+    volumes:
+      - /mnt/[your-pool]/ix-applications/lens/mongodb_data:/data/db
+    ports:
+      - 27018:27017
+    healthcheck:
+      test: ["CMD", "mongosh", "--host", "127.0.0.1", "--port", "27017", "backend-db", "--eval", "db.adminCommand('ping')", "--quiet"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  backend:
+    image: amrit3701/lens:backend-latest
+    container_name: lens-backend
+    restart: unless-stopped
+    user: "0:0"
+    environment:
+      - HOSTNAME=192.168.1.100
+      - PORT=30305
+      - DB_URL=mongodb://mongodb:27017/backend-db
+      - FRONTEND_URL=http://192.168.1.100:30306
+      - VITE_APP_API_URL=http://192.168.1.100:30305/
+      - FC_WORKER_URL=http://0.0.0.0:8080/2015-03-31/functions/function/invocations
+      - SMTP_HOST=
+      - SMTP_PORT=465
+      - SMTP_USER=
+      - SMTP_PASS=
+      - SMTP_FROM=
+      - DEFAULT_ADMIN_EMAIL=admin@local.test
+      - DEFAULT_ADMIN_USERNAME=admin
+      - DEFAULT_ADMIN_PASSWORD=admin@local.test
+      - DEFAULT_ADMIN_NAME=Administrator
+      - LOCAL_SIGNED_URL_SECRET=
+    volumes:
+      - /mnt/[your-pool]/ix-applications/lens/uploads_data:/app/uploads
+    ports:
+      - 30305:30305
+    depends_on:
+      lens-init:
+        condition: service_completed_successfully
+      mongodb:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--spider", "http://127.0.0.1:30305/"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  frontend:
+    image: amrit3701/lens:frontend-latest
+    container_name: lens-frontend
+    restart: unless-stopped
+    user: "0:0"
+    cap_add:
+      - CHOWN
+      - SETUID
+      - SETGID
+    environment:
+      - VITE_APP_API_URL=http://192.168.1.100:30305/
+      - VITE_STRIPE_PURCHASE_PEER_URL=
+      - PROXY_SCHEME_PREFIX=http://
+    ports:
+      - 30306:80
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "/bin/bash -c '{ printf \"GET / HTTP/1.1\\r\\nHost: 127.0.0.1\\r\\nConnection: close\\r\\n\\r\\n\" >&0; grep \"HTTP\" | grep -q \"200\"; } 0<>/dev/tcp/127.0.0.1/80'"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  fc-worker-redis:
+    image: redis:alpine
+    container_name: lens-fc-worker-redis
+    restart: unless-stopped
+    user: "0:0"
+    healthcheck:
+      test: ["CMD", "redis-cli", "-h", "127.0.0.1", "-p", "6379", "ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  fc-worker-api:
+    image: amrit3701/lens:fc-worker-api-latest
+    container_name: lens-fc-worker-api
+    restart: unless-stopped
+    user: "0:0"
+    network_mode: "service:backend"
+    environment:
+      - REDIS_HOST=fc-worker-redis
+      - REDIS_PORT=6379
+    depends_on:
+      backend:
+        condition: service_healthy
+      fc-worker-redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "echo OK"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  fc-worker-celery:
+    image: amrit3701/lens:fc-worker-celery-latest
+    container_name: lens-fc-worker-celery
+    restart: unless-stopped
+    user: "0:0"
+    network_mode: "service:backend"
+    environment:
+      - REDIS_HOST=fc-worker-redis
+      - REDIS_PORT=6379
+      - BACKEND_URL=http://backend:30305
+    depends_on:
+      backend:
+        condition: service_healthy
+      fc-worker-redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "echo OK"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
