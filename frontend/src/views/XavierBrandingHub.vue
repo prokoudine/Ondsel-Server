@@ -49,7 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
               </v-card-title>
               <v-card-text>
                 <p class="text-body-2 text-grey-darken-1 mb-4">
-                  Configure your platform's visual identity, branding elements, and social media links.
+                  Configure visual identity, branding elements, and social media links.
                 </p>
                 <v-chip
                   v-if="isConfigured('brand-identity')"
